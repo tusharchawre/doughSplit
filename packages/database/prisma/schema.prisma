@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String         @id @default(cuid())
+  username         String
+  email            String         @unique
+  password         String?
+  phoneNumber      String?        @unique
+  imageUrl         String?
+  friends          User[]         @relation("UserFriends")
+  friendsOf        User[]         @relation("UserFriends")
+  group            Group[]
+  paidTransactions Transaction[]  @relation("PaidByUser")
+  involvedIn       Transaction[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Group {
+  id               String         @id @default(cuid())
+  groupName        String
+  groupDescription String
+  members          User[]
+  transactions     Transaction[]
+}
+
+
+model Transaction {
+  id          Int                      @id @default(autoincrement())
+  group       Group                    @relation(fields: [groupId], references: [id])
+  groupId     String
+  paidBy      User                     @relation("PaidByUser", fields: [paidById], references: [id])
+  paidById    String
+  participants User[]
+  amount      Int
+  status      TransactionStatus        @default(PENDING)
+}
+
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
