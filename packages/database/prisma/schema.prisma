@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id               String       @unique @id @default(cuid())
+  id               String        @id @unique @default(cuid())
   username         String
   email            String        @unique
   password         String?
@@ -25,7 +25,7 @@ model User {
 }
 
 model Group {
-  id               String       @unique @id @default(cuid())
+  id               String        @id @unique @default(cuid())
   groupName        String
   groupDescription String
   members          User[]
@@ -33,18 +33,19 @@ model Group {
 }
 
 model Transaction {
-  id              Int            @unique   @id @default(autoincrement())
-  description     String
-  date            DateTime          @default(now())
-  group           Group             @relation(fields: [groupId], references: [id])
-  groupId         String
-  paidBy          User              @relation("PaidByUser", fields: [paidById], references: [id])
-  paidById        String
-  participants    User[]            @relation("TransactionParticipants")
-  amount          Int
-  currency        String            @default("USD")
-  settledStatus   TransactionStatus @default(PENDING)
-  settlements     Settlement[]
+  id            Int               @id @unique @default(autoincrement())
+  txnName       String
+  description   String?
+  date          DateTime          @default(now())
+  group         Group             @relation(fields: [groupId], references: [id])
+  groupId       String
+  paidBy        User              @relation("PaidByUser", fields: [paidById], references: [id])
+  paidById      String
+  participants  User[]            @relation("TransactionParticipants")
+  amount        Int
+  currency      String            @default("INR")
+  settledStatus TransactionStatus @default(PENDING)
+  settlements   Settlement[]
 }
 
 enum TransactionStatus {
@@ -53,7 +54,7 @@ enum TransactionStatus {
 }
 
 model Settlement {
-  id            String      @id @default(cuid()) @unique
+  id            String      @id @unique @default(cuid())
   transaction   Transaction @relation(fields: [transactionId], references: [id])
   transactionId Int
   paidBy        User        @relation(fields: [paidById], references: [id])
@@ -61,4 +62,3 @@ model Settlement {
   amount        Int
   settledAt     DateTime    @default(now())
 }
-

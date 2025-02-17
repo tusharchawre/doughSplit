@@ -2,8 +2,12 @@ import { prismaClient } from "@repo/database/client";
 import { createGroupSchema, updateGroupSchema } from "@repo/types";
 import express from "express";
 import { userMiddleware } from "../middleware";
+import { TransactionRouter } from "./transcationRoutes";
 
 const router = express.Router();
+
+
+router.use("/transactions", TransactionRouter)
 
 
 router.post("/create-group", userMiddleware, async (req, res) => {
@@ -93,7 +97,7 @@ router.delete("/", userMiddleware, async (req, res) => {
 
 })
 
-router.put("/", async (req, res) => {
+router.put("/",userMiddleware, async (req, res) => {
     const validatedBody = updateGroupSchema.safeParse(req.body)
 
     if (!validatedBody.success) {
@@ -125,9 +129,5 @@ router.put("/", async (req, res) => {
         group
     })
 })
-
-
-
-
 
 export { router as GroupRouter };
