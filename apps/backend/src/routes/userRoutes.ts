@@ -1,150 +1,149 @@
-import express from "express"
-import { registerSchema, loginSchema, updateSchema } from "@repo/types"
-import { prismaClient } from "@repo/database/client"
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import "dotenv/config"
-import { userMiddleware } from "../middleware"
+import express from "express";
+import { registerSchema, loginSchema, updateSchema } from "@repo/types";
+import { prismaClient } from "@repo/database/client";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+import { userMiddleware } from "../middleware";
 
-const router = express.Router()
+const router = express.Router();
 
 router.post("/register", async (req, res) => {
-    const validatedBody = registerSchema.safeParse(req.body)
+  const validatedBody = registerSchema.safeParse(req.body);
 
-    if (!validatedBody.success) {
-        res.json({
-            error: "Invalid Credentials"
-        })
-        return
-    }
-
-    const { username, password, email } = validatedBody.data
-
-    const existingUser = await prismaClient.user.findFirst({
-        where: {
-            email
-        }
-    })
-
-    if (existingUser) {
-        res.json({
-            error: "User already exists"
-        })
-        return
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    const user = await prismaClient.user.create({
-        data: {
-            username,
-            password: hashedPassword,
-            email
-        }
-    })
-
+  if (!validatedBody.success) {
     res.json({
-        message: "User created successfully",
-        user
-    })
+      error: "Invalid Credentials",
+    });
+    return;
+  }
 
-})
+  const { username, password, email } = validatedBody.data;
+
+  const existingUser = await prismaClient.user.findFirst({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    res.json({
+      error: "User already exists",
+    });
+    return;
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await prismaClient.user.create({
+    data: {
+      username,
+      password: hashedPassword,
+      email,
+    },
+  });
+
+  res.json({
+    message: "User created successfully",
+    user,
+  });
+});
 
 router.post("/login", async (req, res) => {
-    const validatedBody = loginSchema.safeParse(req.body)
+  const validatedBody = loginSchema.safeParse(req.body);
 
-    if (!validatedBody.success) {
-        res.json({
-            error: "Invalid Credentials"
-        })
-        return
-    }
-
-
-    const { email, password } = validatedBody.data
-
-    const user = await prismaClient.user.findFirst({
-        where: {
-            email
-        }
-    })
-
-    if (!user || !user.password) {
-        res.json({
-            error: "User not found"
-        })
-        return
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-
-    if (!isPasswordValid) {
-        res.json({
-            error: "Invalid Credentials"
-        })
-        return
-    }
-
-    const userId = user.id
-
-    const token = await jwt.sign({
-        userId
-    }, process.env.JWT_SECRET!)
-
-
+  if (!validatedBody.success) {
     res.json({
-        token
-    })
-})
+      error: "Invalid Credentials",
+    });
+    return;
+  }
+
+  const { email, password } = validatedBody.data;
+
+  const user = await prismaClient.user.findFirst({
+    where: {
+      email,
+    },
+  });
+
+  if (!user || !user.password) {
+    res.json({
+      error: "User not found",
+    });
+    return;
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    res.json({
+      error: "Invalid Credentials",
+    });
+    return;
+  }
+
+  const userId = user.id;
+
+  const token = await jwt.sign(
+    {
+      userId,
+    },
+    process.env.JWT_SECRET!,
+  );
+
+  res.json({
+    token,
+  });
+});
 
 router.get("/profile", userMiddleware, async (req, res) => {
-    const userId = req.userId
+  const userId = req.userId;
 
-    const user = await prismaClient.user.findUnique({
-        where: {
-            id: userId
-        }
-    })
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
 
-    res.json({
-        user
-    })
-})
+  res.json({
+    user,
+  });
+});
 
 router.put("/", userMiddleware, async (req, res) => {
-    const validatedBody = updateSchema.safeParse(req.body)
+  const validatedBody = updateSchema.safeParse(req.body);
 
-    const userId = req.userId
+  const userId = req.userId;
 
-    if (!validatedBody.success) {
-        res.json({
-            error: "Invalid Update Details."
-        })
-        return
-    }
-
-    const { username, password, phoneNumber, imageUrl, email } = validatedBody.data
-
-    const user = await prismaClient.user.update({
-        where: {
-            email,
-            id: userId
-        },
-        data: {
-            username,
-            password,
-            phoneNumber,
-            imageUrl
-        }
-    })
-
-
+  if (!validatedBody.success) {
     res.json({
-        user
-    })
+      error: "Invalid Update Details.",
+    });
+    return;
+  }
 
-})
+  const { username, password, phoneNumber, imageUrl, email } =
+    validatedBody.data;
+
+  const user = await prismaClient.user.update({
+    where: {
+      email,
+      id: userId,
+    },
+    data: {
+      username,
+      password,
+      phoneNumber,
+      imageUrl,
+    },
+  });
+
+  res.json({
+    user,
+  });
+});
 
 // TODO: Add Friend Route
 
-export { router as UserRouter }
+export { router as UserRouter };

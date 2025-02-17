@@ -1,9 +1,5 @@
-import express from "express"
+import express from "express";
 
-const router = express.Router()
+const router = express.Router();
 
-
-
-
-
-export {router as GroupRouter}
+export { router as GroupRouter };

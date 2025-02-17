@@ -1,6 +1,6 @@
 {
-    "name": "@repo/database",
-    "version": "1.0.0",
+  "name": "@repo/database",
+  "version": "1.0.0",
   "exports": {
     "./client": "./src/index.ts"
   },
@@ -8,9 +8,8 @@
     "@types/node": "^22.10.7",
     "@repo/typescript-config": "workspace:*"
   },
-    "dependencies": {
-      "prisma": "^6.2.1",
-      "@prisma/client": "^6.2.1"
-    }
+  "dependencies": {
+    "prisma": "^6.2.1",
+    "@prisma/client": "^6.2.1"
   }
-  
+}
