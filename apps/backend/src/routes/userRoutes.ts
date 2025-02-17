@@ -144,6 +144,34 @@ router.put("/", userMiddleware, async (req, res) => {
   });
 });
 
-// TODO: Add Friend Route
+router.post("/friends", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const { friendId } = req.body;
+
+  if (userId === friendId) {
+    res.json({ message: "Invalid Request" });
+    return;
+  }
+
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    include: { friends: true },
+  });
+
+  const isFriend = user?.friends.some((friend) => friend.id === friendId);
+
+  await prismaClient.user.update({
+    where: { id: userId },
+    data: {
+      friends: isFriend
+        ? { disconnect: { id: friendId } }
+        : { connect: { id: friendId } },
+    },
+  });
+
+  res.json({
+    message: isFriend ? "Friend removed" : "Friends Now!",
+  });
+});
 
 export { router as UserRouter };
