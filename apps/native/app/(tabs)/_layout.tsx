@@ -1,5 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
+import { SquareActivity, SquareUser, User, Users } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -8,7 +9,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Groups',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <Users size={28} color={color} />,
         }}
       />
 
@@ -16,7 +17,7 @@ export default function TabLayout() {
         name="friends"
         options={{
           title: 'Friends',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <User size={28} color={color} />,
         }}
       />
     
@@ -24,7 +25,7 @@ export default function TabLayout() {
         name="activity"
         options={{
           title: 'Activity',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <SquareActivity size={28}  color={color} />,
         }}
       />
 
@@ -32,7 +33,7 @@ export default function TabLayout() {
         name="account"
         options={{
           title: 'Account',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <SquareUser size={28} color={color} />,
         }}
       />
       
