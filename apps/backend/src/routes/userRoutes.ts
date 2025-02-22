@@ -104,6 +104,9 @@ router.get("/profile", userMiddleware, async (req, res) => {
     where: {
       id: userId,
     },
+    include:{
+      group: true
+    }
   });
 
   res.json({
