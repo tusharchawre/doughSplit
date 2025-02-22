@@ -1,5 +1,4 @@
 import { Tabs } from "expo-router";
-import { Svg, Path } from "react-native-svg";
 
 export default function TabLayout() {
   return (
@@ -15,20 +14,20 @@ export default function TabLayout() {
       <Tabs.Screen
         name="friends"
         options={{
-          title: "Friends",
+          title: "Friends"
         }}
       />
       <Tabs.Screen
         name="activity"
         options={{
-          title: "Activity",
+          title: "Activity"
         }}
       />
 
       <Tabs.Screen
         name="account"
         options={{
-          title: "Account",
+          title: "Account"
         }}
       />
     </Tabs>
