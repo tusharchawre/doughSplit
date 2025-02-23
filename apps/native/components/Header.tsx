@@ -3,7 +3,7 @@ import { Plus, Search } from "lucide-react-native";
 
 export default function Header() {
   return (
-    <SafeAreaView className="flex flex-row items-center justify-between px-4 py-8">
+    <View className="flex flex-row items-center justify-between px-4 py-4">
       <View className="">
         <Text className="text-white mb-2 font-semibold text-3xl">
           DoughSplit
@@ -20,6 +20,6 @@ export default function Header() {
       <Plus height={20} width={20} color="white" />
 
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

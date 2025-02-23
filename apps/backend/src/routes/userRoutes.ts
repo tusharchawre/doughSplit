@@ -105,8 +105,17 @@ router.get("/profile", userMiddleware, async (req, res) => {
       id: userId,
     },
     include:{
-      group: true
-    }
+      group: true,
+      friends: {
+        select:{
+          id: true,
+          username: true,
+          email: true,
+          phoneNumber: true,
+          imageUrl: true
+        }
+      }
+    },
   });
 
   res.json({
