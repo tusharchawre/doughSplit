@@ -21,12 +21,7 @@ export interface User {
         phoneNumber: string | null,
         imageUrl: string | null
     }[],
-    involdedIn: {
-      id: string,
-      txnName: string,
-      description: string,
-      amount: number
-    }[]
+    involvedIn: []
 }
 
 export const getUser = () => {
