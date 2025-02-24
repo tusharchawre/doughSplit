@@ -1,7 +1,13 @@
-import { Text, View, SafeAreaView } from "react-native";
+import { Text, View } from "react-native";
 import { Plus, Search } from "lucide-react-native";
+import { RefObject } from "react";
+
 
 export default function Header() {
+  const openBottomSheet = () => {
+    console.log("pressed")
+  };
+
   return (
     <View className="flex flex-row items-center justify-between px-4 py-4">
       <View className="">
@@ -15,10 +21,9 @@ export default function Header() {
       </View>
 
       <View className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">
-      <Search height={20} width={20} color="white" />
-      <View className="w-[1px] h-full bg-white"></View>
-      <Plus height={20} width={20} color="white" />
-
+        <Search height={20} width={20} color="white" />
+        <View className="w-[1px] h-full bg-white"></View>
+        <Plus height={20} width={20} color="white" onPress={openBottomSheet} />
       </View>
     </View>
   );
