@@ -114,7 +114,8 @@ router.get("/profile", userMiddleware, async (req, res) => {
           phoneNumber: true,
           imageUrl: true
         }
-      }
+      },
+      involvedIn: true
     },
   });
 

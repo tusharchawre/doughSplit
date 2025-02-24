@@ -1,3 +1,4 @@
+import { FriendsCard } from "@/components/friendsCard";
 import { GroupCard } from "@/components/groupCard";
 import { getUser } from "@/hooks/getUser";
 import { Text, View } from "react-native";
@@ -23,7 +24,7 @@ export default function Friends() {
 
       <View className="flex gap-4  ">
         {friends.map((friend) => (
-          <GroupCard
+          <FriendsCard
             key={friend.id}
             id={friend.id}
             groupName={friend.username}

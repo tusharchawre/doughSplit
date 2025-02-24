@@ -20,6 +20,12 @@ export interface User {
         email: string,
         phoneNumber: string | null,
         imageUrl: string | null
+    }[],
+    involdedIn: {
+      id: string,
+      txnName: string,
+      description: string,
+      amount: number
     }[]
 }
 
