@@ -1,11 +1,23 @@
 import { Text, View } from "react-native";
 import { Plus, Search } from "lucide-react-native";
-import { RefObject } from "react";
+import { RefObject, SetStateAction, useRef, useState } from "react";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
+interface HeaderProps {
+  bottomSheetRef: React.RefObject<BottomSheetMethods>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+}
 
-export default function Header() {
+export default function Header({ open, setOpen, bottomSheetRef }: HeaderProps) {
   const openBottomSheet = () => {
-    console.log("pressed")
+    if (open) {
+      bottomSheetRef.current?.forceClose();
+    } else {
+      bottomSheetRef.current?.expand();
+    }
+    setOpen((prev) => !prev);
   };
 
   return (

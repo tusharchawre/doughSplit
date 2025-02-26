@@ -24,11 +24,10 @@ export const FriendsCard = ({
         <View>
           <Text className="text-white text-xl font-semibold">{groupName}</Text>
           <Text className="text-white/70 text-lg">
-          You are owed
-          <Text className="text-[#ADFFB1BF]"> ₹500.64</Text>
-        </Text>
+            You are owed
+            <Text className="text-[#ADFFB1BF]"> ₹500.64</Text>
+          </Text>
         </View>
-        
       </View>
     </View>
   );

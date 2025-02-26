@@ -3,22 +3,29 @@ import { Tabs } from "expo-router";
 import Header from "../../components/Header";
 import { ChartSpline, Circle, User, Users } from "lucide-react-native";
 import { AuthGuard } from "@/components/auth-guard";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GroupSheet } from "@/components/groupSheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function TabLayout() {
-  const groupSheetRef = useRef(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [open, setOpen] = useState(false);
 
   return (
     <AuthGuard>
       <GestureHandlerRootView className="flex-1">
         <SafeAreaView className="flex-1 bg-black">
-          <Header />
+          <Header
+            open={open}
+            setOpen={setOpen}
+            bottomSheetRef={bottomSheetRef}
+          />
           <Tabs
             screenOptions={{
               tabBarActiveTintColor: "white",
               tabBarStyle: {
-                backgroundColor: "#ffffff10",
+                backgroundColor: "#000000",
                 borderColor: "black",
                 borderRadius: 10,
               },
@@ -63,8 +70,8 @@ export default function TabLayout() {
               }}
             />
           </Tabs>
-    
         </SafeAreaView>
+        {open && <GroupSheet bottomSheetRef={bottomSheetRef} />}
       </GestureHandlerRootView>
     </AuthGuard>
   );

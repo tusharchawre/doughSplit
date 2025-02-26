@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable } from "react-native";
 import { useSession } from "@/context/ctx";
 import axios from "axios";
 import { router } from "expo-router";
+import api from "@/lib/axios";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -13,13 +14,10 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/v1/user/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await api.post("/user/login", {
+        email,
+        password,
+      });
 
       if (response.data.error) {
         setError(response.data.error);

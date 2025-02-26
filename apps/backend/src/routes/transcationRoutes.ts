@@ -5,7 +5,7 @@ import { userMiddleware } from "../middleware";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
   const { groupId } = req.body;
 
   const transactions = await prismaClient.transaction.findMany({

@@ -97,6 +97,39 @@ router.post("/login", async (req, res) => {
   });
 });
 
+router.post("/", async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    res.json({
+      message: "Invalid Id",
+    });
+    return;
+  }
+
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      friends: true,
+      involvedIn: true,
+      group: true,
+    },
+  });
+
+  if (!user) {
+    res.json({
+      message: "User Not Found",
+    });
+    return;
+  }
+
+  res.json({
+    user,
+  });
+});
+
 router.get("/profile", userMiddleware, async (req, res) => {
   const userId = req.userId;
 
@@ -104,18 +137,18 @@ router.get("/profile", userMiddleware, async (req, res) => {
     where: {
       id: userId,
     },
-    include:{
+    include: {
       group: true,
       friends: {
-        select:{
+        select: {
           id: true,
           username: true,
           email: true,
           phoneNumber: true,
-          imageUrl: true
-        }
+          imageUrl: true,
+        },
       },
-      involvedIn: true
+      involvedIn: true,
     },
   });
 

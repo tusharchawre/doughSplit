@@ -3,36 +3,48 @@ import { useEffect, useState } from "react";
 import { useStorageState } from "./useStorageState";
 
 export interface User {
-    id: string,
-    username: string,
-    email: string,
-    password: string,
-    phoneNumber: string | null,
-    imageUrl: string | null,
-    group: {
-        id: string,
-        groupName: string,
-        groupDescription: string
-    }[],
-    friends: {
-        id: string,
-        username: string,
-        email: string,
-        phoneNumber: string | null,
-        imageUrl: string | null
-    }[],
-    involvedIn: []
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+  phoneNumber: string | null;
+  imageUrl: string | null;
+  group: {
+    id: string;
+    groupName: string;
+    groupDescription: string;
+  }[];
+  friends: {
+    id: string;
+    username: string;
+    email: string;
+    phoneNumber: string | null;
+    imageUrl: string | null;
+  }[];
+  involvedIn: {
+    id: number;
+    txnName: string;
+    description: string | null;
+    date: string;
+    groupId: string;
+    paidById: string;
+    amount: number;
+    currency: "INR" | string;
+    settledStatus: "PENDING" | "COMPLETED";
+  }[];
 }
 
 export const getUser = () => {
   const [user, setUser] = useState<User>();
 
   const fetchUser = async () => {
-    const response = await api.get("/user/profile");
-
-    const resUser = response.data.user
-    
-    setUser(resUser);
+    try {
+      const response = await api.get("/user/profile");
+      const resUser = response.data.user;
+      setUser(resUser);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
   };
 
   useEffect(() => {
