@@ -17,7 +17,7 @@ export default function TabLayout() {
   return (
     <AuthGuard>
       <GestureHandlerRootView className="flex-1">
-        <ThemedView className="flex-1 bg-black">
+        <SafeAreaView className="flex-1 bg-black">
           <Header
             open={open}
             setOpen={setOpen}
@@ -73,7 +73,7 @@ export default function TabLayout() {
               }}
             />
           </Tabs>
-        </ThemedView>
+        </SafeAreaView>
         {open && <GroupSheet bottomSheetRef={bottomSheetRef} />}
       </GestureHandlerRootView>
     </AuthGuard>

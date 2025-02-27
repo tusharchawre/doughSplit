@@ -16,7 +16,7 @@ export const GroupCard = ({
 }: GroupCardProps) => {
   return (
     <Pressable onPress={onPress}>
-      <View className="w-full h-28 bg-white/[0.05] rounded-xl my-2">
+      <View className="w-full h-28 bg-white/[0.08] rounded-xl my-2">
         <View className="flex flex-row items-center">
           <Image
             source={{
@@ -29,7 +29,7 @@ export const GroupCard = ({
             <ThemedText className="text-white text-xl font-semibold">
               {groupName}
             </ThemedText>
-            <ThemedText className="text-white/70 text-lg">
+            <ThemedText type="subtitle" className="text-white/70 text-lg">
               You are owed
               <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]"> ₹500.64</Text>
             </ThemedText>

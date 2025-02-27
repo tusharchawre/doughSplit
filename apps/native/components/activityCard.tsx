@@ -25,7 +25,7 @@ export const ActivityCard = ({
 
   return (
     <View className="w-full h-28 bg-white/[0.05]">
-      <View className="flex flex-row items-center">
+      <View className="flex flex-row items-center w-full">
         <Image
           source={{
             uri: "https://plus.unsplash.com/premium_photo-1670279526726-128d22144ad9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -34,7 +34,7 @@ export const ActivityCard = ({
         />
 
         <View className="w-full flex-wrap">
-          <Text className="text-white w-full text-xl font-semibold flex-wrap line-clamp-2">
+          <Text className="text-white w-96 text-xl mb-1 font-semibold">
             {paidByUser?.username} added "{txnName}" in {}
           </Text>
           <Text className="text-white/70 text-lg">

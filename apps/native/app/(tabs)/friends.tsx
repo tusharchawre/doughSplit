@@ -12,11 +12,9 @@ export default function Friends() {
 
   if (!friends) {
     return (
-      <ThemedView className="flex-1 px-4">
-        <ThemedText type="defaultSemiBold" className="text-white">
-          Awwww you dont have any friends? Grow up bro
-        </ThemedText>
-      </ThemedView>
+      <ThemedView className="flex-1 justify-center items-center p-4">
+      <ThemedText className="text-center">You don't have any friends yet.</ThemedText>
+    </ThemedView>
     );
   }
 

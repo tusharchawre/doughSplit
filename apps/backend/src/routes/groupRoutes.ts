@@ -8,6 +8,23 @@ const router = express.Router();
 
 router.use("/transactions", TransactionRouter);
 
+router.get("/all", userMiddleware , async (req, res)=> {
+  const userId = req.userId
+
+  const groups = await prismaClient.user.findUnique({
+    where: {
+      id: userId
+    },
+    select: {
+      group: true
+    }
+  })
+
+  res.json({
+    groups
+  })
+})
+
 router.post("/create-group", userMiddleware, async (req, res) => {
   const validatedBody = createGroupSchema.safeParse(req.body);
 

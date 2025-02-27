@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaView, Text, useColorScheme } from "react-native";
 import "@/global.css";
 import { SessionProvider } from "@/context/ctx";
@@ -17,8 +16,7 @@ export default function RootLayout() {
 
   return (
 
-      <SessionProvider>
-   
+      <SessionProvider> 
         <GestureHandlerRootView className="flex-1">
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
