@@ -1,8 +1,10 @@
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { Plus, Search } from "lucide-react-native";
 import { RefObject, SetStateAction, useRef, useState } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { ThemedView } from "./ThemedView";
+import { ThemedText } from "./ThemedText";
 
 interface HeaderProps {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;
@@ -21,22 +23,22 @@ export default function Header({ open, setOpen, bottomSheetRef }: HeaderProps) {
   };
 
   return (
-    <View className="flex flex-row items-center justify-between px-4 py-4">
-      <View className="">
-        <Text className="text-white mb-2 font-semibold text-3xl">
+    <ThemedView className="flex flex-row items-center justify-between px-4 py-4">
+      <ThemedView className="">
+        <ThemedText type="title" className="text-white mb-2 font-semibold text-3xl">
           DoughSplit
-        </Text>
-        <Text className="text-white/70 text-lg">
+        </ThemedText>
+        <ThemedText className=" text-lg">
           You are owed
           <Text className="text-[#ADFFB1BF]"> ₹500.64</Text>
-        </Text>
-      </View>
+        </ThemedText>
+      </ThemedView>
 
-      <View className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">
+      <ThemedView className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">
         <Search height={20} width={20} color="white" />
-        <View className="w-[1px] h-full bg-white"></View>
+        <ThemedView className="w-[1px] h-full bg-white"></ThemedView>
         <Plus height={20} width={20} color="white" onPress={openBottomSheet} />
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 }

@@ -1,4 +1,4 @@
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, View, useColorScheme } from "react-native";
 import { Tabs } from "expo-router";
 import Header from "../../components/Header";
 import { ChartSpline, Circle, User, Users } from "lucide-react-native";
@@ -7,15 +7,17 @@ import { useRef, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GroupSheet } from "@/components/groupSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function TabLayout() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [open, setOpen] = useState(false);
+  const colorScheme = useColorScheme();
 
   return (
     <AuthGuard>
       <GestureHandlerRootView className="flex-1">
-        <SafeAreaView className="flex-1 bg-black">
+        <ThemedView className="flex-1 bg-black">
           <Header
             open={open}
             setOpen={setOpen}
@@ -23,13 +25,14 @@ export default function TabLayout() {
           />
           <Tabs
             screenOptions={{
-              tabBarActiveTintColor: "white",
+              tabBarActiveTintColor:
+                colorScheme === "dark" ? "#fff" : "#0a7ea4",
+              tabBarInactiveTintColor:
+                colorScheme === "dark" ? "#ffffff80" : "#687076",
               tabBarStyle: {
-                backgroundColor: "#000000",
-                borderColor: "black",
-                borderRadius: 10,
+                backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+                borderColor: colorScheme === "dark" ? "#333" : "#ccc",
               },
-              tabBarInactiveTintColor: "#ffffff80",
               headerShown: false,
             }}
           >
@@ -70,7 +73,7 @@ export default function TabLayout() {
               }}
             />
           </Tabs>
-        </SafeAreaView>
+        </ThemedView>
         {open && <GroupSheet bottomSheetRef={bottomSheetRef} />}
       </GestureHandlerRootView>
     </AuthGuard>

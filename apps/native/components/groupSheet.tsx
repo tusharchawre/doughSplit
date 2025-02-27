@@ -19,14 +19,7 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
 
   const user = getUser();
 
-  if (!user) {
-    return (
-      <View>
-        <Text>There is something wrong.</Text>
-      </View>
-    );
-  }
-
+  
   const friends = user?.friends || [];
 
   const data = friends.map((friend) => ({
@@ -39,7 +32,7 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
   }
 
   const handleCreateGroup = async () => {
-    const membersToSend = [...selectedFriendIds, user.id];
+    const membersToSend = [...selectedFriendIds, user?.id];
     setLoading(true);
     try {
       const response = await api.post("/group/create-group", {

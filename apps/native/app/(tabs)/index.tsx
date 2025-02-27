@@ -1,21 +1,33 @@
 import { GroupCard } from "@/components/groupCard";
 import { GroupSheet } from "@/components/groupSheet";
 import { getUser, User } from "@/hooks/getUser";
-import { Text, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, Text, useColorScheme, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function Groups() {
-  const user = getUser();
+  const user = getUser()
   const groups = user?.group;
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
 
   const router = useRouter();
 
   if (!groups) {
     return (
-      <View className="flex-1 bg-black">
-        <Text className="text-white">There are no groups here.</Text>
-      </View>
+      <ThemedView className="flex-1">
+        <ThemedText>There are no groups here.</ThemedText>
+      </ThemedView>
     );
   }
 
@@ -24,10 +36,14 @@ export default function Groups() {
   };
 
   return (
-    <View className="flex-1 w-full bg-black px-4">
-      <Text className="text-white text-2xl  mb-4">Groups</Text>
+    <ThemedView className="flex-1 w-full bg-black px-4">
+      <ThemedText type="subtitle" className="text-white text-2xl  mb-4">Groups</ThemedText>
 
-      <View className="flex gap-4  ">
+    
+
+      <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } className="flex gap-4">
         {groups.map((group) => (
           <GroupCard
             key={group.id}
@@ -37,7 +53,7 @@ export default function Groups() {
             onPress={() => handleGroupPress(group.id)}
           />
         ))}
-      </View>
-    </View>
+      </ScrollView>
+    </ThemedView>
   );
 }

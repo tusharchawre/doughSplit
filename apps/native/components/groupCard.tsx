@@ -15,7 +15,7 @@ export const GroupCard = ({
 }: GroupCardProps) => {
   return (
     <Pressable onPress={onPress}>
-      <View className="w-full h-28 bg-white/[0.05] rounded-xl">
+      <View className="w-full h-28 bg-white/[0.05] rounded-xl my-2">
         <View className="flex flex-row items-center">
           <Image
             source={{
