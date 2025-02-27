@@ -1,4 +1,5 @@
 import { Image, Text, View } from "react-native";
+import { ThemedText } from "./ThemedText";
 
 interface FriendsCardProps {
   id: string;
@@ -22,11 +23,11 @@ export const FriendsCard = ({
         />
 
         <View>
-          <Text className="text-white text-xl font-semibold">{groupName}</Text>
-          <Text className="text-white/70 text-lg">
+          <ThemedText className="text-white text-xl font-semibold">{groupName}</ThemedText>
+          <ThemedText className="text-white/70 text-lg">
             You are owed
-            <Text className="text-[#ADFFB1BF]"> ₹500.64</Text>
-          </Text>
+            <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]"> ₹500.64</Text>
+          </ThemedText>
         </View>
       </View>
     </View>

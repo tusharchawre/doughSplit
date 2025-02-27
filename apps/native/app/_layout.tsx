@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SafeAreaView, Text, useColorScheme, StatusBar } from "react-native";
+import { SafeAreaView, Text, useColorScheme } from "react-native";
 import "@/global.css";
 import { SessionProvider } from "@/context/ctx";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -10,6 +10,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -43,6 +44,7 @@ export default function RootLayout() {
                   }}
                 />
               </Stack>
+              <StatusBar style="auto" />
             </SafeAreaView>
           </ThemeProvider>
         </GestureHandlerRootView>

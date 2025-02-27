@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { Plus, Search } from "lucide-react-native";
 import { RefObject, SetStateAction, useRef, useState } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -34,11 +34,11 @@ export default function Header({ open, setOpen, bottomSheetRef }: HeaderProps) {
         </ThemedText>
       </ThemedView>
 
-      <ThemedView className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">
+      <View className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">
         <Search height={20} width={20} color="white" />
-        <ThemedView className="w-[1px] h-full bg-white"></ThemedView>
+        <View className="w-[1px] h-full bg-white"></View>
         <Plus height={20} width={20} color="white" onPress={openBottomSheet} />
-      </ThemedView>
+      </View>
     </ThemedView>
   );
 }

@@ -1,5 +1,7 @@
 import { FriendsCard } from "@/components/friendsCard";
 import { GroupCard } from "@/components/groupCard";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import { getUser } from "@/hooks/getUser";
 import { Text, View } from "react-native";
 
@@ -10,19 +12,19 @@ export default function Friends() {
 
   if (!friends) {
     return (
-      <View className="bg-black flex-1 px-4">
-        <Text className="text-white">
+      <ThemedView className="flex-1 px-4">
+        <ThemedText type="defaultSemiBold" className="text-white">
           Awwww you dont have any friends? Grow up bro
-        </Text>
-      </View>
+        </ThemedText>
+      </ThemedView>
     );
   }
 
   return (
-    <View className="flex-1 w-full bg-black px-4">
+    <ThemedView className="flex-1 w-full bg-black px-4">
       <Text className="text-white text-2xl  mb-4">Friends</Text>
 
-      <View className="flex gap-4  ">
+      <ThemedView className="flex gap-4  ">
         {friends.map((friend) => (
           <FriendsCard
             key={friend.id}
@@ -31,7 +33,7 @@ export default function Friends() {
             groupDescription=""
           />
         ))}
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 }

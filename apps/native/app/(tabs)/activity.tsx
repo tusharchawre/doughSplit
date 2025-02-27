@@ -1,4 +1,6 @@
 import { ActivityCard } from "@/components/activityCard";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import { getUser } from "@/hooks/getUser";
 import { Text, View } from "react-native";
 
@@ -18,8 +20,8 @@ export default function Activity() {
   }
 
   return (
-    <View className="flex-1 w-full bg-black px-4">
-      <Text className="text-white text-2xl mb-4">Activity</Text>
+    <ThemedView className="flex-1 w-full bg-black px-4">
+      <ThemedText type="subtitle" className="text-white text-2xl mb-4">Activity</ThemedText>
       {transactions.map((txn) => (
         <ActivityCard
           key={txn.id}
@@ -34,6 +36,6 @@ export default function Activity() {
           settledStatus={txn.settledStatus}
         />
       ))}
-    </View>
+    </ThemedView>
   );
 }
