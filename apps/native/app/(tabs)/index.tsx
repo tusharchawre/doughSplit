@@ -1,4 +1,4 @@
-import { GroupCard } from "@/components/groupCard";
+import { GroupCard } from "@/components/Cards/groupCard";
 import { GroupSheet } from "@/components/groupSheet";
 import { getUser, User } from "@/hooks/getUser";
 import { RefreshControl, ScrollView } from "react-native";

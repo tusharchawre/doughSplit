@@ -1,5 +1,5 @@
 import { Image, Text, View, Pressable } from "react-native";
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "../ThemedText";
 
 interface GroupCardProps {
   id: string;
@@ -31,7 +31,10 @@ export const GroupCard = ({
             </ThemedText>
             <ThemedText type="subtitle" className="text-white/70 text-lg">
               You are owed
-              <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]"> ₹500.64</Text>
+              <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]">
+                {" "}
+                ₹500.64
+              </Text>
             </ThemedText>
           </View>
         </View>

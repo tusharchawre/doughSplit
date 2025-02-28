@@ -1,5 +1,4 @@
-import { FriendsCard } from "@/components/friendsCard";
-import { GroupCard } from "@/components/groupCard";
+import { FriendsCard } from "@/components/Cards/friendsCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { getUser } from "@/hooks/getUser";
@@ -13,8 +12,10 @@ export default function Friends() {
   if (!friends) {
     return (
       <ThemedView className="flex-1 justify-center items-center p-4">
-      <ThemedText className="text-center">You don't have any friends yet.</ThemedText>
-    </ThemedView>
+        <ThemedText className="text-center">
+          You don't have any friends yet.
+        </ThemedText>
+      </ThemedView>
     );
   }
 

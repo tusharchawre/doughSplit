@@ -1,23 +1,20 @@
-import { Image, SafeAreaView, Text, useColorScheme, View } from "react-native";
+import { Image, useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { getUser } from "@/hooks/getUser";
 import { getTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Friends from "../(tabs)/friends";
-import Activity from "../(tabs)/activity";
-
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { TxnScreen } from "@/components/groups/txnScreen";
+import { AboutScreen } from "@/components/groups/aboutScreen";
 
 export default function Route() {
   const params = useLocalSearchParams<{
     id: string;
   }>();
 
-
-
-const Tab = createMaterialTopTabNavigator();
+  const Tab = createMaterialTopTabNavigator();
 
   const groupId = params.id;
 
@@ -27,7 +24,7 @@ const Tab = createMaterialTopTabNavigator();
 
   const txn = getTxnByGroupId(groupId);
 
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
 
   return (
     <ParallaxScrollView
@@ -53,24 +50,26 @@ const Tab = createMaterialTopTabNavigator();
         <ThemedText type="defaultSemiBold">{group?.groupName}</ThemedText>
         <ThemedText type="subtitle">{group?.groupDescription}</ThemedText>
       </ThemedView>
-        <Tab.Navigator screenOptions={{
-              tabBarActiveTintColor:
-                colorScheme === "dark" ? "#fff" : "#0a7ea4",
-              tabBarInactiveTintColor:
-                colorScheme === "dark" ? "#ffffff80" : "#687076",
-              tabBarStyle: {
-                backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
-                borderColor: colorScheme === "dark" ? "#333" : "#ccc",
-              },
-
-              
-
-
-              
-            }}>
-      <Tab.Screen name="Transactions" component={Friends} />
-      <Tab.Screen name="About" component={Activity} />
-    </Tab.Navigator>
+      <View className="h-[80vh]">
+      <Tab.Navigator
+        screenOptions={{
+         
+          swipeEnabled: true,
+          tabBarIndicatorStyle: {
+            backgroundColor: "#ffffff80",
+          },
+          tabBarStyle: {
+            backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+          },
+        }}
+      >
+        <Tab.Screen name="Transactions" component={TxnScreen}     initialParams={{groupId: groupId , userId: user?.id}}
+ />
+        <Tab.Screen name="About" component={AboutScreen} />
+      </Tab.Navigator>
+      </View>
     </ParallaxScrollView>
   );
 }
+
+

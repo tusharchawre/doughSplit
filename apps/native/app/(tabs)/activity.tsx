@@ -1,4 +1,4 @@
-import { ActivityCard } from "@/components/activityCard";
+import { ActivityCard } from "@/components/Cards/activityCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { getUser } from "@/hooks/getUser";
@@ -21,7 +21,9 @@ export default function Activity() {
 
   return (
     <ThemedView className="flex-1 bg-black px-4">
-      <ThemedText type="subtitle" className="text-white text-2xl mb-4">Activity</ThemedText>
+      <ThemedText type="subtitle" className="text-white text-2xl mb-4">
+        Activity
+      </ThemedText>
       {transactions.map((txn) => (
         <ActivityCard
           key={txn.id}
