@@ -5,7 +5,7 @@ import { ThemedText } from "../ThemedText";
 import { getUser } from "@/hooks/getUser";
 
 interface TxnCard extends Transaction {
-    userId: string
+  userId: string;
 }
 
 export const TxnCard = ({
@@ -18,43 +18,46 @@ export const TxnCard = ({
   currency = "INR",
   settledStatus = "PENDING",
   userId,
-  participants
+  participants,
 }: TxnCard) => {
+  const owe = paidBy != userId ? true : false;
 
-    const owe = paidBy != userId ? true : false
-
-
+  const finalAmount = Math.round((amount / participants.length) * 100) / 100;
 
   return (
     <Pressable key={id} className="w-full my-1">
-      <View className="w-full h-28 bg-white/[0.08] rounded-xl my-2">
-        <View className="flex flex-row items-center">
+      <View className="w-full h-24 bg-white/[0.08] rounded-xl my-2">
+        <View className="flex flex-row items-center w-full">
           <Image
             source={{
               uri: "https://plus.unsplash.com/premium_photo-1670279526726-128d22144ad9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             }}
-            className="w-20 h-20 rounded-lg m-4"
+            className="w-16 h-16 rounded-lg m-4"
           />
 
-          <View>
+          <View className="flex flex-row justify-between gap-14 items-center">
             <ThemedText className="text-white text-xl font-semibold">
               {txnName}
             </ThemedText>
-           {owe ?  (<ThemedText type="subtitle" className="text-white/70 text-lg">
-              You are owed
-              <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]">
-                {" "}
-                ₹500.64
+
+
+            <View className="flex items-end">
+
+            <ThemedText type="subtitle" className="text-white/70 text-lg">
+              {owe ? "You are owed" : "You lent"}
+              
+            </ThemedText>
+            <Text
+                className={
+                  owe
+                    ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
+                    : "dark:text-[#ff8800] text-[#ff8800]"
+                }
+              >
+                ₹ {finalAmount}
               </Text>
-            </ThemedText>): (
-                <ThemedText type="subtitle" className="text-white/70 text-lg">
-                You lent
-                <Text className="dark:text-[#ff8800] text-[#ff8800]">
-                  {" "}
-                  ₹ {Math.round(amount / participants.length * 100)/100}
-                </Text>
-              </ThemedText>
-            )}
+
+              </View>
           </View>
         </View>
       </View>

@@ -7,7 +7,7 @@ import { MultipleSelectList } from "react-native-dropdown-select-list";
 import api from "@/lib/axios";
 import { router } from "expo-router";
 
-interface SheetProps {
+export interface SheetProps {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;
 }
 
@@ -56,6 +56,7 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
       snapPoints={["90%"]}
       ref={bottomSheetRef}
       enablePanDownToClose={true}
+      
       handleIndicatorStyle={{ display: "none" }}
       handleStyle={{ display: "none" }}
     >

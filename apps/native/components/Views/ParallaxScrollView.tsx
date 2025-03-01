@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -14,8 +14,6 @@ const HEADER_HEIGHT = 250;
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
-  groupIcon: ReactElement;
-
   headerBackgroundColor: { dark: string; light: string };
 }>;
 
@@ -23,11 +21,11 @@ export default function ParallaxScrollView({
   children,
   headerImage,
   headerBackgroundColor,
-  groupIcon
 }: Props) {
   const colorScheme = useColorScheme() ?? "light";
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -49,49 +47,26 @@ export default function ParallaxScrollView({
     };
   });
 
+  const headerBaseStyle: ViewStyle = {
+    height: HEADER_HEIGHT,
+    position: "relative",
+    backgroundColor: headerBackgroundColor[colorScheme],
+  };
+
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView className="flex-1">
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: 0 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
-        <Animated.View
-          style={[
-            styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
-            headerAnimatedStyle,
-            
-          ]}
-        >
+        <Animated.View style={[headerBaseStyle, headerAnimatedStyle]}>
           {headerImage}
         </Animated.View>
-
-
-<View className="absolute flex-1 bg-white h-28 w-28 z-[100000] top-60 left-8 rounded-xl overflow-hidden">
-          {groupIcon}
-       
-        </View>
-        
-        <ThemedView style={styles.content} className="translate-y-12">{children}</ThemedView>
+        <ThemedView className="flex-1 mt-16 px-8 py-10 gap-4">
+          {children}
+        </ThemedView>
       </Animated.ScrollView>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    overflow: "hidden",
-    position: "relative"
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: "hidden",
-  },
-});
