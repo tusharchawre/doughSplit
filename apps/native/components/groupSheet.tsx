@@ -2,22 +2,31 @@ import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { getUser } from "@/hooks/getUser";
+import { getUser, getUser2 } from "@/hooks/getUser";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import api from "@/lib/axios";
 import { router } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 
 export interface SheetProps {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;
 }
 
 export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
+
+
+  const {data: user, refetch, isPending} = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser2
+  })
+
+
+
   const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const user = getUser();
 
   
   const friends = user?.friends || [];
@@ -42,6 +51,7 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
       });
 
       const groupId = response.data.group.id;
+      refetch()
       bottomSheetRef.current?.close();
       router.push(`/group/${groupId}`);
     } catch (e) {

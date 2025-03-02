@@ -10,6 +10,9 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
+
+const queryClient = new QueryClient()
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -17,6 +20,7 @@ export default function RootLayout() {
   return (
 
       <SessionProvider> 
+        <QueryClientProvider client={queryClient} >
         <GestureHandlerRootView className="flex-1">
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
@@ -46,6 +50,7 @@ export default function RootLayout() {
             </SafeAreaView>
           </ThemeProvider>
         </GestureHandlerRootView>
+        </QueryClientProvider>
       </SessionProvider>
   );
 }

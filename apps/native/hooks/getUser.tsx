@@ -53,3 +53,11 @@ export const getUser = () => {
 
   return user;
 };
+
+
+export const getUser2 = async () => {
+  const response = await api.get("/user/profile");
+
+  return response.data.user as User
+
+}

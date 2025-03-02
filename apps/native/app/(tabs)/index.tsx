@@ -1,26 +1,50 @@
 import { GroupCard } from "@/components/Cards/groupCard";
 import { GroupSheet } from "@/components/groupSheet";
-import { getUser, User } from "@/hooks/getUser";
-import { RefreshControl, ScrollView } from "react-native";
+import { getUser, getUser2, User } from "@/hooks/getUser";
+import { ActivityIndicator, RefreshControl, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { useQuery } from "@tanstack/react-query";
+
+
+
 
 export default function Groups() {
+
+  const {data: user, refetch, isPending} = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser2
+  })
+
+
   const [refreshing, setRefreshing] = useState(false);
-  const user = getUser();
+  // const user = getUser();
   const groups = user?.group;
+
+
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-
+    refetch()
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
   const router = useRouter();
+
+
+
+  if (isPending) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center p-4">
+        <ActivityIndicator size="small" color="#ffffff" /> 
+      </ThemedView>
+    );
+  }
+
 
   if (!groups) {
     return (
