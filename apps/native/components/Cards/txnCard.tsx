@@ -2,7 +2,6 @@ import { Transaction } from "@/hooks/getTxnByGroupId";
 import { ThemedView } from "../ThemedView";
 import { FlatListComponent, Image, Pressable, Text, View } from "react-native";
 import { ThemedText } from "../ThemedText";
-import { getUser } from "@/hooks/getUser";
 
 interface TxnCard extends Transaction {
   userId: string;
@@ -40,14 +39,11 @@ export const TxnCard = ({
               {txnName}
             </ThemedText>
 
-
             <View className="flex items-end">
-
-            <ThemedText type="subtitle" className="text-white/70 text-lg">
-              {owe ? "You are owed" : "You lent"}
-              
-            </ThemedText>
-            <Text
+              <ThemedText type="subtitle" className="text-white/70 text-lg">
+                {owe ? "You are owed" : "You lent"}
+              </ThemedText>
+              <Text
                 className={
                   owe
                     ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
@@ -56,8 +52,7 @@ export const TxnCard = ({
               >
                 ₹ {finalAmount}
               </Text>
-
-              </View>
+            </View>
           </View>
         </View>
       </View>

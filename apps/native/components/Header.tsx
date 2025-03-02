@@ -25,7 +25,10 @@ export default function Header({ open, setOpen, bottomSheetRef }: HeaderProps) {
   return (
     <ThemedView className="flex mt-12 flex-row items-center justify-between px-4 py-4">
       <ThemedView className="">
-        <ThemedText type="title" className="text-white mb-2 font-semibold text-3xl">
+        <ThemedText
+          type="title"
+          className="text-white mb-2 font-semibold text-3xl"
+        >
           DoughSplit
         </ThemedText>
         <ThemedText type="subtitle">

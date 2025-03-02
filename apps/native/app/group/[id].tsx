@@ -1,6 +1,6 @@
 import { Image, Pressable, useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { getUser } from "@/hooks/getUser";
+import { useUser } from "@/hooks/getUser";
 import { getTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -21,7 +21,7 @@ export default function Route() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;
-  const user = getUser();
+  const { data: user, refetch, isPending } = useUser();
   const group = user?.group.find((group) => group.id === groupId);
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -85,14 +85,14 @@ export default function Route() {
 
       <View className="absolute top-[270px] right-4">
         <Pressable
-          className={`${isSheetOpen ? 'bg-white/20' : 'bg-white/10'} px-4 py-2 rounded-md flex-row items-center justify-center gap-2`}
+          className={`${isSheetOpen ? "bg-white/20" : "bg-white/10"} px-4 py-2 rounded-md flex-row items-center justify-center gap-2`}
           onPress={handleSheetToggle}
         >
           <Plus color={colorScheme === "dark" ? "white" : "black"} />
           <ThemedText>Add</ThemedText>
         </Pressable>
       </View>
-      
+
       <TxnSheet bottomSheetRef={bottomSheetRef} />
     </View>
   );

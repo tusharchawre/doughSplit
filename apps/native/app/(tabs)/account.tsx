@@ -1,10 +1,10 @@
 import { ThemedView } from "@/components/ThemedView";
 import { useSession } from "@/context/ctx";
-import { getUser } from "@/hooks/getUser";
+import { useUser } from "@/hooks/getUser";
 import { Button, Text, View } from "react-native";
 
 export default function Account() {
-  const user = getUser();
+  const { data: user, refetch, isPending } = useUser();
 
   const { signOut } = useSession();
 

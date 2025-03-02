@@ -1,11 +1,11 @@
 import { ActivityCard } from "@/components/Cards/activityCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { getUser } from "@/hooks/getUser";
+import { useUser } from "@/hooks/getUser";
 import { Text, View } from "react-native";
 
 export default function Activity() {
-  const user = getUser();
+  const { data: user, refetch, isPending } = useUser();
 
   const transactions = user?.involvedIn;
 

@@ -1,6 +1,7 @@
 import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useStorageState } from "./useStorageState";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 export interface User {
   id: string;
@@ -34,30 +35,35 @@ export interface User {
   }[];
 }
 
-export const getUser = () => {
-  const [user, setUser] = useState<User>();
+// export const getUser = () => {
+//   const [user, setUser] = useState<User>();
 
-  const fetchUser = async () => {
-    try {
-      const response = await api.get("/user/profile");
-      const resUser = response.data.user;
-      setUser(resUser);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
+//   const fetchUser = async () => {
+//     try {
+//       const response = await api.get("/user/profile");
+//       const resUser = response.data.user;
+//       setUser(resUser);
+//     } catch (error) {
+//       console.error("Error fetching user:", error);
+//     }
+//   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+//   useEffect(() => {
+//     fetchUser();
+//   }, []);
 
-  return user;
-};
+//   return user;
+// };
 
+export function useUser() {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+}
 
-export const getUser2 = async () => {
+const getUser = async () => {
   const response = await api.get("/user/profile");
 
-  return response.data.user as User
-
-}
+  return response.data.user as User;
+};
