@@ -1,52 +1,38 @@
-import { View } from "react-native";
 import { SheetProps } from "./groupSheet";
-import BottomSheet, {
-  BottomSheetBackdrop,
+import  {
+  BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { useColorScheme } from "react-native";
-import { useCallback } from "react";
-import { Text } from "react-native";
+import { Text, TextInput, useColorScheme, View } from "react-native";
+import { ThemedView } from "./ThemedView";
+import { ThemedText } from "./ThemedText";
 
 export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
   const colorScheme = useColorScheme();
 
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-      />
-    ),
-    [],
-  );
-
   return (
-    <BottomSheet
+    <BottomSheetModal
       ref={bottomSheetRef}
-      snapPoints={["90%"]}
-      enablePanDownToClose={true}
-      backdropComponent={renderBackdrop}
-      handleIndicatorStyle={{
-        backgroundColor: colorScheme === "dark" ? "#FFFFFF" : "#000000",
-        width: 40,
-      }}
-      handleStyle={{
-        backgroundColor: colorScheme === "dark" ? "#1A1A1A" : "#FFFFFF",
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-      }}
-      backgroundStyle={{
-        backgroundColor: colorScheme === "dark" ? "#1A1A1A" : "#FFFFFF",
-      }}
+      enableDismissOnClose={true}
+      handleIndicatorStyle={{ display: "none" }}
+      handleStyle={{ display: "none" }}
     >
-      <BottomSheetView className="flex-1 px-4 pt-2 pb-8 absolute z-[10000000000000000]">
-        <Text>Txn Sheet</Text>
+      <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[70vh] px-4 pt-6 pb-8 absolute flex flex-col gap-10">
+
+          <Text className="text-white text-2xl font-semibold">Add a Transactions</Text>
+          <View>
+          <ThemedText type="defaultSemiBold" className="mb-4">
+            Transactions Name
+          </ThemedText>
+          <TextInput
+              className="bg-white/10 p-4 text-xl rounded-lg mb-4 text-white"
+              placeholder="Transactions Name"
+              placeholderTextColor="#ffffff80"
+              autoCapitalize="none"
+              />
+            </View>
+
       </BottomSheetView>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 };

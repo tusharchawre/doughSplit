@@ -9,7 +9,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { TxnScreen } from "@/components/groups/txnScreen";
 import { AboutScreen } from "@/components/groups/aboutScreen";
 import { useCallback, useRef, useState } from "react";
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { TxnSheet } from "@/components/txnSheet";
 import { Plus } from "lucide-react-native";
 
@@ -24,16 +24,11 @@ export default function Route() {
   const { data: user, refetch, isPending } = useUser();
   const group = user?.group.find((group) => group.id === groupId);
   const colorScheme = useColorScheme();
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const handleSheetToggle = useCallback(() => {
-    if (isSheetOpen) {
-      bottomSheetRef.current?.close();
-    } else {
-      bottomSheetRef.current?.expand();
-    }
-    setIsSheetOpen(!isSheetOpen);
-  }, [isSheetOpen]);
+    bottomSheetRef.current?.present();
+  }, []);
 
   return (
     <View className="flex-1">

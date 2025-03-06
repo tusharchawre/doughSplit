@@ -1,26 +1,19 @@
 import { Text, View } from "react-native";
 import { Plus, Search } from "lucide-react-native";
-import { RefObject, SetStateAction, useRef, useState } from "react";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { useCallback } from "react";
+import {  BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 
 interface HeaderProps {
-  bottomSheetRef: React.RefObject<BottomSheetMethods>;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
+  bottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 }
 
-export default function Header({ open, setOpen, bottomSheetRef }: HeaderProps) {
-  const openBottomSheet = () => {
-    if (open) {
-      bottomSheetRef.current?.forceClose();
-    } else {
-      bottomSheetRef.current?.expand();
-    }
-    setOpen((prev) => !prev);
-  };
+export default function Header({  bottomSheetRef }: HeaderProps) {
+
+  const openBottomSheet = useCallback(() => {
+      bottomSheetRef.current?.present();
+  }, []);
 
   return (
     <ThemedView className="flex mt-12 flex-row items-center justify-between px-4 py-4">

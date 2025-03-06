@@ -11,6 +11,7 @@ import {
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ export default function RootLayout() {
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <GestureHandlerRootView className="flex-1">
+        <BottomSheetModalProvider>
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
@@ -48,6 +50,7 @@ export default function RootLayout() {
               <StatusBar style="auto" />
             </SafeAreaView>
           </ThemeProvider>
+          </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>
     </SessionProvider>
