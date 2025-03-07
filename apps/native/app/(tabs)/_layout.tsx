@@ -6,7 +6,7 @@ import { AuthGuard } from "@/components/auth-guard";
 import { useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GroupSheet } from "@/components/groupSheet";
-import  { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function TabLayout() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);

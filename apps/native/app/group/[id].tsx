@@ -1,7 +1,6 @@
 import { Image, Pressable, useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@/hooks/getUser";
-import { getTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -9,7 +8,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { TxnScreen } from "@/components/groups/txnScreen";
 import { AboutScreen } from "@/components/groups/aboutScreen";
 import { useCallback, useRef, useState } from "react";
-import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { TxnSheet } from "@/components/txnSheet";
 import { Plus } from "lucide-react-native";
 
@@ -17,7 +16,6 @@ export default function Route() {
   const params = useLocalSearchParams<{
     id: string;
   }>();
-
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;

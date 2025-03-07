@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import BottomSheet, { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import {  BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import BottomSheet, {
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useUser } from "@/hooks/getUser";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import api from "@/lib/axios";
@@ -53,10 +56,10 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
 
   return (
     <BottomSheetModal
-    ref={bottomSheetRef}
-    enableDismissOnClose={true}
-    handleIndicatorStyle={{ display: "none" }}
-    handleStyle={{ display: "none" }}
+      ref={bottomSheetRef}
+      enableDismissOnClose={true}
+      handleIndicatorStyle={{ display: "none" }}
+      handleStyle={{ display: "none" }}
     >
       <BottomSheetView className="overflow-hidden h-full rounded-lg ">
         <View className="h-full flex gap-4 bg-zinc-950 px-8 py-8">

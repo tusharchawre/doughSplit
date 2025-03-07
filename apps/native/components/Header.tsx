@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { Plus, Search } from "lucide-react-native";
 import { useCallback } from "react";
-import {  BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 
@@ -9,10 +9,9 @@ interface HeaderProps {
   bottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 }
 
-export default function Header({  bottomSheetRef }: HeaderProps) {
-
+export default function Header({ bottomSheetRef }: HeaderProps) {
   const openBottomSheet = useCallback(() => {
-      bottomSheetRef.current?.present();
+    bottomSheetRef.current?.present();
   }, []);
 
   return (
