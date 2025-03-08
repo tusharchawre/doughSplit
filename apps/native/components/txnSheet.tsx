@@ -4,19 +4,43 @@ import {
   Pressable,
   Text,
   TextInput,
-  useColorScheme,
   View,
+  Switch,
 } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SelectList } from "react-native-dropdown-select-list";
+import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useGroupById } from "@/hooks/getGroupById";
 
-export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
-  const colorScheme = useColorScheme();
+interface TxnSheetProps extends SheetProps{
+  groupId: string
+}
+
+export const TxnSheet = ({ bottomSheetRef , groupId}: TxnSheetProps) => {
   const [selected, setSelected] = useState("USD");
-  const [amount, setAmount] = useState(0);
+  const [txnName, setTxnName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [splitEqually, setSplitEqually] = useState(true);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
 
-  // Currency options
+
+  const {data: group } = useGroupById(groupId)
+
+  if(!group){
+    return <ThemedText>Group Doesn't Exist</ThemedText>
+  }
+
+  const membersData = group?.members.map((member)=> ({
+    key: member.id,
+    value: member.username
+  }))
+
+
+
+
   const currencyData = [
     { key: "USD", value: "$" },
     { key: "EUR", value: "€" },
@@ -33,6 +57,8 @@ export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
     return currency ? currency.value : "$";
   };
 
+  const toggleSplitEqually = () => setSplitEqually(!splitEqually);
+
   return (
     <BottomSheetModal
       ref={bottomSheetRef}
@@ -40,10 +66,11 @@ export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
       handleIndicatorStyle={{ display: "none" }}
       handleStyle={{ display: "none" }}
     >
-      <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[70vh] px-4 pt-6 pb-8 absolute flex flex-col gap-10">
+      <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 absolute flex flex-col gap-6">
         <Text className="text-white text-2xl font-semibold">
           Add a Transaction
         </Text>
+
         <View>
           <ThemedText type="defaultSemiBold" className="mb-4">
             Transaction Name
@@ -53,6 +80,8 @@ export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
             placeholder="Transaction Name"
             placeholderTextColor="#ffffff80"
             autoCapitalize="none"
+            value={txnName}
+            onChangeText={setTxnName}
           />
         </View>
 
@@ -66,7 +95,7 @@ export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
                 setSelected={setSelected}
                 data={currencyData}
                 save="key"
-                defaultOption={{ key: "INR", value: "₹" }}
+                defaultOption={{ key: "USD", value: "$" }}
                 boxStyles={{
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                   borderWidth: 0,
@@ -102,12 +131,62 @@ export const TxnSheet = ({ bottomSheetRef }: SheetProps) => {
               placeholder="0.00"
               placeholderTextColor="#ffffff80"
               keyboardType="numeric"
+              value={amount}
+              onChangeText={setAmount}
             />
           </View>
         </View>
-        <Pressable className="w-full bg-white h-16 rounded-xl flex items-center justify-center">
-          <Text className="text-xl font-semibold">Add Transactions</Text>
-        </Pressable>
+        <View>
+          <View className="flex-row justify-between items-center mb-4">
+            <ThemedText type="defaultSemiBold">Split Equally</ThemedText>
+            <Switch
+              value={splitEqually}
+              onValueChange={toggleSplitEqually}
+              trackColor={{ false: "#767577", true: "#4CAF50" }}
+              thumbColor="#f4f3f4"
+            />
+          </View>
+         {!splitEqually && <View><ThemedText type="defaultSemiBold" className="mb-4">
+            Split Among
+          </ThemedText>
+          <MultipleSelectList
+            setSelected={setSelectedMemberIds}
+            data={membersData}
+            save="key"
+            label="Group Members"
+            onSelect={() => console.log(selectedMemberIds)}
+            placeholder="Select members"
+            notFoundText="No members found"
+            dropdownTextStyles={{ color: "white" }}
+            labelStyles={{ color: "white" }}
+            checkBoxStyles={{
+              backgroundColor: "transparent",
+              borderColor: "white",
+            }}
+            boxStyles={{
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              borderWidth: 0,
+              borderRadius: 8,
+              padding: 12,
+            }}
+            inputStyles={{ color: "white" }}
+            badgeStyles={{ backgroundColor: "#ffffff30" }}
+            closeicon={<Text style={{ fontSize: 20, color: "white" }}>✕</Text>}
+            maxHeight={200}
+          />
+          </View>
+        }
+        </View>
+        <View className="mt-auto">
+          <Pressable
+            className={`w-full bg-white h-16 rounded-xl flex items-center justify-center ${loading ? "opacity-50" : ""}`}
+            disabled={loading}
+          >
+            <Text className="text-xl font-semibold">
+              {loading ? "Adding..." : "Add Transaction"}
+            </Text>
+          </Pressable>
+        </View>
       </BottomSheetView>
     </BottomSheetModal>
   );

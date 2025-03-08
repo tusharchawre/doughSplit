@@ -1,4 +1,4 @@
-import { Image, Pressable, useColorScheme, View } from "react-native";
+import { Image,  useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@/hooks/getUser";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
@@ -10,7 +10,7 @@ import { AboutScreen } from "@/components/groups/aboutScreen";
 import { useCallback, useRef, useState } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { TxnSheet } from "@/components/txnSheet";
-import { Plus } from "lucide-react-native";
+import { useGroupById } from "@/hooks/getGroupById";
 
 export default function Route() {
   const params = useLocalSearchParams<{
@@ -20,7 +20,8 @@ export default function Route() {
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;
   const { data: user, refetch, isPending } = useUser();
-  const group = user?.group.find((group) => group.id === groupId);
+  // const group = user?.group.find((group) => group.id === groupId);
+  const {data: group} = useGroupById(groupId)
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -31,7 +32,7 @@ export default function Route() {
   return (
     <View className="flex-1">
       <ParallaxScrollView
-      handleSheetToggle={handleSheetToggle}
+        handleSheetToggle={handleSheetToggle}
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
         headerImage={
           <Image
@@ -68,7 +69,7 @@ export default function Route() {
         </View>
       </ParallaxScrollView>
 
-      <TxnSheet bottomSheetRef={bottomSheetRef} />
+      <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
     </View>
   );
 }

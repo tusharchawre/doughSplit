@@ -18,14 +18,14 @@ const FADE_SCROLL_DISTANCE = 200;
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
   headerBackgroundColor: { dark: string; light: string };
-  handleSheetToggle: () => void
+  handleSheetToggle: () => void;
 }>;
 
 export default function ParallaxScrollView({
   children,
   headerImage,
   headerBackgroundColor,
-  handleSheetToggle
+  handleSheetToggle,
 }: Props) {
   const colorScheme = useColorScheme() ?? "light";
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -58,7 +58,7 @@ export default function ParallaxScrollView({
         scrollOffset.value,
         [0, FADE_SCROLL_DISTANCE],
         [1, 0],
-        'clamp'
+        "clamp",
       ),
     };
   });
@@ -69,7 +69,7 @@ export default function ParallaxScrollView({
         scrollOffset.value,
         [0, FADE_SCROLL_DISTANCE],
         [1, 0],
-        'clamp'
+        "clamp",
       ),
     };
   });
@@ -94,8 +94,8 @@ export default function ParallaxScrollView({
           {children}
         </ThemedView>
 
-        <Animated.View 
-          style={[imageAnimatedStyle]} 
+        <Animated.View
+          style={[imageAnimatedStyle]}
           className="absolute flex-1 bg-white h-28 w-28 top-[220px] left-8 rounded-xl overflow-hidden shadow-md"
         >
           <Image
@@ -106,8 +106,8 @@ export default function ParallaxScrollView({
           />
         </Animated.View>
 
-        <Animated.View 
-          style={[buttonAnimatedStyle]} 
+        <Animated.View
+          style={[buttonAnimatedStyle]}
           className="absolute top-[270px] right-4"
         >
           <Pressable
