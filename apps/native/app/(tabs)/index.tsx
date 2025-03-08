@@ -1,16 +1,13 @@
 import { GroupCard } from "@/components/Cards/groupCard";
-import { GroupSheet } from "@/components/groupSheet";
 import { useUser } from "@/hooks/getUser";
 import { ActivityIndicator, RefreshControl, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { useQuery } from "@tanstack/react-query";
 
 export default function Groups() {
   const { data: user, refetch, isPending } = useUser();
-
   const [refreshing, setRefreshing] = useState(false);
   const groups = user?.group;
 

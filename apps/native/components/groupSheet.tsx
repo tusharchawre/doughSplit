@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import BottomSheet, {
-  BottomSheetModal,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useUser } from "@/hooks/getUser";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
@@ -28,10 +25,6 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
     key: friend.id,
     value: friend.username,
   }));
-
-  if (!data.length) {
-    return null;
-  }
 
   const handleCreateGroup = async () => {
     const membersToSend = [...selectedFriendIds, user?.id];
@@ -61,7 +54,7 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
       handleIndicatorStyle={{ display: "none" }}
       handleStyle={{ display: "none" }}
     >
-      <BottomSheetView className="overflow-hidden h-full rounded-lg ">
+      <BottomSheetView className="overflow-hidden h-[80vh] rounded-lg ">
         <View className="h-full flex gap-4 bg-zinc-950 px-8 py-8">
           <Text className="text-white text-2xl font-semibold">Add a Group</Text>
           <View>
@@ -71,8 +64,8 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
               placeholder="Group Name"
               placeholderTextColor="#ffffff80"
               autoCapitalize="none"
-              value={groupName}
-              onChangeText={setGroupName}
+              defaultValue={groupName}
+              onChangeText={(name) => setGroupName(name)}
             />
           </View>
           <View>
@@ -82,8 +75,8 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
               placeholder="Group Description"
               placeholderTextColor="#ffffff80"
               autoCapitalize="none"
-              value={groupDescription}
-              onChangeText={setGroupDescription}
+              defaultValue={groupDescription}
+              onChangeText={(desc) => setGroupDescription(desc)}
             />
           </View>
 

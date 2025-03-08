@@ -31,6 +31,7 @@ export default function Route() {
   return (
     <View className="flex-1">
       <ParallaxScrollView
+      handleSheetToggle={handleSheetToggle}
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
         headerImage={
           <Image
@@ -66,25 +67,6 @@ export default function Route() {
           </Tab.Navigator>
         </View>
       </ParallaxScrollView>
-
-      <View className="absolute  flex-1 bg-white h-28 w-28 top-[220px] left-8 rounded-xl overflow-hidden shadow-md">
-        <Image
-          source={{
-            uri: "https://plus.unsplash.com/premium_photo-1670279526726-128d22144ad9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          }}
-          className="w-full h-full rounded-xl scale-[0.95]"
-        />
-      </View>
-
-      <View className="absolute top-[270px] right-4">
-        <Pressable
-          className={`${isSheetOpen ? "bg-white/20" : "bg-white/10"} px-4 py-2 rounded-md flex-row items-center justify-center gap-2`}
-          onPress={handleSheetToggle}
-        >
-          <Plus color={colorScheme === "dark" ? "white" : "black"} />
-          <ThemedText>Add</ThemedText>
-        </Pressable>
-      </View>
 
       <TxnSheet bottomSheetRef={bottomSheetRef} />
     </View>
