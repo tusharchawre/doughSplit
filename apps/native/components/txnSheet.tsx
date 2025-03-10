@@ -4,27 +4,27 @@ import {
   BottomSheetView,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { Pressable, Text, TextInput, View, Switch, ScrollView } from "react-native";
+import { Pressable, Text, TextInput, View, Switch } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SelectList } from "react-native-dropdown-select-list";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
-import { useState, useCallback } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { useGroupById } from "@/hooks/getGroupById";
+import api from "@/lib/axios";
+import { useUser } from "@/hooks/getUser";
 
 interface TxnSheetProps extends SheetProps {
   groupId: string;
 }
 
 export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
-  const [selected, setSelected] = useState("USD");
+  const [selected, setSelected] = useState("INR");
   const [txnName, setTxnName] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [splitEqually, setSplitEqually] = useState(true);
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  const { data: user } = useUser();
   const { data: group } = useGroupById(groupId);
 
   if (!group) {
@@ -49,10 +49,64 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
 
   const getSymbol = () => {
     const currency = currencyData.find((item) => item.key === selected);
-    return currency ? currency.value : "$";
+    return currency ? currency.value : "₹";
   };
 
   const toggleSplitEqually = () => setSplitEqually(!splitEqually);
+
+  const submitTxn = async () => {
+    try {
+      if (!txnName.trim()) {
+        alert("Please enter a transaction name");
+        return;
+      }
+
+      if (!amount || parseFloat(amount) <= 0) {
+        alert("Please enter a valid amount");
+        return;
+      }
+
+      setLoading(true);
+
+      let participantsToSubmit = [];
+
+      if (splitEqually) {
+        participantsToSubmit = group.members.map((member) => member.id);
+      } else {
+        if (selectedMemberIds.length === 0) {
+          alert("Please select at least one member to split with");
+          setLoading(false);
+          return;
+        }
+        participantsToSubmit = selectedMemberIds;
+      }
+
+      const numericAmount = parseFloat(amount);
+
+      const response = await api.post("/group/transactions/add", {
+        txnName,
+        description: "Transaction added by " + user?.username,
+        groupId,
+        paidById: user?.id,
+        participants: participantsToSubmit,
+        amount: numericAmount,
+        currency: selected,
+      });
+
+      if (response.data.txn) {
+        setTxnName("");
+        setAmount("");
+        setSelectedMemberIds([]);
+        bottomSheetRef.current?.close();
+        alert("Transaction added successfully");
+      }
+    } catch (error) {
+      console.error("Transaction error:", error);
+      alert("Failed to add transaction. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <BottomSheetModal
@@ -63,10 +117,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
       keyboardBehavior="extend"
       android_keyboardInputMode="adjustResize"
     >
-      <BottomSheetScrollView
-        scrollEnabled={false}
-
-      >
+      <BottomSheetScrollView scrollEnabled={false}>
         <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 flex flex-col gap-6">
           <Text className="text-white text-2xl font-semibold">
             Add a Transaction
@@ -96,7 +147,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
                   setSelected={setSelected}
                   data={currencyData}
                   save="key"
-                  defaultOption={{ key: "USD", value: "$" }}
+                  defaultOption={{ key: "INR", value: "₹" }}
                   boxStyles={{
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderWidth: 0,
@@ -126,7 +177,6 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
                   search={false}
                   placeholder={getSymbol()}
                 />
-
               </View>
 
               <TextInput
@@ -191,8 +241,9 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
               </View>
             )}
           </View>
-          <View className="mt-auto">
+          <View className="mt-auto mb-8">
             <Pressable
+              onPress={submitTxn}
               className={`w-full bg-white h-16 rounded-xl flex items-center justify-center ${loading ? "opacity-50" : ""}`}
               disabled={loading}
             >

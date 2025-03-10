@@ -33,7 +33,7 @@ export const TxnCard = ({
             className="w-16 h-16 rounded-lg m-4"
           />
 
-          <View className="flex flex-row justify-between gap-32 items-center">
+          <View className="flex flex-row justify-between gap-32 items-center ">
             <ThemedText className="text-white text-xl font-semibold">
               {txnName}
             </ThemedText>
