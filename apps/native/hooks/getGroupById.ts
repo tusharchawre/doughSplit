@@ -11,7 +11,6 @@ interface Group {
     transaction : Transaction[]
 }
 
-
 export function useGroupById(groupId: string) {
   return useQuery({
     queryKey: ["group", groupId],

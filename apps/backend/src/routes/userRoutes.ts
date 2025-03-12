@@ -220,4 +220,6 @@ router.post("/friends", userMiddleware, async (req, res) => {
   });
 });
 
+
 export { router as UserRouter };
+ 

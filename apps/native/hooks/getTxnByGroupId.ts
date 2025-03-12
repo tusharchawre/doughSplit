@@ -1,32 +1,32 @@
 import api from "@/lib/axios";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Transaction {
   id: number;
   txnName: string;
   description: string;
   date: string;
-  paidBy: string;
+  paidById: string;
   amount: number;
   currency: "INR" | string;
   settledStatus: string;
   participants: [];
 }
 
-export const getTxnByGroupId = (groupId: string) => {
-  const [txn, setTxn] = useState<Transaction[]>([]);
-
-  const fetchTxn = async () => {
-    const response = await api.post("/group/transactions/", {
-      groupId,
-    });
-
-    setTxn(response.data.transactions);
-  };
-
-  useEffect(() => {
-    fetchTxn();
+const fetchTxnByGroupId = async (groupId: string) => {
+  const response = await api.post("/group/transactions/", {
+    groupId,
   });
-
-  return txn;
+  return response.data.transactions as Transaction[];
 };
+
+export const useTxnByGroupId = (groupId: string) => {
+  return useQuery({
+    queryKey: ["transactions", groupId],
+    queryFn: () => fetchTxnByGroupId(groupId),
+    // Add staleTime to control how often the data is considered stale
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+};
+
+

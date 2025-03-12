@@ -15,6 +15,9 @@ router.post("/", async (req, res) => {
     include: {
       participants: true,
     },
+    orderBy: {
+      date: "desc"
+    }
   });
 
   if (!transactions) {

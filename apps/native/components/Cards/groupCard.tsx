@@ -1,11 +1,15 @@
 import { Image, Text, View, Pressable } from "react-native";
 import { ThemedText } from "../ThemedText";
+import { useGroupById } from "@/hooks/getGroupById";
+import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
+import { useUser } from "@/hooks/getUser";
 
 interface GroupCardProps {
   id: string;
   groupName: string;
   groupDescription: string;
   onPress: () => void;
+  amount?: number;
 }
 
 export const GroupCard = ({
@@ -13,7 +17,34 @@ export const GroupCard = ({
   groupDescription,
   groupName,
   onPress,
+  amount = 0,
 }: GroupCardProps) => {
+
+  const {data: group } = useGroupById(id)
+  const {data: user} = useUser()
+
+  const {data: txns} = useTxnByGroupId(id)
+
+  const getBalance  = () => {
+    let balance = 0
+    txns?.map((txn)=> {
+      const amount = txn.amount
+      const paidById = txn.paidById
+      const participants = txn.participants.length
+  
+      if(paidById === user?.id){
+        balance = balance + (amount / participants)
+      }
+      else{
+        balance = balance - (amount / participants)
+      }
+    })
+    return balance
+  }
+
+  const balance : number  = getBalance()
+
+
   return (
     <Pressable onPress={onPress}>
       <View className="w-full h-28 bg-white/[0.08] rounded-xl my-2">
@@ -30,10 +61,16 @@ export const GroupCard = ({
               {groupName}
             </ThemedText>
             <ThemedText type="subtitle" className="text-white/70 text-lg">
-              You are owed
-              <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]">
+              {balance > 0 ? "You lent" : "You burrowed"}
+              <Text
+                className={
+                  balance > 0
+                    ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
+                    : "dark:text-[#FF9A9A] text-[#FF5757]"
+                }
+              >
                 {" "}
-                ₹500.64
+                ₹{balance < 0 ? ((balance * -1).toFixed(2)) : balance.toFixed(2)}
               </Text>
             </ThemedText>
           </View>

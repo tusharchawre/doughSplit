@@ -85,7 +85,6 @@ export default function ParallaxScrollView({
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: 100 }}
       >
         <Animated.View style={[headerBaseStyle, headerAnimatedStyle]}>
           {headerImage}

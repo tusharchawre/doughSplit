@@ -1,4 +1,4 @@
-import { Image,  useColorScheme, View } from "react-native";
+import { Image, useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@/hooks/getUser";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
@@ -21,7 +21,7 @@ export default function Route() {
   const groupId = params.id;
   const { data: user, refetch, isPending } = useUser();
   // const group = user?.group.find((group) => group.id === groupId);
-  const {data: group} = useGroupById(groupId)
+  const { data: group } = useGroupById(groupId);
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -47,13 +47,15 @@ export default function Route() {
           <ThemedText type="defaultSemiBold">{group?.groupName}</ThemedText>
           <ThemedText type="subtitle">{group?.groupDescription}</ThemedText>
         </ThemedView>
-        <View className="h-[80vh]">
+        <ThemedView className="h-screen">
           <Tab.Navigator
             screenOptions={{
               swipeEnabled: true,
+              lazy: true,
               tabBarIndicatorStyle: {
                 backgroundColor: "#ffffff80",
               },
+
               tabBarStyle: {
                 backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
               },
@@ -66,7 +68,7 @@ export default function Route() {
             />
             <Tab.Screen name="About" component={AboutScreen} />
           </Tab.Navigator>
-        </View>
+        </ThemedView>
       </ParallaxScrollView>
 
       <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
