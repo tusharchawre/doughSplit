@@ -1,4 +1,4 @@
-import { Image, useColorScheme, View } from "react-native";
+import { ActivityIndicator, Image, useColorScheme, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@/hooks/getUser";
 import ParallaxScrollView from "@/components/Views/ParallaxScrollView";
@@ -16,18 +16,38 @@ export default function Route() {
   const params = useLocalSearchParams<{
     id: string;
   }>();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;
   const { data: user, refetch, isPending } = useUser();
-  // const group = user?.group.find((group) => group.id === groupId);
-  const { data: group } = useGroupById(groupId);
+  const { data: group , isPending: grpPending } = useGroupById(groupId);
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const handleSheetToggle = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
+
+
+  if (isPending || grpPending) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center p-4">
+        <ActivityIndicator size="small" color="#ffffff" />
+      </ThemedView>
+    );
+  }
+
+
+  if (!group) {
+    return (
+      <ThemedView className="flex-1 justify-center items-center p-4">
+        <ThemedText className="text-center">
+          This Group Doesnt Exist yet.
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
+
 
   return (
     <View className="flex-1">
@@ -45,7 +65,7 @@ export default function Route() {
       >
         <ThemedView>
           <ThemedText type="defaultSemiBold">{group?.groupName}</ThemedText>
-          <ThemedText type="subtitle">{group?.groupDescription}</ThemedText>
+          <ThemedText type="subtitle" className="mt-2">{group?.groupDescription}</ThemedText>
         </ThemedView>
         <ThemedView className="h-screen">
           <Tab.Navigator

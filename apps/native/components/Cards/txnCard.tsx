@@ -38,11 +38,11 @@ export const TxnCard = ({
                 }}
                 className="w-16 h-16 rounded-lg m-4"
               />
-              <View>
+              <View className="flex justify-center gap-1">
                 <ThemedText className="text-white text-xl font-semibold">
                   {txnName}
                 </ThemedText>
-                <ThemedText type="subtitle" className="text-white/50 text-xs">
+                <ThemedText style={{fontSize: 12}} type="subtitle" className="text-white/50 text-xs">
                   {relativeDate}
                 </ThemedText>
               </View>

@@ -9,13 +9,20 @@ export function TxnScreen({ route }: { route: any }) {
   const { groupId, userId } = route.params;
   const { data: txns, refetch } = useTxnByGroupId(groupId);
 
+
+
+
   if (!txns) {
     return (
-      <ThemedView className="flex-1 items-center justify-center">
-        <ThemedText>There are no transactions.</ThemedText>
+      <ThemedView className="flex-1 justify-center items-center p-4">
+        <ThemedText className="text-center">
+          There are no transactions yet.
+        </ThemedText>
       </ThemedView>
     );
   }
+
+
 
   return (
     <View className="flex-1">

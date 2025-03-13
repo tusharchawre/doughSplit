@@ -49,13 +49,8 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     opacity: 0.9,
   },
-  subtitle2: {
-    fontSize: 12,
-    lineHeight: 24,
-    opacity: 0.6,
-  },
   subtitle: {
-    fontSize: 12,
+    fontSize: 16,
     lineHeight: 24,
     opacity: 0.6,
   },
