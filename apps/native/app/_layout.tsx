@@ -49,6 +49,17 @@ export default function RootLayout() {
                       gestureEnabled: true,
                     }}
                   />
+                  
+                  <Stack.Screen
+                    name="group/txn/[id]"
+                    options={{
+                      headerShown: true,
+                      headerBackButtonDisplayMode: "minimal",
+                      headerTransparent: true,
+                      headerTitle: "",
+                      gestureEnabled: true,
+                    }}
+                  />
                 </Stack>
                 <StatusBar style="auto" />
               </SafeAreaView>

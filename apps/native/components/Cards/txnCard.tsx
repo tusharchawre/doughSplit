@@ -2,6 +2,7 @@ import { Transaction } from "@/hooks/getTxnByGroupId";
 import { Image, Pressable, Text, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { formatDistanceToNow } from "date-fns";
+import { useRouter } from "expo-router";
 
 interface TxnCard extends Transaction {
   userId: string;
@@ -21,13 +22,20 @@ export const TxnCard = ({
 }: TxnCard) => {
   const isPayer = paidById === userId;
 
+  const router = useRouter();
+
   const amountPerPerson =
     Math.round((amount / participants.length) * 100) / 100;
 
   const relativeDate = formatDistanceToNow(new Date(date), { addSuffix: true });
 
+  const handleTxnPress = (id: number) => {
+    router.push(`/group/txn/${id}`);
+  };
+
+
   return (
-    <Pressable key={id} className="w-full my-1">
+    <Pressable key={id} onPress={() => handleTxnPress(id)} className="w-full">
       <View className="w-full h-24 bg-white/[0.08] rounded-xl my-2">
         <View className="flex flex-row items-center w-full h-full">
           <View className="flex flex-row w-full justify-between items-center">

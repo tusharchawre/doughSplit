@@ -5,6 +5,10 @@ import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { Animated } from "react-native";
+import { FadeIn } from "react-native-reanimated";
+import { AnimatedView } from "react-native-reanimated/lib/typescript/component/View";
+import { FadeInView } from "@/components/animations/FadeInView";
 
 export default function Groups() {
   const { data: user, refetch, isPending } = useUser();
@@ -49,22 +53,24 @@ export default function Groups() {
         Groups
       </ThemedText>
 
-      <ScrollView
+      <Animated.ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         className="flex gap-4"
       >
-        {groups.map((group) => (
-          <GroupCard
-            key={group.id}
-            id={group.id}
-            groupName={group.groupName}
-            groupDescription={group.groupDescription}
-            onPress={() => handleGroupPress(group.id)}
-          />
+        {groups.map((group, index) => (
+          <FadeInView key={group.id} delay={index * 100} duration={400}>
+            <GroupCard
+              key={group.id}
+              id={group.id}
+              groupName={group.groupName}
+              groupDescription={group.groupDescription}
+              onPress={() => handleGroupPress(group.id)}
+            />
+          </FadeInView>
         ))}
-      </ScrollView>
+      </Animated.ScrollView>
     </ThemedView>
   );
 }

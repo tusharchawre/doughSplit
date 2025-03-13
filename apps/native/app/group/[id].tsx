@@ -75,7 +75,6 @@ export default function Route() {
               tabBarIndicatorStyle: {
                 backgroundColor: "#ffffff80",
               },
-
               tabBarStyle: {
                 backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
               },
@@ -90,7 +89,6 @@ export default function Route() {
           </Tab.Navigator>
         </ThemedView>
       </ParallaxScrollView>
-
       <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
     </View>
   );

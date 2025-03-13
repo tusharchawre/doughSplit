@@ -1,5 +1,6 @@
 import api from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
+import { User } from "./getUser";
 
 export interface Transaction {
   id: number;
@@ -10,7 +11,7 @@ export interface Transaction {
   amount: number;
   currency: "INR" | string;
   settledStatus: string;
-  participants: [];
+  participants: User[];
 }
 
 const fetchTxnByGroupId = async (groupId: string) => {
@@ -24,8 +25,7 @@ export const useTxnByGroupId = (groupId: string) => {
   return useQuery({
     queryKey: ["transactions", groupId],
     queryFn: () => fetchTxnByGroupId(groupId),
-    // Add staleTime to control how often the data is considered stale
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, 
   });
 };
 
