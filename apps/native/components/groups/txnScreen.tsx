@@ -15,14 +15,12 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FadeInView } from "../animations/FadeInView";
 
-
 const { width } = Dimensions.get("window");
 
 export function TxnScreen({ route }: { route: any }) {
   const { groupId, userId } = route.params;
   const { data: txns, refetch, isLoading } = useTxnByGroupId(groupId);
   const [refreshing, setRefreshing] = useState(false);
-
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -76,7 +74,7 @@ export function TxnScreen({ route }: { route: any }) {
         }
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: true },
         )}
         scrollEventThrottle={16}
       >

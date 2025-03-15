@@ -82,10 +82,7 @@ export default function ParallaxScrollView({
 
   return (
     <ThemedView className="flex-1">
-      <Animated.ScrollView
-        ref={scrollRef}
-        scrollEventThrottle={16}
-      >
+      <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
         <Animated.View style={[headerBaseStyle, headerAnimatedStyle]}>
           {headerImage}
         </Animated.View>

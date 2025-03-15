@@ -25,8 +25,6 @@ export const useTxnByGroupId = (groupId: string) => {
   return useQuery({
     queryKey: ["transactions", groupId],
     queryFn: () => fetchTxnByGroupId(groupId),
-    staleTime: 1000 * 60 * 5, 
+    staleTime: 1000 * 60 * 5,
   });
 };
-
-

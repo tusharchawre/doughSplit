@@ -12,14 +12,13 @@ interface HeaderProps {
 }
 
 export default function Header({ bottomSheetRef }: HeaderProps) {
-  const {data: user} = useUser()
-  const groups = user?.group
+  const { data: user } = useUser();
+  const groups = user?.group;
   const openBottomSheet = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
 
-  let balance = 0
-
+  let balance = 0;
 
   return (
     <ThemedView className="flex mt-12 flex-row items-center justify-between px-4 py-4">
@@ -31,18 +30,18 @@ export default function Header({ bottomSheetRef }: HeaderProps) {
           DoughSplit
         </ThemedText>
         <ThemedText type="subtitle">
-              {balance > 0 ? "You lent" : "You burrowed"}
-              <Text
-                className={
-                  balance > 0
-                    ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
-                    : "dark:text-[#FF9A9A] text-[#FF5757]"
-                }
-              >
-                {" "}
-                ₹{balance < 0 ? ((balance * -1).toFixed(2)) : balance.toFixed(2)}
-              </Text>
-            </ThemedText>
+          {balance > 0 ? "You lent" : "You burrowed"}
+          <Text
+            className={
+              balance > 0
+                ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
+                : "dark:text-[#FF9A9A] text-[#FF5757]"
+            }
+          >
+            {" "}
+            ₹{balance < 0 ? (balance * -1).toFixed(2) : balance.toFixed(2)}
+          </Text>
+        </ThemedText>
       </ThemedView>
 
       <View className="w-fit h-12 bg-white/15 rounded-xl flex flex-row items-center justify-around px-3 py-3 gap-4">

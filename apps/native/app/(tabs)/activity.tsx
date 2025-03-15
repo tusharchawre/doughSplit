@@ -1,12 +1,12 @@
+import { FadeInView } from "@/components/animations/FadeInView";
 import { ActivityCard } from "@/components/Cards/activityCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useUser } from "@/hooks/getUser";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function Activity() {
-  const { data: user, refetch, isPending } = useUser();
-
+  const { data: user } = useUser();
   const transactions = user?.involvedIn;
 
   if (!transactions || transactions.length === 0) {
@@ -21,23 +21,32 @@ export default function Activity() {
 
   return (
     <ThemedView className="flex-1 bg-black px-4">
-      <ThemedText type="subtitle" className="text-white text-2xl mb-4">
+      <ThemedText type="defaultSemiBold" className="my-4">
         Activity
       </ThemedText>
-      {transactions.map((txn) => (
-        <ActivityCard
-          key={txn.id}
-          id={txn.id}
-          txnName={txn.txnName}
-          description={txn.description}
-          amount={txn.amount}
-          date={txn.date}
-          groupId={txn.groupId}
-          paidById={txn.paidById}
-          currency={txn.currency}
-          settledStatus={txn.settledStatus}
-        />
-      ))}
+      <ScrollView>
+        {transactions.map((txn, index) => (
+          <FadeInView
+            key={txn.id}
+            delay={index * 100}
+            duration={400}
+            className="mb-4 w-full"
+          >
+            <ActivityCard
+              key={txn.id}
+              id={txn.id}
+              txnName={txn.txnName}
+              description={txn.description}
+              amount={txn.amount}
+              date={txn.date}
+              groupId={txn.groupId}
+              paidById={txn.paidById}
+              currency={txn.currency}
+              settledStatus={txn.settledStatus}
+            />
+          </FadeInView>
+        ))}
+      </ScrollView>
     </ThemedView>
   );
 }

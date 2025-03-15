@@ -33,7 +33,6 @@ export const TxnCard = ({
     router.push(`/group/txn/${id}`);
   };
 
-
   return (
     <Pressable key={id} onPress={() => handleTxnPress(id)} className="w-full">
       <View className="w-full h-24 bg-white/[0.08] rounded-xl my-2">
@@ -50,7 +49,11 @@ export const TxnCard = ({
                 <ThemedText className="text-white text-xl font-semibold">
                   {txnName}
                 </ThemedText>
-                <ThemedText style={{fontSize: 12}} type="subtitle" className="text-white/50 text-xs">
+                <ThemedText
+                  style={{ fontSize: 12 }}
+                  type="subtitle"
+                  className="text-white/50 text-xs"
+                >
                   {relativeDate}
                 </ThemedText>
               </View>

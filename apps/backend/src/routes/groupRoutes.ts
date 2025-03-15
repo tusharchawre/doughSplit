@@ -25,37 +25,36 @@ router.get("/all", userMiddleware, async (req, res) => {
   });
 });
 
-router.get("/:groupId", userMiddleware , async (req , res) => {
-  const groupId = req.params.groupId
+router.get("/:groupId", userMiddleware, async (req, res) => {
+  const groupId = req.params.groupId;
 
-  if(!groupId){
+  if (!groupId) {
     res.json({
-      error: "The Group Id is Invalid..."
-    })
-    return
+      error: "The Group Id is Invalid...",
+    });
+    return;
   }
 
   const group = await prismaClient.group.findUnique({
     where: {
-      id: groupId
+      id: groupId,
     },
     include: {
-      members: true
-    }
-  })
+      members: true,
+    },
+  });
 
-  if(!group){
+  if (!group) {
     res.json({
-      message: "Group doesn't exist!"
-    })
-    return
+      message: "Group doesn't exist!",
+    });
+    return;
   }
 
   res.json({
-    group
-  })
-})
-
+    group,
+  });
+});
 
 router.post("/create-group", userMiddleware, async (req, res) => {
   const validatedBody = createGroupSchema.safeParse(req.body);

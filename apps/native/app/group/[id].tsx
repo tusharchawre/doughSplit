@@ -19,14 +19,13 @@ export default function Route() {
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;
   const { data: user, refetch, isPending } = useUser();
-  const { data: group , isPending: grpPending } = useGroupById(groupId);
+  const { data: group, isPending: grpPending } = useGroupById(groupId);
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const handleSheetToggle = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
-
 
   if (isPending || grpPending) {
     return (
@@ -35,7 +34,6 @@ export default function Route() {
       </ThemedView>
     );
   }
-
 
   if (!group) {
     return (
@@ -46,8 +44,6 @@ export default function Route() {
       </ThemedView>
     );
   }
-
-
 
   return (
     <View className="flex-1">
@@ -65,7 +61,9 @@ export default function Route() {
       >
         <ThemedView>
           <ThemedText type="defaultSemiBold">{group?.groupName}</ThemedText>
-          <ThemedText type="subtitle" className="mt-2">{group?.groupDescription}</ThemedText>
+          <ThemedText type="subtitle" className="mt-2">
+            {group?.groupDescription}
+          </ThemedText>
         </ThemedView>
         <ThemedView className="h-screen">
           <Tab.Navigator

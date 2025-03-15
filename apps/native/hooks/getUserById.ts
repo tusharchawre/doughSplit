@@ -7,9 +7,7 @@ export const getUserById = (id: string) => {
   const userId = id;
 
   const fetchUser = async () => {
-    const response = await api.post(`/user`, {
-      id,
-    });
+    const response = await api.get(`/user/id/${id}`);
     const resUser = response.data.user;
     setUser(resUser);
   };

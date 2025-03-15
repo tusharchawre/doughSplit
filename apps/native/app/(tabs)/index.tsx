@@ -49,9 +49,7 @@ export default function Groups() {
 
   return (
     <ThemedView className="flex-1 w-full bg-black px-4">
-      <ThemedText type="defaultSemiBold" className="text-white text-2xl  mb-4">
-        Groups
-      </ThemedText>
+      <ThemedText type="defaultSemiBold">Groups</ThemedText>
 
       <Animated.ScrollView
         refreshControl={

@@ -97,10 +97,10 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.post("/", async (req, res) => {
-  const { id } = req.body;
+router.get("/id/:userId", async (req, res) => {
+  const { userId } = req.params;
 
-  if (!id) {
+  if (!userId) {
     res.json({
       message: "Invalid Id",
     });
@@ -109,7 +109,7 @@ router.post("/", async (req, res) => {
 
   const user = await prismaClient.user.findUnique({
     where: {
-      id,
+      id: userId,
     },
     include: {
       friends: true,
@@ -220,6 +220,4 @@ router.post("/friends", userMiddleware, async (req, res) => {
   });
 });
 
-
 export { router as UserRouter };
- 

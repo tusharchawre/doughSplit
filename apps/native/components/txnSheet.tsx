@@ -18,7 +18,7 @@ interface TxnSheetProps extends SheetProps {
   groupId: string;
 }
 
-export const TxnSheet = ({ bottomSheetRef, groupId  }: TxnSheetProps) => {
+export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
   const [selected, setSelected] = useState("INR");
   const [txnName, setTxnName] = useState("");
   const [amount, setAmount] = useState("");
@@ -27,7 +27,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId  }: TxnSheetProps) => {
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   const { data: user } = useUser();
   const { data: group } = useGroupById(groupId);
-  const {refetch: refetchTxns} = useTxnByGroupId(groupId)
+  const { refetch: refetchTxns } = useTxnByGroupId(groupId);
 
   if (!group) {
     return <ThemedText>Group Doesn't Exist</ThemedText>;
@@ -99,7 +99,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId  }: TxnSheetProps) => {
         setTxnName("");
         setAmount("");
         setSelectedMemberIds([]);
-        refetchTxns()
+        refetchTxns();
         bottomSheetRef.current?.close();
         alert("Transaction added successfully");
       }

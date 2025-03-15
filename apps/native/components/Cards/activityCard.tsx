@@ -1,3 +1,4 @@
+import { useUser } from "@/hooks/getUser";
 import { getUserById } from "@/hooks/getUserById";
 import { Image, Text, View } from "react-native";
 

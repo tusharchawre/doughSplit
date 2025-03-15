@@ -35,6 +35,26 @@ export interface User {
   }[];
 }
 
+// export const getUser = () => {
+//   const [user, setUser] = useState<User>();
+
+//   const fetchUser = async () => {
+//     try {
+//       const response = await api.get("/user/profile");
+//       const resUser = response.data.user;
+//       setUser(resUser);
+//     } catch (error) {
+//       console.error("Error fetching user:", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchUser();
+//   }, []);
+
+//   return user;
+// };
+
 export function useUser() {
   return useQuery({
     queryKey: ["user"],

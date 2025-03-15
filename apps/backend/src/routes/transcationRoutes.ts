@@ -16,8 +16,8 @@ router.post("/", async (req, res) => {
       participants: true,
     },
     orderBy: {
-      date: "desc"
-    }
+      date: "desc",
+    },
   });
 
   if (!transactions) {
@@ -32,22 +32,22 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.get("/:txnId" , async (req,res)=>{
-  const txnId = Number(req.params.txnId)
+router.get("/:txnId", async (req, res) => {
+  const txnId = Number(req.params.txnId);
 
   const txn = await prismaClient.transaction.findUnique({
     where: {
-      id: txnId
+      id: txnId,
     },
     include: {
-      participants: true
-    }
-  })
+      participants: true,
+    },
+  });
 
   res.json({
-    txn
-  })
-})
+    txn,
+  });
+});
 
 router.post("/add", userMiddleware, async (req, res) => {
   const validatedBody = createTxnSchema.safeParse(req.body);
@@ -150,6 +150,5 @@ router.put("/", userMiddleware, async (req, res) => {
     txn,
   });
 });
-
 
 export { router as TransactionRouter };

@@ -4,11 +4,11 @@ import { User } from "./getUser";
 import { Transaction } from "./getTxnByGroupId";
 
 interface Group {
-    id: string
-    groupName: string
-    groupDescription: string
-    members: User[]
-    transaction : Transaction[]
+  id: string;
+  groupName: string;
+  groupDescription: string;
+  members: User[];
+  transaction: Transaction[];
 }
 
 export function useGroupById(groupId: string) {
@@ -18,12 +18,11 @@ export function useGroupById(groupId: string) {
   });
 }
 const getGroupById = async (groupId: string) => {
-    try {
-      const response = await api.get(`/group/${groupId}`);
-      return response.data.group as Group;
-    } catch (error) {
-      console.error("Failed to fetch group:", error);
-      throw error; 
-    }
-  };
-
+  try {
+    const response = await api.get(`/group/${groupId}`);
+    return response.data.group as Group;
+  } catch (error) {
+    console.error("Failed to fetch group:", error);
+    throw error;
+  }
+};
