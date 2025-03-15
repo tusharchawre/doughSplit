@@ -43,6 +43,7 @@ export default function Activity() {
               paidById={txn.paidById}
               currency={txn.currency}
               settledStatus={txn.settledStatus}
+              participants={txn.participants.length}
             />
           </FadeInView>
         ))}

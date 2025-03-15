@@ -5,7 +5,7 @@ import { useUser } from "@/hooks/getUser";
 import { Button, ScrollView, Text, View } from "react-native";
 
 export default function Account() {
-  const { data: user, refetch, isPending } = useUser();
+  const { data: user } = useUser();
 
   const { signOut } = useSession();
 

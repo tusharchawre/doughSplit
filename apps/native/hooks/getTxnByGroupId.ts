@@ -6,6 +6,7 @@ export interface Transaction {
   id: number;
   txnName: string;
   description: string;
+  groupId: string
   date: string;
   paidById: string;
   amount: number;

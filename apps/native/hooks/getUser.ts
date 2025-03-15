@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useStorageState } from "./useStorageState";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import { Transaction } from "./getTxnByGroupId";
 
 export interface User {
   id: string;
@@ -22,17 +23,7 @@ export interface User {
     phoneNumber: string | null;
     imageUrl: string | null;
   }[];
-  involvedIn: {
-    id: number;
-    txnName: string;
-    description: string | null;
-    date: string;
-    groupId: string;
-    paidById: string;
-    amount: number;
-    currency: "INR" | string;
-    settledStatus: "PENDING" | "COMPLETED";
-  }[];
+  involvedIn: Transaction[];
 }
 
 // export const getUser = () => {

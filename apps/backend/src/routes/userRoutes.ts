@@ -148,7 +148,19 @@ router.get("/profile", userMiddleware, async (req, res) => {
           imageUrl: true,
         },
       },
-      involvedIn: true,
+      involvedIn: {
+        include: {
+          participants: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              phoneNumber: true,
+              imageUrl: true,
+            }
+          }
+        }
+      },
     },
   });
 

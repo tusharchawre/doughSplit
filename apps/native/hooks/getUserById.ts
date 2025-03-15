@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
 import { User } from "./getUser";
 import api from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 
-export const getUserById = (id: string) => {
-  const [user, setUser] = useState<User>();
-  const userId = id;
-
-  const fetchUser = async () => {
-    const response = await api.get(`/user/id/${id}`);
-    const resUser = response.data.user;
-    setUser(resUser);
-  };
-
-  useEffect(() => {
-    fetchUser();
-  });
-
-  return user;
+const getUserById = async (userId: string) => {
+    const response = await api.get(`/user/id/${userId}`);
+    return response.data.user as User;
 };
+
+
+export const useUserById = (userId: string) => {
+  return useQuery({
+    queryKey: ["userById" , userId],
+    queryFn: () => getUserById(userId)
+  })
+}
