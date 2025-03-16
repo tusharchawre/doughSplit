@@ -8,7 +8,7 @@ interface Group {
   groupName: string;
   groupDescription: string;
   members: User[];
-  transaction: Transaction[];
+  transactions: Transaction[];
 }
 
 export function useGroupById(groupId: string) {

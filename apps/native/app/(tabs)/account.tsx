@@ -150,20 +150,8 @@ export default function Account() {
         ))}
       </View>
 
-      {/* Account Actions */}
-      <View className="mb-10">
-        <View className="bg-white/10 rounded-xl overflow-hidden">
-          <View className="border-b border-white/10">
-            <Button title="Edit Profile" color="#3b82f6" onPress={() => {}} />
-          </View>
-          <View className="border-b border-white/10">
-            <Button title="Settings" color="#3b82f6" onPress={() => {}} />
-          </View>
-          <View>
-            <Button title="Sign Out" color="#ef4444" onPress={signOut} />
-          </View>
-        </View>
-      </View>
+      
+
     </ScrollView>
   );
 }

@@ -41,6 +41,7 @@ router.get("/:groupId", userMiddleware, async (req, res) => {
     },
     include: {
       members: true,
+      transactions: true
     },
   });
 

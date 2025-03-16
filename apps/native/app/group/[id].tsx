@@ -50,7 +50,6 @@ export default function Route() {
       <ParallaxScrollView
         handleSheetToggle={handleSheetToggle}
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-        
         headerImage={
           <Image
             source={{
@@ -66,26 +65,30 @@ export default function Route() {
             {group?.groupDescription}
           </ThemedText>
         </ThemedView>
-          <Tab.Navigator
-          style={{flex: 1, height: 600}}
-            screenOptions={{
-              swipeEnabled: true,
-              lazy: true,
-              tabBarIndicatorStyle: {
-                backgroundColor: "#ffffff80",
-              },
-              tabBarStyle: {
-                backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
-              },
-            }}
-          >
-            <Tab.Screen
-              name="Transactions"
-              component={TxnScreen}
-              initialParams={{ groupId: groupId, userId: user?.id }}
-            />
-            <Tab.Screen name="About" component={AboutScreen} />
-          </Tab.Navigator>
+        <Tab.Navigator
+          style={{ flex: 1, height: 600 }}
+          screenOptions={{
+            swipeEnabled: true,
+            lazy: true,
+            tabBarIndicatorStyle: {
+              backgroundColor: "#ffffff80",
+            },
+            tabBarStyle: {
+              backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+            },
+          }}
+        >
+          <Tab.Screen
+            name="Transactions"
+            component={TxnScreen}
+            initialParams={{ groupId: groupId, userId: user?.id }}
+          />
+          <Tab.Screen
+            name="About"
+            component={AboutScreen}
+            initialParams={{ groupId: groupId, userId: user?.id }}
+          />
+        </Tab.Navigator>
       </ParallaxScrollView>
       <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
     </View>
