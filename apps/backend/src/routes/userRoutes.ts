@@ -157,9 +157,9 @@ router.get("/profile", userMiddleware, async (req, res) => {
               email: true,
               phoneNumber: true,
               imageUrl: true,
-            }
-          }
-        }
+            },
+          },
+        },
       },
     },
   });

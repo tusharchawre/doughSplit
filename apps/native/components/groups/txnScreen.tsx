@@ -6,12 +6,10 @@ import {
   Animated,
   Dimensions,
   RefreshControl,
-  ScrollView,
   View,
   ActivityIndicator,
-  Image,
 } from "react-native";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FadeInView } from "../animations/FadeInView";
 
@@ -88,6 +86,7 @@ export function TxnScreen({ route }: { route: any }) {
             <TxnCard
               id={txn.id}
               txnName={txn.txnName}
+              groupId={groupId}
               description={txn.description}
               date={txn.date}
               paidById={txn.paidById}
@@ -103,6 +102,3 @@ export function TxnScreen({ route }: { route: any }) {
     </View>
   );
 }
-
-// Create this component in a new file: components/animations/FadeInView.tsx
-// Then import it in your txnScreen.tsx file

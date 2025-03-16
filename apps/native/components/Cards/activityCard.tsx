@@ -16,9 +16,9 @@ interface ActivityCardProps {
   paidById: string;
   amount: number;
   currency: "INR" | string;
-  settledStatus: string
+  settledStatus: string;
   onPress?: () => void;
-  participants: number
+  participants: number;
 }
 
 export const ActivityCard = ({
@@ -158,7 +158,7 @@ export const ActivityCard = ({
                       }`}
                     >
                       {currency === "INR" ? "₹" : "$"}
-                      {(amount/participants).toFixed(2)}
+                      {(amount / participants).toFixed(2)}
                     </Text>
                   </View>
 

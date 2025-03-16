@@ -1,13 +1,11 @@
 import { GroupCard } from "@/components/Cards/groupCard";
 import { useUser } from "@/hooks/getUser";
-import { ActivityIndicator, RefreshControl, ScrollView } from "react-native";
+import { ActivityIndicator, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Animated } from "react-native";
-import { FadeIn } from "react-native-reanimated";
-import { AnimatedView } from "react-native-reanimated/lib/typescript/component/View";
 import { FadeInView } from "@/components/animations/FadeInView";
 
 export default function Groups() {
@@ -28,7 +26,7 @@ export default function Groups() {
   if (isPending) {
     return (
       <ThemedView className="flex-1 justify-center items-center p-4">
-        <ActivityIndicator size="small" color="#ffffff" />
+        <ActivityIndicator size="small" color="#bebebe" />
       </ThemedView>
     );
   }

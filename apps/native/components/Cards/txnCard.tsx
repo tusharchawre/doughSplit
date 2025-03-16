@@ -19,6 +19,7 @@ export const TxnCard = ({
   settledStatus = "PENDING",
   userId,
   participants,
+  groupId,
 }: TxnCard) => {
   const isPayer = paidById === userId;
 
