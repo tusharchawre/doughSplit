@@ -65,8 +65,8 @@ export default function Route() {
             {group?.groupDescription}
           </ThemedText>
         </ThemedView>
-        <ThemedView className="h-screen">
           <Tab.Navigator
+          style={{flex: 1, height: 600}}
             screenOptions={{
               swipeEnabled: true,
               lazy: true,
@@ -85,7 +85,6 @@ export default function Route() {
             />
             <Tab.Screen name="About" component={AboutScreen} />
           </Tab.Navigator>
-        </ThemedView>
       </ParallaxScrollView>
       <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
     </View>

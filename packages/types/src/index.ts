@@ -52,6 +52,7 @@ export const createTxnSchema = z.object({
   participants: z.array(z.string()),
   amount: z.number(),
   currency: z.string().min(3).max(3).optional(),
+  shares: z.record(z.string(), z.number()).optional(),
 });
 
 export const updateTxnSchema = z.object({

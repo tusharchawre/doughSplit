@@ -57,10 +57,15 @@ export function TxnScreen({ route }: { route: any }) {
   }
 
   return (
-    <View className="flex-1">
+    <ThemedView style={{ flex: 1 }}>
       <Animated.ScrollView
-        className="w-full mt-4"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
+        style={{ flex: 1 }}
+        nestedScrollEnabled={true}
+        contentContainerStyle={{
+          paddingTop: 10,
+          paddingHorizontal: 4,
+          paddingBottom: 100, 
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -72,7 +77,7 @@ export function TxnScreen({ route }: { route: any }) {
         }
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
+          { useNativeDriver: true }
         )}
         scrollEventThrottle={16}
       >
@@ -99,6 +104,6 @@ export function TxnScreen({ route }: { route: any }) {
           </FadeInView>
         ))}
       </Animated.ScrollView>
-    </View>
+    </ThemedView>
   );
 }
