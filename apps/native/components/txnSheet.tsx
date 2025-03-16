@@ -12,19 +12,29 @@ import { useState } from "react";
 import { useGroupById } from "@/hooks/getGroupById";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/getUser";
-import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
+import { Transaction, useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 
 interface TxnSheetProps extends SheetProps {
   groupId: string;
+  txnData?: Transaction;
 }
 
-export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
-  const [selected, setSelected] = useState("INR");
-  const [txnName, setTxnName] = useState("");
-  const [amount, setAmount] = useState("");
+export const TxnSheet = ({
+  bottomSheetRef,
+  groupId,
+  txnData,
+}: TxnSheetProps) => {
+  const [selected, setSelected] = useState(txnData?.currency || "INR");
+  const [txnName, setTxnName] = useState(txnData?.txnName || "");
+  const [amount, setAmount] = useState(txnData?.amount.toString() || "");
   const [loading, setLoading] = useState(false);
   const [splitEqually, setSplitEqually] = useState(true);
-  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
+
+  const txnMembers = txnData?.participants.map((member) => member.id);
+
+  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(
+    txnMembers || []
+  );
   const { data: user } = useUser();
   const { data: group } = useGroupById(groupId);
   const { refetch: refetchTxns } = useTxnByGroupId(groupId);
@@ -57,57 +67,62 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
   const toggleSplitEqually = () => setSplitEqually(!splitEqually);
 
   const submitTxn = async () => {
-    try {
-      if (!txnName.trim()) {
-        alert("Please enter a transaction name");
-        return;
-      }
-
-      if (!amount || parseFloat(amount) <= 0) {
-        alert("Please enter a valid amount");
-        return;
-      }
-
-      setLoading(true);
-
-      let participantsToSubmit = [];
-
-      if (splitEqually) {
-        participantsToSubmit = group.members.map((member) => member.id);
-      } else {
-        if (selectedMemberIds.length === 0) {
-          alert("Please select at least one member to split with");
-          setLoading(false);
+    if (txnData) {
+      
+      console.log("edit");
+    } else {
+      try {
+        if (!txnName.trim()) {
+          alert("Please enter a transaction name");
           return;
         }
-        participantsToSubmit = selectedMemberIds;
+
+        if (!amount || parseFloat(amount) <= 0) {
+          alert("Please enter a valid amount");
+          return;
+        }
+
+        setLoading(true);
+
+        let participantsToSubmit = [];
+
+        if (splitEqually) {
+          participantsToSubmit = group.members.map((member) => member.id);
+        } else {
+          if (selectedMemberIds.length === 0) {
+            alert("Please select at least one member to split with");
+            setLoading(false);
+            return;
+          }
+          participantsToSubmit = selectedMemberIds;
+        }
+
+        const numericAmount = parseFloat(amount);
+
+        const response = await api.post("/group/transactions/add", {
+          txnName,
+          description: "Transaction added by " + user?.username,
+          groupId,
+          paidById: user?.id,
+          participants: participantsToSubmit,
+          amount: numericAmount,
+          currency: selected,
+        });
+
+        if (response.data.txn) {
+          setTxnName("");
+          setAmount("");
+          setSelectedMemberIds([]);
+          refetchTxns();
+          bottomSheetRef.current?.close();
+          alert("Transaction added successfully");
+        }
+      } catch (error) {
+        console.error("Transaction error:", error);
+        alert("Failed to add transaction. Please try again.");
+      } finally {
+        setLoading(false);
       }
-
-      const numericAmount = parseFloat(amount);
-
-      const response = await api.post("/group/transactions/add", {
-        txnName,
-        description: "Transaction added by " + user?.username,
-        groupId,
-        paidById: user?.id,
-        participants: participantsToSubmit,
-        amount: numericAmount,
-        currency: selected,
-      });
-
-      if (response.data.txn) {
-        setTxnName("");
-        setAmount("");
-        setSelectedMemberIds([]);
-        refetchTxns();
-        bottomSheetRef.current?.close();
-        alert("Transaction added successfully");
-      }
-    } catch (error) {
-      console.error("Transaction error:", error);
-      alert("Failed to add transaction. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -147,7 +162,6 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
             <View className="relative flex flex-row items-center">
               <View className="w-24 mr-2" style={{ zIndex: 10 }}>
                 <SelectList
-                
                   setSelected={setSelected}
                   data={currencyData}
                   save="key"
@@ -173,7 +187,6 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
                     zIndex: 100,
                     top: 54,
                     maxHeight: 200,
-                    
                   }}
                   dropdownTextStyles={{
                     color: "white",

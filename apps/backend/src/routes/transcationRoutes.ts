@@ -118,6 +118,12 @@ router.post("/add", userMiddleware, async (req, res) => {
 router.delete("/", userMiddleware, async (req, res) => {
   const { txnId } = req.body;
 
+  await prismaClient.share.deleteMany({
+    where:{
+      transactionId: txnId
+    }
+  })
+
   await prismaClient.transaction.delete({
     where: {
       id: txnId,

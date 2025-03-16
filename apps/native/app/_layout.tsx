@@ -1,9 +1,12 @@
 import { Stack } from "expo-router";
-import { SafeAreaView, Text, useColorScheme } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  useColorScheme,
+} from "react-native";
 import "@/global.css";
 import { SessionProvider } from "@/context/ctx";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useSearchParams } from "expo-router/build/hooks";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,6 +15,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { ThemedText } from "@/components/ThemedText";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +57,13 @@ export default function RootLayout() {
                   <Stack.Screen
                     name="group/txn/[id]"
                     options={{
+                      headerRight: () => {
+                        return (
+                          <Pressable className="text-white">
+                            <ThemedText>Delete</ThemedText>
+                          </Pressable>
+                        );
+                      },
                       headerShown: true,
                       headerBackButtonDisplayMode: "minimal",
                       headerTransparent: true,

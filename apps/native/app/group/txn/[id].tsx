@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTxnById } from "@/hooks/useTxnById";
 import { useUser } from "@/hooks/getUser";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Animated,
@@ -21,11 +21,48 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { FadeInView } from "@/components/animations/FadeInView";
 import api from "@/lib/axios";
 import { RefreshControl } from "react-native";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { TxnSheet } from "@/components/txnSheet";
+import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 
 export default function TransactionDetailScreen() {
+  const navigation = useNavigation()
   const params = useLocalSearchParams<{ id: string }>();
   const { data: txn, isLoading, refetch } = useTxnById(params.id);
+  const { data: txns, refetch: refetchTxn } = useTxnByGroupId(txn?.groupId!);
+
   const [refreshing, setRefreshing] = useState(false);
+
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const handleSheet = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
+
+  const deleteTxn = async () => { 
+    const response = await api.delete("/group/transactions/", {
+      data: {
+        txnId: Number(params.id)
+      }
+    })
+    refetchTxn()
+    alert(response.data.message)
+    router.back()
+  }
+
+
+
+  useEffect(()=>{
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={deleteTxn}>
+          <ThemedText>Delete</ThemedText>
+        </Pressable>
+      ),
+    });
+  })
+
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -310,7 +347,7 @@ export default function TransactionDetailScreen() {
       <SafeAreaView className="px-4 pb-4">
         <FadeInView delay={800} duration={400}>
           <View className="flex-row justify-between mb-2 mx-2">
-            <Pressable className="flex-1 bg-white/10 py-3 rounded-lg ml-2 flex-row justify-center items-center">
+            <Pressable onPress={handleSheet} className="flex-1 bg-white/10 py-3 rounded-lg ml-2 flex-row justify-center items-center">
               <Ionicons name="pencil" size={18} color="#bebebe" />
               <ThemedText className="ml-2 text-[#000000]">Edit</ThemedText>
             </Pressable>
@@ -328,6 +365,7 @@ export default function TransactionDetailScreen() {
           </View>
         </FadeInView>
       </SafeAreaView>
+      <TxnSheet txnData={txn} groupId={txn.groupId} bottomSheetRef={bottomSheetRef} /> 
     </ThemedView>
   );
 }
