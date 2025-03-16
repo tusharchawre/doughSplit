@@ -17,12 +17,24 @@ import {
   FontAwesome5,
 } from "@expo/vector-icons";
 import { format } from "date-fns";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { FadeInView } from "@/components/animations/FadeInView";
+import api from "@/lib/axios";
+import { RefreshControl } from "react-native";
 
 export default function TransactionDetailScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const { data: txn, isLoading, refetch } = useTxnById(params.id);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+
   const { data: user } = useUser();
   const router = useRouter();
 
@@ -79,12 +91,15 @@ export default function TransactionDetailScreen() {
   const payer = txn.participants.find((p) => p.id === txn.paidById);
   const payerName = payer?.username || "Unknown";
 
-  const equalShare = txn.amount / txn.participants.length;
   const formattedDate = format(new Date(txn.date), "MMMM d, yyyy");
   const formattedTime = format(new Date(txn.date), "h:mm a");
 
   const handleSettleUp = async () => {
     try {
+      const response = await api.post("/group/transactions/settle-share", {
+        transactionId: Number(params.id),
+      });
+
       refetch();
     } catch (error) {
       console.error("Failed to settle transaction:", error);
@@ -99,11 +114,13 @@ export default function TransactionDetailScreen() {
           <View
             className={`px-3 py-1 rounded-full ${txn.settledStatus === "COMPLETED" ? "bg-[#51ff20]/20" : "bg-white/20"}`}
           >
-            <ThemedText
-              className={`text-sm ${txn.settledStatus === "COMPLETED" ? "text-[#51ff20]" : "text-white"}`}
-            >
-              {txn.settledStatus}
-            </ThemedText>
+            <Animated.View>
+              <ThemedText
+                className={`text-sm ${txn.settledStatus === "COMPLETED" ? "text-[#51ff20]" : "text-white"}`}
+              >
+                {txn.settledStatus}
+              </ThemedText>
+            </Animated.View>
           </View>
         </View>
         <ThemedText className="text-white/70 mt-1">
@@ -167,35 +184,46 @@ export default function TransactionDetailScreen() {
         </ThemedText>
       </View>
 
-      {txn.participants.map((participant, index) => (
-        <View
-          key={participant.id}
-          className={`flex-row justify-between items-center py-3 ${
-            index < txn.participants.length - 1
-              ? "border-b border-white/10"
-              : ""
-          }`}
-        >
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-white/20 rounded-full mr-3 items-center justify-center">
-              <ThemedText className="font-bold">
-                {participant.username.charAt(0).toUpperCase()}
-              </ThemedText>
+      {txn.participants.map((participant) => {
+        const share = txn.shares!.find((s) => s.userId === participant.id);
+        return (
+          <View
+            key={participant.id}
+            className={`flex-row justify-between items-center py-3 border-b border-white/10`}
+          >
+            <View className="flex-row items-center">
+              <View className="w-10 h-10 bg-white/20 rounded-full mr-3 items-center justify-center">
+                <ThemedText className="font-bold">
+                  {participant.username.charAt(0).toUpperCase()}
+                </ThemedText>
+              </View>
+              <View>
+                <ThemedText className="font-medium">
+                  {participant.username}
+                </ThemedText>
+                {participant.id === user?.id && (
+                  <ThemedText className="text-white/70 text-sm">
+                    (You)
+                  </ThemedText>
+                )}
+              </View>
             </View>
-            <View>
+            <View className="flex-row items-center">
               <ThemedText className="font-medium">
-                {participant.username}
+                ₹{share?.amount.toFixed(2)}
               </ThemedText>
-              {participant.id === user?.id && (
-                <ThemedText className="text-white/70 text-sm">(You)</ThemedText>
+              {share?.isSettled && (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={16}
+                  color="#51ff20"
+                  className="ml-2"
+                />
               )}
             </View>
           </View>
-          <ThemedText className="font-medium">
-            ₹{equalShare.toFixed(2)}
-          </ThemedText>
-        </View>
-      ))}
+        );
+      })}
     </View>,
 
     <View key="balance" className="bg-white/10 rounded-xl p-5 mb-5">
@@ -218,23 +246,41 @@ export default function TransactionDetailScreen() {
           <View className="flex-row justify-between items-center py-2">
             <ThemedText>Your share</ThemedText>
             <ThemedText className="font-medium">
-              ₹{equalShare.toFixed(2)}
+              ₹
+              {txn
+                .shares!.find((s) => s.userId === user?.id)
+                ?.amount.toFixed(2)}
             </ThemedText>
           </View>
 
           <View className="flex-row justify-between items-center py-2 mt-1 pt-3 border-t border-white/10">
             <ThemedText className="font-medium">You are owed</ThemedText>
             <ThemedText className="font-bold text-[#51ff20]">
-              ₹{(txn.amount - equalShare).toFixed(2)}
+              ₹
+              {(
+                txn.amount -
+                (txn.shares!.find((s) => s.userId === user?.id)?.amount || 0)
+              ).toFixed(2)}
             </ThemedText>
           </View>
         </View>
       ) : (
-        <View className="flex-row justify-between items-center py-2">
-          <ThemedText className="font-medium">You owe</ThemedText>
-          <ThemedText className="font-bold text-[#FF5757]">
-            ₹{equalShare.toFixed(2)}
-          </ThemedText>
+        <View>
+          <View className="flex-row justify-between items-center py-2">
+            <ThemedText className="font-medium">Your share</ThemedText>
+            <ThemedText className="font-bold text-[#FF5757]">
+              ₹
+              {txn
+                .shares!.find((s) => s.userId === user?.id)
+                ?.amount.toFixed(2)}
+            </ThemedText>
+          </View>
+          {txn.shares!.find((s) => s.userId === user?.id)?.isSettled && (
+            <View className="flex-row items-center justify-end mt-2">
+              <Ionicons name="checkmark-circle" size={16} color="#51ff20" />
+              <ThemedText className="text-[#51ff20] ml-1">Settled</ThemedText>
+            </View>
+          )}
         </View>
       )}
     </View>,
@@ -242,7 +288,12 @@ export default function TransactionDetailScreen() {
 
   return (
     <ThemedView className="flex-1 mt-20">
-      <ScrollView className="flex-1">
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        className="flex-1"
+      >
         <View className="px-4 pt-4">
           {cardSections.map((card, index) => (
             <FadeInView
@@ -259,7 +310,11 @@ export default function TransactionDetailScreen() {
       <SafeAreaView className="px-4 pb-4">
         <FadeInView delay={800} duration={400}>
           <View className="flex-row justify-between mb-2 mx-2">
-            {txn.settledStatus !== "SETTLED" && (
+            <Pressable className="flex-1 bg-white/10 py-3 rounded-lg ml-2 flex-row justify-center items-center">
+              <Ionicons name="pencil" size={18} color="#bebebe" />
+              <ThemedText className="ml-2 text-[#000000]">Edit</ThemedText>
+            </Pressable>
+            {txn.settledStatus !== "COMPLETED" && txn.paidById != user?.id && (
               <Pressable
                 className="flex-1 bg-[#51ff20]/20 py-3 rounded-lg ml-2 flex-row justify-center items-center"
                 onPress={handleSettleUp}

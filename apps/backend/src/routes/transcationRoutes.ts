@@ -41,6 +41,7 @@ router.get("/:txnId", async (req, res) => {
     },
     include: {
       participants: true,
+      shares: true
     },
   });
 
@@ -88,7 +89,7 @@ router.post("/add", userMiddleware, async (req, res) => {
       },
     });
 
-    const defaultShareAmount = Math.floor(amount / participants.length);
+    const defaultShareAmount = (amount / participants.length);
 
     const sharePromises = participants.map(userId => {
       const shareAmount = shares && shares[userId] ? shares[userId] : defaultShareAmount;
@@ -174,7 +175,8 @@ router.put("/", userMiddleware, async (req, res) => {
 });
 
 router.post("/settle-share", userMiddleware, async (req, res) => {
-  const { transactionId, userId } = req.body;
+  const { transactionId } = req.body;
+  const userId = req.userId!
 
   try {
     const share = await prismaClient.share.findUnique({

@@ -5,9 +5,10 @@ import { TxnCard } from "../Cards/txnCard";
 import {
   Animated,
   Dimensions,
-  RefreshControl,
+  RefreshControl, 
   View,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { useCallback, useState, useRef } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -19,7 +20,7 @@ export function TxnScreen({ route }: { route: any }) {
   const { groupId, userId } = route.params;
   const { data: txns, refetch, isLoading } = useTxnByGroupId(groupId);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [showSettled, setShowSettled] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const onRefresh = useCallback(() => {
@@ -56,15 +57,22 @@ export function TxnScreen({ route }: { route: any }) {
     );
   }
 
+  const activeTransactions = txns.filter(
+    (txn) => txn.settledStatus === "PENDING"
+  );
+  const settledTransactions = txns.filter(
+    (txn) => txn.settledStatus === "COMPLETED"
+  );
+
   return (
-    <ThemedView style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1 }} className="relative">
       <Animated.ScrollView
         style={{ flex: 1 }}
         nestedScrollEnabled={true}
         contentContainerStyle={{
           paddingTop: 10,
           paddingHorizontal: 4,
-          paddingBottom: 100, 
+          paddingBottom: 100,
         }}
         refreshControl={
           <RefreshControl
@@ -73,36 +81,83 @@ export function TxnScreen({ route }: { route: any }) {
             colors={["#ffffff"]}
             progressBackgroundColor="#000000"
             tintColor="#ffffff"
+            progressViewOffset={10}
+            enabled={true}
           />
         }
+        scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        scrollEventThrottle={16}
+          
       >
-        {txns.map((txn, index) => (
-          <FadeInView
-            key={txn.id}
-            delay={index * 100}
-            duration={400}
-            className="mb-1 w-full"
-          >
-            <TxnCard
-              id={txn.id}
-              txnName={txn.txnName}
-              groupId={groupId}
-              description={txn.description}
-              date={txn.date}
-              paidById={txn.paidById}
-              amount={txn.amount}
-              currency={txn.currency}
-              settledStatus={txn.settledStatus}
-              userId={userId}
-              participants={txn.participants}
-            />
-          </FadeInView>
-        ))}
+        <View className="mb-4">
+          {activeTransactions.map((txn, index) => (
+            <FadeInView
+              key={txn.id}
+              delay={index * 100}
+              duration={400}
+              className="mb-1 w-full"
+            >
+              <TxnCard
+                id={txn.id}
+                txnName={txn.txnName}
+                groupId={groupId}
+                description={txn.description}
+                date={txn.date}
+                paidById={txn.paidById}
+                amount={txn.amount}
+                currency={txn.currency}
+                settledStatus={txn.settledStatus}
+                userId={userId}
+                participants={txn.participants}
+              />
+            </FadeInView>
+          ))}
+        </View>
+
+        <TouchableOpacity
+          onPress={() => setShowSettled(!showSettled)}
+          className="flex-row items-center justify-center py-2 px-4 mb-2 opacity-50"
+        >
+          <MaterialCommunityIcons
+            name={showSettled ? "chevron-up" : "chevron-down"}
+            size={24}
+            color="rgba(255,255,255,0.8)"
+          />
+          <ThemedText className="ml-2">
+            {showSettled ? "Hide" : "Show"} Settled Transactions (
+            {settledTransactions.length})
+          </ThemedText>
+        </TouchableOpacity>
+
+        {showSettled && (
+          <View className="mb-4">
+            {settledTransactions.map((txn, index) => (
+              <FadeInView
+                key={txn.id}
+                delay={index * 100}
+                duration={400}
+                className="mb-1 w-full"
+              >
+                <TxnCard
+                  id={txn.id}
+                  txnName={txn.txnName}
+                  groupId={groupId}
+                  description={txn.description}
+                  date={txn.date}
+                  paidById={txn.paidById}
+                  amount={txn.amount}
+                  currency={txn.currency}
+                  settledStatus={txn.settledStatus}
+                  userId={userId}
+                  participants={txn.participants}
+                />
+              </FadeInView>
+            ))}
+          </View>
+        )}
       </Animated.ScrollView>
     </ThemedView>
   );

@@ -147,6 +147,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
             <View className="relative flex flex-row items-center">
               <View className="w-24 mr-2" style={{ zIndex: 10 }}>
                 <SelectList
+                
                   setSelected={setSelected}
                   data={currencyData}
                   save="key"
@@ -172,6 +173,7 @@ export const TxnSheet = ({ bottomSheetRef, groupId }: TxnSheetProps) => {
                     zIndex: 100,
                     top: 54,
                     maxHeight: 200,
+                    
                   }}
                   dropdownTextStyles={{
                     color: "white",

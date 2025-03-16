@@ -50,6 +50,7 @@ export default function Route() {
       <ParallaxScrollView
         handleSheetToggle={handleSheetToggle}
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+        
         headerImage={
           <Image
             source={{

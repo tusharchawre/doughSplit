@@ -18,7 +18,7 @@ export default function Groups() {
     refetch();
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   const router = useRouter();

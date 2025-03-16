@@ -2,6 +2,12 @@ import api from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "./getUser";
 
+interface Share {
+  userId: string;
+  amount: number;
+  isSettled: boolean;
+}
+
 export interface Transaction {
   id: number;
   txnName: string;
@@ -13,6 +19,7 @@ export interface Transaction {
   currency: "INR" | string;
   settledStatus: string;
   participants: User[];
+  shares?: Share[];
 }
 
 const fetchTxnByGroupId = async (groupId: string) => {
