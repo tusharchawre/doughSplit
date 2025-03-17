@@ -140,7 +140,7 @@ router.put("/", userMiddleware, async (req, res) => {
 
   if (!validatedBody.success) {
     res.json({
-      message: "Invalid Details",
+      message: "Invalid Details" + validatedBody.error,
     });
     return;
   }

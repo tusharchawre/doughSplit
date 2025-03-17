@@ -19,7 +19,6 @@ export const GroupCard = ({
   onPress,
   amount = 0,
 }: GroupCardProps) => {
-  const { data: group } = useGroupById(id);
   const { data: user } = useUser();
 
   const { data: txns } = useTxnByGroupId(id);
@@ -27,14 +26,16 @@ export const GroupCard = ({
   const getBalance = () => {
     let balance = 0;
     txns?.map((txn) => {
-      const amount = txn.amount;
-      const paidById = txn.paidById;
-      const participants = txn.participants.length;
-
-      if (paidById === user?.id) {
-        balance = balance + amount / participants;
-      } else {
-        balance = balance - amount / participants;
+      if(txn.settledStatus != "COMPLETED"){
+        const amount = txn.amount;
+        const paidById = txn.paidById;
+        const participants = txn.participants.length;
+        
+        if (paidById === user?.id) {
+          balance = balance + amount / participants;
+        } else {
+          balance = balance - amount / participants;
+        }
       }
     });
     return balance;

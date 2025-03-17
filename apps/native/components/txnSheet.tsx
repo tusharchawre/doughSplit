@@ -13,6 +13,7 @@ import { useGroupById } from "@/hooks/getGroupById";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/getUser";
 import { Transaction, useTxnByGroupId } from "@/hooks/getTxnByGroupId";
+import { useTxnById } from "@/hooks/useTxnById";
 
 interface TxnSheetProps extends SheetProps {
   groupId: string;
@@ -29,6 +30,7 @@ export const TxnSheet = ({
   const [amount, setAmount] = useState(txnData?.amount.toString() || "");
   const [loading, setLoading] = useState(false);
   const [splitEqually, setSplitEqually] = useState(true);
+  const { refetch: refreshTxn } = useTxnById(txnData?.id.toString() || "");
 
   const txnMembers = txnData?.participants.map((member) => member.id);
 
@@ -68,8 +70,57 @@ export const TxnSheet = ({
 
   const submitTxn = async () => {
     if (txnData) {
-      
-      console.log("edit");
+      try {
+        if (!txnName.trim()) {
+          alert("Please enter a transaction name");
+          return;
+        }
+
+        if (!amount || parseFloat(amount) <= 0) {
+          alert("Please enter a valid amount");
+          return;
+        }
+
+        let participantsToSubmit = [];
+
+        if (splitEqually) {
+          participantsToSubmit = group.members.map((member) => member.id);
+        } else {
+          if (selectedMemberIds.length === 0) {
+            alert("Please select at least one member to split with");
+            setLoading(false);
+            return;
+          }
+          participantsToSubmit = selectedMemberIds;
+        }
+
+        const numericAmount = parseFloat(amount);
+
+        const response = await api.put("/group/transactions", {
+          txnName,
+          description: "Transaction added by " + user?.username,
+          groupId: txnData?.groupId,
+          paidById: user?.id,
+          participants: participantsToSubmit,
+          amount: numericAmount,
+          currency: selected,
+          txnId: txnData.id,
+        });
+
+        console.log(response.data);
+
+        if (response.data.txn) {
+          setTxnName("");
+          setAmount("");
+          setSelectedMemberIds([]);
+          refetchTxns();
+          refreshTxn();
+          bottomSheetRef.current?.close();
+          alert("Transaction updated successfully");
+        }
+      } catch (e) {
+        console.log("Error" + e);
+      }
     } else {
       try {
         if (!txnName.trim()) {
@@ -138,7 +189,7 @@ export const TxnSheet = ({
       <BottomSheetScrollView scrollEnabled={false}>
         <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 flex flex-col gap-6">
           <Text className="text-white text-2xl font-semibold">
-            Add a Transaction
+            {txnData ? "Update": "Add"} a Transaction
           </Text>
 
           <View>
@@ -265,9 +316,15 @@ export const TxnSheet = ({
               className={`w-full bg-white h-16 rounded-xl flex items-center justify-center ${loading ? "opacity-50" : ""}`}
               disabled={loading}
             >
-              <Text className="text-xl font-semibold">
-                {loading ? "Adding..." : "Add Transaction"}
-              </Text>
+              {txnData ? (
+                <Text className="text-xl font-semibold">
+                  {loading ? `Updating...` : "Update Transaction"}
+                </Text>
+              ) : (
+                <Text className="text-xl font-semibold">
+                  {loading ? `Adding...` : "Add Transaction"}
+                </Text>
+              )}
             </Pressable>
           </View>
         </BottomSheetView>
