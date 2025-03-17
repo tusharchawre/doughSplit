@@ -20,7 +20,7 @@
         "backgroundColor": "#ffffff"
       },
       "userInterfaceStyle": "automatic",
-      "package": "con.tusharchawre0240.doughsplit"
+      "package": "com.tusharchawre0240.doughsplit"
     },
     "web": {
       "bundler": "metro",
@@ -28,9 +28,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-modules-core",
       "expo-router",
-      "expo-linking",
       [
         "expo-splash-screen",
         {
