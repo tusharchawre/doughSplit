@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "native",
-    "slug": "native",
+    "slug": "doughsplit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -48,7 +48,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "e8cc92a9-9b4e-4e70-b773-002d99cdf051"
+        "projectId": "cd7d8317-91b1-4f36-81d1-cce62419fdb8"
       }
     },
     "owner": "tusharchawre0240"
