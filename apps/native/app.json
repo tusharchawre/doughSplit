@@ -10,7 +10,6 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tusharchawre.doughsplit",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -21,7 +20,7 @@
         "backgroundColor": "#ffffff"
       },
       "userInterfaceStyle": "automatic",
-      "package": "com.tusharchawre.doughsplit"
+      "package": "con.tusharchawre0240.doughsplit"
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +28,9 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-modules-core",
       "expo-router",
+      "expo-linking",
       [
         "expo-splash-screen",
         {
@@ -49,9 +50,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "be719e70-eaa1-4ec6-935a-9a291e88bd11"
+        "projectId": "e8cc92a9-9b4e-4e70-b773-002d99cdf051"
       }
     },
-    "owner": "tusharchawre"
+    "owner": "tusharchawre0240"
   }
 }
