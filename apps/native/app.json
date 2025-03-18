@@ -12,8 +12,7 @@
       "supportsTablet": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      },
-      "bundleIdentifier": "com.tusharchawre0240.doughsplit"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -49,7 +48,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "cd7d8317-91b1-4f36-81d1-cce62419fdb8"
+        "projectId": "c332bc23-5d38-4263-9b0c-a726570415ba"
       }
     },
     "owner": "tusharchawre0240"
