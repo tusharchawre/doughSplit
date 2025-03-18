@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "eas-build-pre-install": "pod repo update",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
@@ -65,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@react-native-community/cli": "^18.0.0",
     "@repo/database": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",
