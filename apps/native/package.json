@@ -78,5 +78,19 @@
     "react-test-renderer": "18.3.1",
     "typescript": "^5.3.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@gorhom/bottom-sheet",
+          "react-native-dropdown-select-list",
+          "react-native-css-interop",
+          "postinstall",
+          "patch-package"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
