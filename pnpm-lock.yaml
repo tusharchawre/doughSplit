@@ -117,6 +117,9 @@ importers:
       expo-linking:
         specifier: ~7.0.5
         version: 7.0.5(expo@52.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli-server-api@18.0.0)(@types/react@18.3.18)(react@18.3.1)))(graphql@15.8.0)(react-native-webview@13.12.5(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli-server-api@18.0.0)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli-server-api@18.0.0)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli-server-api@18.0.0)(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      expo-modules-autolinking:
+        specifier: '*'
+        version: 2.0.8
       expo-router:
         specifier: ~4.0.19
         version: 4.0.19(ekvnc5jm45csvniqwintubdv2m)
@@ -1287,7 +1290,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.22.20':
     resolution: {integrity: sha512-BU2ASlw0Gaj3ou/TxVsgvzK+XK8Z14Yq3mmLyvMcMAQrdExZLNmvMZ3A3x6q2uMgSJM3aoQBUuVXS/Ny+lYgDA==}
