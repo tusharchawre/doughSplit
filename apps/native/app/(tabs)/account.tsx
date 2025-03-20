@@ -149,6 +149,9 @@ export default function Account() {
           </View>
         ))}
       </View>
+      <Pressable onPress={()=>signOut()}>
+        <ThemedText>Sign Out</ThemedText>
+      </Pressable>
     </ScrollView>
   );
 }
