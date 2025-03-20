@@ -2,9 +2,11 @@
   "private": true,
   "scripts": {
     "dev": "turbo run dev",
+    "start:backend": "cd apps/backend && pnpm run dev",
     "build": "turbo run build",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
+    "prisma:generate": "cd packages/database && pnpm prisma generate"
   },
   "devDependencies": {
     "prettier": "^3.1.1",

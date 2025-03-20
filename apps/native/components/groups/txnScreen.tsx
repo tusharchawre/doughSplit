@@ -5,7 +5,7 @@ import { TxnCard } from "../Cards/txnCard";
 import {
   Animated,
   Dimensions,
-  RefreshControl, 
+  RefreshControl,
   View,
   ActivityIndicator,
   TouchableOpacity,
@@ -58,10 +58,10 @@ export function TxnScreen({ route }: { route: any }) {
   }
 
   const activeTransactions = txns.filter(
-    (txn) => txn.settledStatus === "PENDING"
+    (txn) => txn.settledStatus === "PENDING",
   );
   const settledTransactions = txns.filter(
-    (txn) => txn.settledStatus === "COMPLETED"
+    (txn) => txn.settledStatus === "COMPLETED",
   );
 
   return (
@@ -88,9 +88,8 @@ export function TxnScreen({ route }: { route: any }) {
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: true },
         )}
-          
       >
         <View className="mb-4">
           {activeTransactions.map((txn, index) => (

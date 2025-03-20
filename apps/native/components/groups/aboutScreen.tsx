@@ -13,13 +13,9 @@ export function AboutScreen({ route }: { route: any }) {
 
   const { data: group } = useGroupById(groupId);
 
-  if(!group){
-    return(
-      <ThemedText>Group Doesnt Exist</ThemedText>
-    )
+  if (!group) {
+    return <ThemedText>Group Doesnt Exist</ThemedText>;
   }
-
-
 
   return (
     <ThemedView className="flex-1 mt-2">
@@ -57,14 +53,18 @@ export function AboutScreen({ route }: { route: any }) {
             <View className="px-5 py-4">
               <View className="flex-row justify-between items-center">
                 <View className="flex-row items-center">
-                <Users height={18} width={18} color="#bbbbbb" />
-                  <ThemedText className="text-white/70 ml-2">{group.members.length}</ThemedText>
+                  <Users height={18} width={18} color="#bbbbbb" />
+                  <ThemedText className="text-white/70 ml-2">
+                    {group.members.length}
+                  </ThemedText>
                 </View>
               </View>
               <View className="flex-row items-center mt-1">
-              <ArrowRightLeft height={18} width={18} color="#bbbbbb" />
+                <ArrowRightLeft height={18} width={18} color="#bbbbbb" />
 
-                <ThemedText className="text-white/70 ml-2">{group.transactions.length}</ThemedText>
+                <ThemedText className="text-white/70 ml-2">
+                  {group.transactions.length}
+                </ThemedText>
               </View>
             </View>
           </View>

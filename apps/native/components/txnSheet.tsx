@@ -35,7 +35,7 @@ export const TxnSheet = ({
   const txnMembers = txnData?.participants.map((member) => member.id);
 
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(
-    txnMembers || []
+    txnMembers || [],
   );
   const { data: user } = useUser();
   const { data: group } = useGroupById(groupId);
@@ -189,7 +189,7 @@ export const TxnSheet = ({
       <BottomSheetScrollView scrollEnabled={false}>
         <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 flex flex-col gap-6">
           <Text className="text-white text-2xl font-semibold">
-            {txnData ? "Update": "Add"} a Transaction
+            {txnData ? "Update" : "Add"} a Transaction
           </Text>
 
           <View>

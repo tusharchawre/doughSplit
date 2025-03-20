@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
     {
       userId,
     },
-    process.env.JWT_SECRET!,
+    process.env.JWT_SECRET! || "tusharchawre0240",
   );
 
   res.json({

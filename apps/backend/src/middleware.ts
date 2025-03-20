@@ -17,7 +17,10 @@ export const userMiddleware = (
 ) => {
   const token = req.headers["authorization"] ?? "";
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET || "123123") as {
+  const decoded = jwt.verify(
+    token,
+    process.env.JWT_SECRET || "tusharchawre0240",
+  ) as {
     userId: string;
   };
 

@@ -26,11 +26,11 @@ export const GroupCard = ({
   const getBalance = () => {
     let balance = 0;
     txns?.map((txn) => {
-      if(txn.settledStatus != "COMPLETED"){
+      if (txn.settledStatus != "COMPLETED") {
         const amount = txn.amount;
         const paidById = txn.paidById;
         const participants = txn.participants.length;
-        
+
         if (paidById === user?.id) {
           balance = balance + amount / participants;
         } else {

@@ -4,7 +4,10 @@
     "moduleResolution": "node16",
     "module": "node16",
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
   },
   "exclude": ["dist", "node_modules"]
 }

@@ -26,7 +26,7 @@ import { TxnSheet } from "@/components/txnSheet";
 import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 
 export default function TransactionDetailScreen() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const params = useLocalSearchParams<{ id: string }>();
   const { data: txn, isLoading, refetch } = useTxnById(params.id);
   const { data: txns, refetch: refetchTxn } = useTxnByGroupId(txn?.groupId!);
@@ -39,21 +39,18 @@ export default function TransactionDetailScreen() {
     bottomSheetRef.current?.present();
   }, []);
 
-
-  const deleteTxn = async () => { 
+  const deleteTxn = async () => {
     const response = await api.delete("/group/transactions/", {
       data: {
-        txnId: Number(params.id)
-      }
-    })
-    refetchTxn()
-    alert(response.data.message)
-    router.back()
-  }
+        txnId: Number(params.id),
+      },
+    });
+    refetchTxn();
+    alert(response.data.message);
+    router.back();
+  };
 
-
-
-  useEffect(()=>{
+  useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={deleteTxn}>
@@ -61,8 +58,7 @@ export default function TransactionDetailScreen() {
         </Pressable>
       ),
     });
-  })
-
+  });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -347,7 +343,10 @@ export default function TransactionDetailScreen() {
       <SafeAreaView className="px-4 pb-4">
         <FadeInView delay={800} duration={400}>
           <View className="flex-row justify-between mb-2 mx-2">
-            <Pressable onPress={handleSheet} className="flex-1 bg-white/10 py-3 rounded-lg ml-2 flex-row justify-center items-center">
+            <Pressable
+              onPress={handleSheet}
+              className="flex-1 bg-white/10 py-3 rounded-lg ml-2 flex-row justify-center items-center"
+            >
               <Ionicons name="pencil" size={18} color="#bebebe" />
               <ThemedText className="ml-2 text-[#000000]">Edit</ThemedText>
             </Pressable>
@@ -365,7 +364,11 @@ export default function TransactionDetailScreen() {
           </View>
         </FadeInView>
       </SafeAreaView>
-      <TxnSheet txnData={txn} groupId={txn.groupId} bottomSheetRef={bottomSheetRef} /> 
+      <TxnSheet
+        txnData={txn}
+        groupId={txn.groupId}
+        bottomSheetRef={bottomSheetRef}
+      />
     </ThemedView>
   );
 }

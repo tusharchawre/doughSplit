@@ -1,9 +1,5 @@
 import { Stack } from "expo-router";
-import {
-  Pressable,
-  SafeAreaView,
-  useColorScheme,
-} from "react-native";
+import { Pressable, SafeAreaView, useColorScheme } from "react-native";
 import "@/global.css";
 import { SessionProvider } from "@/context/ctx";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

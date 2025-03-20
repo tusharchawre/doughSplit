@@ -41,7 +41,7 @@ router.get("/:txnId", async (req, res) => {
     },
     include: {
       participants: true,
-      shares: true
+      shares: true,
     },
   });
 
@@ -89,10 +89,11 @@ router.post("/add", userMiddleware, async (req, res) => {
       },
     });
 
-    const defaultShareAmount = (amount / participants.length);
+    const defaultShareAmount = amount / participants.length;
 
-    const sharePromises = participants.map(userId => {
-      const shareAmount = shares && shares[userId] ? shares[userId] : defaultShareAmount;
+    const sharePromises = participants.map((userId) => {
+      const shareAmount =
+        shares && shares[userId] ? shares[userId] : defaultShareAmount;
 
       return prisma.share.create({
         data: {
@@ -100,7 +101,7 @@ router.post("/add", userMiddleware, async (req, res) => {
           userId,
           amount: shareAmount,
           isSettled: userId === paidById,
-        }
+        },
       });
     });
 
@@ -111,7 +112,7 @@ router.post("/add", userMiddleware, async (req, res) => {
 
   res.json({
     message: "Transaction Created Successfully",
-    ...result
+    ...result,
   });
 });
 
@@ -119,10 +120,10 @@ router.delete("/", userMiddleware, async (req, res) => {
   const { txnId } = req.body;
 
   await prismaClient.share.deleteMany({
-    where:{
-      transactionId: txnId
-    }
-  })
+    where: {
+      transactionId: txnId,
+    },
+  });
 
   await prismaClient.transaction.delete({
     where: {
@@ -182,59 +183,59 @@ router.put("/", userMiddleware, async (req, res) => {
 
 router.post("/settle-share", userMiddleware, async (req, res) => {
   const { transactionId } = req.body;
-  const userId = req.userId!
+  const userId = req.userId!;
 
   try {
     const share = await prismaClient.share.findUnique({
       where: {
         transactionId_userId: {
           transactionId,
-          userId
-        }
-      }
+          userId,
+        },
+      },
     });
 
     if (!share) {
       res.status(404).json({
-        error: "Share not found"
+        error: "Share not found",
       });
       return;
     }
 
     const updatedShare = await prismaClient.share.update({
       where: {
-        id: share.id
+        id: share.id,
       },
       data: {
         isSettled: true,
-        settledAt: new Date()
-      }
+        settledAt: new Date(),
+      },
     });
 
     const settlement = await prismaClient.settlement.create({
       data: {
         transactionId,
         paidById: userId,
-        amount: share.amount
-      }
+        amount: share.amount,
+      },
     });
 
     const allShares = await prismaClient.share.findMany({
       where: {
-        transactionId
-      }
+        transactionId,
+      },
     });
 
-    const allSettled = allShares.every(s => s.isSettled);
+    const allSettled = allShares.every((s) => s.isSettled);
 
     if (allSettled) {
       await prismaClient.transaction.update({
         where: {
-          id: transactionId
+          id: transactionId,
         },
         data: {
-          settledStatus: "COMPLETED"
-        }
+          settledStatus: "COMPLETED",
+        },
       });
     }
 
@@ -242,12 +243,12 @@ router.post("/settle-share", userMiddleware, async (req, res) => {
       message: "Share settled successfully",
       share: updatedShare,
       settlement,
-      transactionCompleted: allSettled
+      transactionCompleted: allSettled,
     });
   } catch (error) {
     console.error("Error settling share:", error);
     res.status(500).json({
-      error: "Failed to settle share"
+      error: "Failed to settle share",
     });
   }
 });
@@ -257,15 +258,15 @@ router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
 
   if (!userId) {
     res.status(400).json({
-      error: "User ID is required"
+      error: "User ID is required",
     });
-    return
+    return;
   }
 
   try {
     const query: any = {
       userId,
-      isSettled: false
+      isSettled: false,
     };
 
     const transactionQuery: any = {};
@@ -280,23 +281,23 @@ router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
 
     if (Object.keys(transactionQuery).length > 0) {
       query.transaction = {
-        some: transactionQuery
+        some: transactionQuery,
       };
     }
 
     const shares = await prismaClient.share.findMany({
       where: query,
       include: {
-        transaction: true
-      }
+        transaction: true,
+      },
     });
 
     if (shares.length === 0) {
-     res.json({
+      res.json({
         message: "No unsettled shares found",
-        settledCount: 0
+        settledCount: 0,
       });
-      return
+      return;
     }
 
     const results = [];
@@ -307,40 +308,40 @@ router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
       try {
         const updatedShare = await prismaClient.share.update({
           where: {
-            id: share.id
+            id: share.id,
           },
           data: {
             isSettled: true,
-            settledAt: new Date()
-          }
+            settledAt: new Date(),
+          },
         });
 
         const settlement = await prismaClient.settlement.create({
           data: {
             transactionId: share.transactionId,
             paidById: userId,
-            amount: share.amount
-          }
+            amount: share.amount,
+          },
         });
 
         totalAmount += share.amount;
 
         const allShares = await prismaClient.share.findMany({
           where: {
-            transactionId: share.transactionId
-          }
+            transactionId: share.transactionId,
+          },
         });
 
-        const allSettled = allShares.every(s => s.isSettled);
+        const allSettled = allShares.every((s) => s.isSettled);
 
         if (allSettled) {
           await prismaClient.transaction.update({
             where: {
-              id: share.transactionId
+              id: share.transactionId,
             },
             data: {
-              settledStatus: "COMPLETED"
-            }
+              settledStatus: "COMPLETED",
+            },
           });
         }
 
@@ -348,43 +349,42 @@ router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
           transactionId: share.transactionId,
           shareId: share.id,
           amount: share.amount,
-          transactionCompleted: allSettled
+          transactionCompleted: allSettled,
         });
       } catch (error) {
         console.error(`Error settling share ${share.id}:`, error);
         errors.push({
           shareId: share.id,
           transactionId: share.transactionId,
-          error: "Failed to settle share"
+          error: "Failed to settle share",
         });
       }
     }
 
-  res.json({
+    res.json({
       message: "Bulk settlement processed for user",
       totalAmount,
       settledCount: results.length,
       errorCount: errors.length,
       results,
-      errors
+      errors,
     });
   } catch (error) {
     console.error("Bulk settlement error:", error);
-   res.status(500).json({
-      error: "Failed to process bulk settlement for user"
+    res.status(500).json({
+      error: "Failed to process bulk settlement for user",
     });
   }
 });
-
 
 router.post("/settle-with-friend", userMiddleware, async (req, res) => {
   const { userId, friendId } = req.body;
 
   if (!userId || !friendId) {
     res.status(400).json({
-      error: "Both user ID and friend ID are required"
+      error: "Both user ID and friend ID are required",
     });
-    return
+    return;
   }
 
   try {
@@ -393,12 +393,12 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
         userId,
         isSettled: false,
         transaction: {
-          paidById: friendId
-        }
+          paidById: friendId,
+        },
       },
       include: {
-        transaction: true
-      }
+        transaction: true,
+      },
     });
 
     const sharesOwedByFriend = await prismaClient.share.findMany({
@@ -406,25 +406,30 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
         userId: friendId,
         isSettled: false,
         transaction: {
-          paidById: userId
-        }
+          paidById: userId,
+        },
       },
       include: {
-        transaction: true
-      }
+        transaction: true,
+      },
     });
 
     if (sharesOwedToFriend.length === 0 && sharesOwedByFriend.length === 0) {
       res.json({
         message: "No unsettled shares found between these users",
-        settledCount: 0
+        settledCount: 0,
       });
-      return
+      return;
     }
 
-
-    const amountUserOwesFriend = sharesOwedToFriend.reduce((sum, share) => sum + share.amount, 0);
-    const amountFriendOwesUser = sharesOwedByFriend.reduce((sum, share) => sum + share.amount, 0);
+    const amountUserOwesFriend = sharesOwedToFriend.reduce(
+      (sum, share) => sum + share.amount,
+      0,
+    );
+    const amountFriendOwesUser = sharesOwedByFriend.reduce(
+      (sum, share) => sum + share.amount,
+      0,
+    );
     const netAmount = amountUserOwesFriend - amountFriendOwesUser;
 
     const results = [];
@@ -436,28 +441,28 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
           where: { id: share.id },
           data: {
             isSettled: true,
-            settledAt: new Date()
-          }
+            settledAt: new Date(),
+          },
         });
 
         const settlement = await prismaClient.settlement.create({
           data: {
             transactionId: share.transactionId,
             paidById: payerId,
-            amount: share.amount
-          }
+            amount: share.amount,
+          },
         });
 
         const allShares = await prismaClient.share.findMany({
-          where: { transactionId: share.transactionId }
+          where: { transactionId: share.transactionId },
         });
 
-        const allSettled = allShares.every(s => s.isSettled);
+        const allSettled = allShares.every((s) => s.isSettled);
 
         if (allSettled) {
           await prismaClient.transaction.update({
             where: { id: share.transactionId },
-            data: { settledStatus: "COMPLETED" }
+            data: { settledStatus: "COMPLETED" },
           });
         }
 
@@ -465,7 +470,7 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
           transactionId: share.transactionId,
           shareId: share.id,
           amount: share.amount,
-          transactionCompleted: allSettled
+          transactionCompleted: allSettled,
         };
       } catch (error) {
         throw error;
@@ -482,7 +487,7 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
           errors.push({
             shareId: share.id,
             transactionId: share.transactionId,
-            error: "Failed to settle share"
+            error: "Failed to settle share",
           });
         }
       }
@@ -496,14 +501,15 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
           errors.push({
             shareId: share.id,
             transactionId: share.transactionId,
-            error: "Failed to settle share"
+            error: "Failed to settle share",
           });
         }
       }
     } else {
       for (const share of [...sharesOwedToFriend, ...sharesOwedByFriend]) {
         try {
-          const payerId = share.transaction.paidById === userId ? friendId : userId;
+          const payerId =
+            share.transaction.paidById === userId ? friendId : userId;
           const result = await settleShare(share, payerId);
           results.push(result);
         } catch (error) {
@@ -511,7 +517,7 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
           errors.push({
             shareId: share.id,
             transactionId: share.transactionId,
-            error: "Failed to settle share"
+            error: "Failed to settle share",
           });
         }
       }
@@ -520,16 +526,21 @@ router.post("/settle-with-friend", userMiddleware, async (req, res) => {
     res.json({
       message: "Settlement between users processed",
       netAmount: Math.abs(netAmount),
-      direction: netAmount > 0 ? `${userId} paid ${friendId}` : netAmount < 0 ? `${friendId} paid ${userId}` : "Equal settlement",
+      direction:
+        netAmount > 0
+          ? `${userId} paid ${friendId}`
+          : netAmount < 0
+            ? `${friendId} paid ${userId}`
+            : "Equal settlement",
       settledCount: results.length,
       errorCount: errors.length,
       results,
-      errors
+      errors,
     });
   } catch (error) {
     console.error("Settlement between users error:", error);
-   res.status(500).json({
-      error: "Failed to process settlement between users"
+    res.status(500).json({
+      error: "Failed to process settlement between users",
     });
   }
 });

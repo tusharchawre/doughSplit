@@ -149,9 +149,6 @@ export default function Account() {
           </View>
         ))}
       </View>
-
-      
-
     </ScrollView>
   );
 }
