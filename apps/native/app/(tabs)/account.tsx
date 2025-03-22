@@ -22,7 +22,7 @@ export default function Account() {
     if (!user?.involvedIn) return 0;
     return user.involvedIn
       .filter(
-        (txn) => txn.settledStatus === "PENDING" && txn.paidById === user.id,
+        (txn) => txn.settledStatus === "PENDING" && txn.paidById === user.id
       )
       .reduce((sum, txn) => sum + txn.amount / txn.participants.length, 0);
   };
@@ -148,10 +148,13 @@ export default function Account() {
             </View>
           </View>
         ))}
+        <Pressable
+          className="flex items-center justify-center w-full py-2 rounded-lg bg-white/5 my-4"
+          onPress={() => signOut()}
+        >
+          <ThemedText className="text-rose-500">Sign Out</ThemedText>
+        </Pressable>
       </View>
-      <Pressable onPress={()=>signOut()}>
-        <ThemedText>Sign Out</ThemedText>
-      </Pressable>
     </ScrollView>
   );
 }

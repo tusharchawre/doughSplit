@@ -22,3 +22,4 @@ jobs:
           file: Dockerfile
           push: true
           tags: tusharchawre0240/doughsplit:${{ github.sha }}
+          build-args: DATABASE_URL=${{ secrets.DATABASE_URL }}

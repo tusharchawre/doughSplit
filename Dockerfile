@@ -3,6 +3,11 @@ FROM node:20-alpine
 WORKDIR /app
 RUN npm install -g pnpm@latest typescript
 
+ARG DATABASE_URL
+
+# Set for prisma:generate during build
+ENV DATABASE_URL=${DATABASE_URL}
+
 # First copy workspace configuration
 COPY package*.json ./
 COPY pnpm-workspace.yaml ./

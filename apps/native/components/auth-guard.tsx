@@ -1,13 +1,18 @@
-import SignIn from "@/app/sign-in";
 import { useSession } from "@/context/ctx";
-import { Redirect } from "expo-router";
+import { Redirect, usePathname } from "expo-router";
 import { PropsWithChildren } from "react";
 
-export function AuthGuard({ children }: PropsWithChildren) {
+export function AuthGuard({ children, publicRoutes = ["/sign-in", "/sign-up"] }: PropsWithChildren<{
+  publicRoutes?: string[];
+}>) {
   const { session, isLoading } = useSession();
-
+  const currentPath = usePathname(); 
   if (isLoading) {
     return null;
+  }
+
+  if (publicRoutes.includes(currentPath)) {
+    return children;
   }
 
   if (!session) {

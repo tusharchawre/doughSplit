@@ -111,6 +111,21 @@ router.delete("/", userMiddleware, async (req, res) => {
     },
   });
 
+  const unsettledTxn = await prismaClient.transaction.findMany({
+    where: {
+      groupId,
+      settledStatus: "PENDING"
+    }
+  })
+
+  if (unsettledTxn.length > 0) {
+    res.status(400).json({
+      error: "There are unsettled transactions in the group. Please settle them before deleting the group."
+    });
+    return
+  }
+
+
   if (!group) {
     res.json({
       error: "Group Doesnt Exist",
@@ -127,10 +142,32 @@ router.delete("/", userMiddleware, async (req, res) => {
     return;
   }
 
-  await prismaClient.group.delete({
-    where: {
-      id: groupId,
-    },
+  await prismaClient.$transaction(async (tx) => {
+    await tx.share.deleteMany({
+      where: {
+        transaction: {
+          groupId
+        }
+      }
+    });
+    await tx.settlement.deleteMany({
+      where: {
+        transaction: {
+          groupId
+        }
+      }
+    });
+    await tx.transaction.deleteMany({
+      where: {
+        groupId
+      }
+    });
+
+    await tx.group.delete({
+      where: {
+        id: groupId
+      }
+    });
   });
 
   res.json({
@@ -169,5 +206,60 @@ router.put("/", userMiddleware, async (req, res) => {
     group,
   });
 });
+
+router.post("/leave-group", async (req, res) => {
+  const groupId = req.body.groupId
+
+  const userId = req.userId
+
+  const unsettledTxn = await prismaClient.share.findMany({
+    where: {
+      userId,
+      transaction: {
+        groupId: groupId
+      },
+      isSettled: false
+    }
+  })
+
+  if (unsettledTxn.length > 0) {
+    const totalOwed = unsettledTxn.reduce((sum, share) => sum + share.amount, 0);
+    res.json({
+      message: `Cannot leave group: You have ${unsettledTxn.length} unsettled transactions totaling ${totalOwed}`
+    });
+  }
+
+  const updateGroup = await prismaClient.group.update({
+    where: {
+      id: groupId
+    },
+    data: {
+      members: {
+        disconnect: {
+          id: userId
+        }
+      }
+    },
+    include: {
+      members: true
+    }
+  })
+
+  if (updateGroup.members.length === 0) {
+    await prismaClient.group.delete({
+      where: {
+        id: groupId
+      }
+    })
+  }
+
+  res.json({
+    message: "You have sucessfully left the group!"
+  })
+
+
+
+})
+
 
 export { router as GroupRouter };

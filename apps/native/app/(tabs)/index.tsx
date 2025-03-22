@@ -31,7 +31,7 @@ export default function Groups() {
     );
   }
 
-  if (!groups) {
+  if (!groups || groups.length == 0) {
     return (
       <ThemedView className="flex-1 justify-center items-center p-4">
         <ThemedText className="text-center">

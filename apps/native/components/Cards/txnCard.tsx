@@ -71,7 +71,7 @@ export const TxnCard = ({
                     : "dark:text-[#ff8800] text-[#ff8800]"
                 }
               >
-                ₹ {amountPerPerson}
+                ₹ {amount - amountPerPerson}
               </Text>
             </View>
           </View>

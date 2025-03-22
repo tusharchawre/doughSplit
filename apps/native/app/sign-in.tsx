@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable } from "react-native";
 import { useSession } from "@/context/ctx";
-import axios from "axios";
 import { router } from "expo-router";
 import api from "@/lib/axios";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading , setLoading] = useState(false)
 
   const { signIn } = useSession();
 
   const handleSignIn = async () => {
+    setLoading(true)
     try {
       const response = await api.post("/user/login", {
         email,
@@ -27,9 +30,11 @@ export default function SignIn() {
       if (response.data.token) {
         signIn(response.data.token);
         router.replace("/(tabs)");
+        setLoading(false)
       }
     } catch (err) {
       setError("Failed to sign in");
+      setLoading(false)
       console.error(err);
     }
   };
@@ -58,9 +63,15 @@ export default function SignIn() {
         secureTextEntry
       />
 
-      <Pressable className="bg-white p-4 rounded-lg" onPress={handleSignIn}>
-        <Text className="text-black text-center font-semibold">Sign In</Text>
+      <Pressable disabled={loading} className="bg-white p-4 rounded-lg" onPress={handleSignIn}>
+        <Text  className="text-black text-center font-semibold">
+        {loading ? `Signing in...` : "Sign In"}
+          </Text>
       </Pressable>
+
+      <ThemedView className="w-full items-center justify-center my-4">
+      <ThemedText onPress={()=>router.push("/sign-up")} type="link" >Dont have an account? Sign Up</ThemedText>
+      </ThemedView>
     </View>
   );
 }
