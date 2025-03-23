@@ -15,6 +15,10 @@ import { ThemedText } from "@/components/ThemedText";
 
 const queryClient = new QueryClient();
 
+export const handleRefetchAll = () => {
+  queryClient.refetchQueries();
+};
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 

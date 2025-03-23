@@ -14,6 +14,7 @@ import { useGroupById } from "@/hooks/getGroupById";
 import { useOwedInGroup } from "@/hooks/getOwedinGrp";
 import api from "@/lib/axios";
 import { useState, useEffect } from "react";
+import { handleRefetchAll } from "../_layout";
 
 interface Balance {
   userId: string;
@@ -35,6 +36,10 @@ export default function Route() {
 
   const { data: group, refetch } = useGroupById(groupId);
   const { data: balances, refetch: refetchBalance } = useOwedInGroup(groupId);
+
+
+  
+  
 
   // Clear success states when balances change
   useEffect(() => {
@@ -60,8 +65,7 @@ export default function Route() {
       
       // Refetch data after a short delay
       setTimeout(async () => {
-        await refetchBalance();
-        await refetch();
+        handleRefetchAll()
         // Clear success state
         setSuccessUsers(prev => ({ ...prev, [userId]: false }));
       }, 1500);

@@ -7,6 +7,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Animated } from "react-native";
 import { FadeInView } from "@/components/animations/FadeInView";
+import { handleRefetchAll } from "../_layout";
 
 export default function Groups() {
   const { data: user, refetch, isPending } = useUser();
@@ -16,6 +17,7 @@ export default function Groups() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch();
+    handleRefetchAll()
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);
