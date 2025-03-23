@@ -108,6 +108,7 @@ export function AboutScreen({ route }: { route: any }) {
         nestedScrollEnabled={true}
         style={{ flex: 1 }}
         className="pt-4 "
+        
       >
         <View
           key="header"

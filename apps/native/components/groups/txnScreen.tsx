@@ -13,6 +13,7 @@ import {
 import { useCallback, useState, useRef } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FadeInView } from "../animations/FadeInView";
+import { useOwedInGroup } from "@/hooks/getOwedinGrp";
 
 const { width } = Dimensions.get("window");
 
@@ -22,10 +23,13 @@ export function TxnScreen({ route }: { route: any }) {
   const [refreshing, setRefreshing] = useState(false);
   const [showSettled, setShowSettled] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { data: balances, refetch: refetchBalance } = useOwedInGroup(groupId);
+
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch();
+    refetchBalance()
     setTimeout(() => {
       setRefreshing(false);
     }, 1500);

@@ -254,7 +254,8 @@ router.post("/settle-share", userMiddleware, async (req, res) => {
 });
 
 router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
-  const { userId, groupId, friendId } = req.body;
+  const userId = req.userId
+  const {  groupId, friendId } = req.body;
 
   if (!userId) {
     res.status(400).json({
@@ -280,9 +281,7 @@ router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
     }
 
     if (Object.keys(transactionQuery).length > 0) {
-      query.transaction = {
-        some: transactionQuery,
-      };
+      query.transaction = transactionQuery;
     }
 
     const shares = await prismaClient.share.findMany({
