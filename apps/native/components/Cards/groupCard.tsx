@@ -3,6 +3,7 @@ import { ThemedText } from "../ThemedText";
 import { useGroupById } from "@/hooks/getGroupById";
 import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import { useUser } from "@/hooks/getUser";
+import { useOwedInGroup } from "@/hooks/getOwedinGrp";
 
 interface GroupCardProps {
   id: string;
@@ -19,29 +20,18 @@ export const GroupCard = ({
   onPress,
   amount = 0,
 }: GroupCardProps) => {
-  const { data: user } = useUser();
-
-  const { data: txns } = useTxnByGroupId(id);
+  const { data: balances } = useOwedInGroup(id);
 
   const getBalance = () => {
-    let balance = 0;
-    txns?.map((txn) => {
-      if (txn.settledStatus != "COMPLETED") {
-        const amount = txn.amount;
-        const paidById = txn.paidById;
-        const participants = txn.participants.length;
-
-        if (paidById === user?.id) {
-          balance = balance + amount / participants;
-        } else {
-          balance = balance - amount / participants;
-        }
-      }
+    let netBalance = 0;
+    balances?.map((balance: any) => {
+      netBalance += balance.balance;
     });
-    return balance;
+
+    return netBalance;
   };
 
-  const balance: number = getBalance();
+  const netBalance: number = getBalance();
 
   return (
     <Pressable onPress={onPress}>
@@ -58,19 +48,21 @@ export const GroupCard = ({
             <ThemedText className="text-white text-xl font-semibold">
               {groupName}
             </ThemedText>
-            {balance != 0 ? (
+            {netBalance != 0 ? (
               <ThemedText type="subtitle" className="mt-1">
-                {balance >= 0 ? "You lent" : "You burrowed"}
+                {netBalance >= 0 ? "You lent" : "You burrowed"}
                 <Text
                   className={
-                    balance >= 0
+                    netBalance >= 0
                       ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
                       : "dark:text-[#FF9A9A] text-[#FF5757]"
                   }
                 >
                   {" "}
                   ₹
-                  {balance < 0 ? (balance * -1).toFixed(2) : balance.toFixed(2)}
+                  {netBalance < 0
+                    ? (netBalance * -1).toFixed(2)
+                    : netBalance.toFixed(2)}
                 </Text>
               </ThemedText>
             ) : (

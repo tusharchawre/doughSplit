@@ -63,7 +63,7 @@ export const ActivityCard = ({
 
   const isCurrentUserPayer = currentUser?.id === paidById;
 
-  const isOwed = !isCurrentUserPayer;
+  const isOwed = isCurrentUserPayer;
 
   const handlePress = () => {
     if (onPress) {
@@ -158,7 +158,7 @@ export const ActivityCard = ({
                       }`}
                     >
                       {currency === "INR" ? "₹" : "$"}
-                      {(amount / participants).toFixed(2)}
+                      {(amount - (amount / participants)).toFixed(2)}
                     </Text>
                   </View>
 

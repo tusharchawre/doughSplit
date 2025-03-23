@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import Groups from ".";
 
 export default function Account() {
   const { data: user } = useUser();
@@ -75,6 +76,18 @@ export default function Account() {
 
       <View className="mb-5">
         <ThemedText className="text-xl font-bold mb-3">My Groups</ThemedText>
+        {user?.group.length === 0 ? (
+          <View className="w-full rounded-xl bg-white/5 mb-4">
+          <View className="px-4 py-3">
+            <ThemedText className="text-white/70">
+              No groups to show
+            </ThemedText>
+          </View>
+          </View>
+        ) : (
+          ""
+        )}
+
         {user?.group?.map((group) => (
           <Pressable
             key={group.id}
@@ -104,6 +117,19 @@ export default function Account() {
         <ThemedText className="text-xl font-bold mb-3">
           Recent Transactions
         </ThemedText>
+
+        {user?.involvedIn.length === 0 ? (
+          <View className="w-full rounded-xl bg-white/5 mb-4">
+          <View className="px-4 py-3">
+            <ThemedText className="text-white/70">
+              No balances to show
+            </ThemedText>
+          </View>
+          </View>
+        ) : (
+          ""
+        )}
+
         {user?.involvedIn?.slice(0, 3).map((txn) => (
           <View
             key={txn.id}

@@ -3,6 +3,8 @@ import { Image, Pressable, Text, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "expo-router";
+import { useTxnById } from "@/hooks/useTxnById";
+import { useUser } from "@/hooks/getUser";
 
 interface TxnCard extends Transaction {
   userId: string;
@@ -22,7 +24,8 @@ export const TxnCard = ({
   groupId,
 }: TxnCard) => {
   const isPayer = paidById === userId;
-
+  const { data: txn, isLoading, refetch } = useTxnById(id.toString());
+  const {data: user} = useUser()
   const router = useRouter();
 
   const amountPerPerson =
@@ -71,7 +74,8 @@ export const TxnCard = ({
                     : "dark:text-[#ff8800] text-[#ff8800]"
                 }
               >
-                ₹ {amount - amountPerPerson}
+                ₹ {txn?.shares!.find((s) => s.userId === user?.id)
+                ?.amount.toFixed(2)}
               </Text>
             </View>
           </View>

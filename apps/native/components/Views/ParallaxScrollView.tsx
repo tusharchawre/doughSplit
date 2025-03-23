@@ -12,7 +12,7 @@ import { useColorScheme } from "@/hooks/themes/useColorScheme";
 import { ThemedText } from "../ThemedText";
 import { Check, Plus } from "lucide-react-native";
 
-const HEADER_HEIGHT = 250;
+const HEADER_HEIGHT = 200;
 const FADE_SCROLL_DISTANCE = 200;
 
 type Props = PropsWithChildren<{
@@ -86,13 +86,13 @@ export default function ParallaxScrollView({
         <Animated.View style={[headerBaseStyle, headerAnimatedStyle]}>
           {headerImage}
         </Animated.View>
-        <ThemedView className="flex-1 mt-16 px-8 py-10 gap-4">
+        <ThemedView className="flex-1 mt-14 px-8 py-10 gap-4">
           {children}
         </ThemedView>
 
         <Animated.View
           style={[imageAnimatedStyle]}
-          className="absolute flex-1 bg-white h-28 w-28 top-[220px] left-8 rounded-xl overflow-hidden shadow-md"
+          className="absolute flex-1 bg-white h-28 w-28 top-[170px] left-8 rounded-xl overflow-hidden shadow-md"
         >
           <Image
             source={{
@@ -104,7 +104,7 @@ export default function ParallaxScrollView({
 
         <Animated.View
           style={[buttonAnimatedStyle]}
-          className="absolute top-[270px] right-4"
+          className="absolute top-[220px] right-4"
         >
           <Pressable
             className="bg-white/10 px-4 py-2 rounded-md flex-row items-center justify-center gap-2"

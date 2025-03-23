@@ -49,7 +49,7 @@ export default function RootLayout() {
                       gestureEnabled: true,
                     }}
                   />
-                  
+
                   <Stack.Screen
                     name="friend/add"
                     options={{
@@ -60,6 +60,20 @@ export default function RootLayout() {
                       gestureEnabled: true,
                     }}
                   />
+
+                  <Stack.Screen
+                  name="settle/[id]"
+                  options={{
+                    headerShown: true,
+                    headerBackButtonDisplayMode: "minimal",
+                    headerTransparent: true,
+                    headerTitle: "",
+                    gestureEnabled: true,
+                  }}
+                   />
+
+
+                
 
                   <Stack.Screen
                     name="group/txn/[id]"

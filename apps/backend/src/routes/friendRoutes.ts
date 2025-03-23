@@ -63,6 +63,7 @@ router.post("/add", userMiddleware, async (req, res) => {
 
     if (!friendExists) {
         res.status(404).json({ message: "Friend not found" });
+        return;
     }
 
     const user = await prismaClient.user.findUnique({
@@ -73,7 +74,32 @@ router.post("/add", userMiddleware, async (req, res) => {
     const alreadyFriends = user?.friends.some(friend => friend.id === friendId);
     
     if (alreadyFriends) {
-        res.json({ message: "Friend Already Exists!" });
+      const updatedUser = await prismaClient.user.update({
+        where: { id: userId },
+        data: {
+          friends: {
+            disconnect: [{ id: friendId }]
+          }
+        },
+        include: {
+          friends: true
+        }
+      });
+
+      const updateFriend = await prismaClient.user.update({
+        where: { id: friendId },
+        data: {
+          friends: {
+            disconnect: [{ id: userId }]
+          }
+        },
+        include: {
+          friends: true
+        }
+      });
+
+        res.json({ message: "Remove Friend!" });
+        return
     }
 
     const updatedUser = await prismaClient.user.update({

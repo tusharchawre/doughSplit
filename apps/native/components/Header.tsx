@@ -4,21 +4,24 @@ import { useCallback } from "react";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
-import { useUser } from "@/hooks/getUser";
-import { useTxnByGroupId } from "@/hooks/getTxnByGroupId";
+import { useNetBalances } from "@/hooks/getNetBalances";
 
 interface HeaderProps {
   bottomSheetRef: React.RefObject<BottomSheetModalMethods>;
 }
 
 export default function Header({ bottomSheetRef }: HeaderProps) {
-  const { data: user } = useUser();
-  const groups = user?.group;
   const openBottomSheet = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
 
-  let balance = 0;
+  const { data, isLoading } = useNetBalances();
+
+  const totalBalance = data?.totalNetBalance || 0;
+
+  const isPositiveBalance = totalBalance >= 0;
+  const displayAmount = Math.abs(totalBalance).toFixed(2);
+  const balanceLabel = isPositiveBalance ? "You lent" : "You borrowed";
 
   return (
     <ThemedView className="flex mt-12 flex-row items-center justify-between px-4 py-4">
@@ -30,16 +33,15 @@ export default function Header({ bottomSheetRef }: HeaderProps) {
           DoughSplit
         </ThemedText>
         <ThemedText type="subtitle">
-          {balance > 0 ? "You lent" : "You burrowed"}
+          {isLoading ? "Loading..." : balanceLabel}
           <Text
             className={
-              balance > 0
+              isPositiveBalance
                 ? "dark:text-[#ADFFB1BF] text-[#51ff20]"
                 : "dark:text-[#FF9A9A] text-[#FF5757]"
             }
           >
-            {" "}
-            ₹{balance < 0 ? (balance * -1).toFixed(2) : balance.toFixed(2)}
+            {isLoading ? "" : ` ₹${displayAmount}`}
           </Text>
         </ThemedText>
       </ThemedView>

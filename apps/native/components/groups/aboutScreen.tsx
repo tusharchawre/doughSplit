@@ -33,7 +33,7 @@ export function AboutScreen({ route }: { route: any }) {
   }
 
   const handleBulkSettle = async () => {
-    console.log("[ress");
+    router.push(`/settle/${groupId}`)
   };
 
   const handleLeave = async () => {
@@ -99,8 +99,16 @@ export function AboutScreen({ route }: { route: any }) {
   };
 
   return (
-    <ThemedView className="flex-1 mt-2">
-      <ScrollView className="pt-4">
+    <ThemedView style={{ flex: 1 }} className="relative mt-2">
+      <ScrollView
+        contentContainerStyle={{
+          paddingTop: 10,
+          paddingBottom: 30,
+        }}
+        nestedScrollEnabled={true}
+        style={{ flex: 1 }}
+        className="pt-4 "
+      >
         <View
           key="header"
           className="bg-white/10 rounded-2xl overflow-hidden mb-5"

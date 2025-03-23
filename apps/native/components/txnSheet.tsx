@@ -37,7 +37,7 @@ export const TxnSheet = ({
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(
     txnMembers || [],
   );
-  const { data: user } = useUser();
+  const { data: user , refetch: refetchUser } = useUser();
   const { data: group } = useGroupById(groupId);
   const { refetch: refetchTxns } = useTxnByGroupId(groupId);
 
@@ -107,12 +107,12 @@ export const TxnSheet = ({
           txnId: txnData.id,
         });
 
-        console.log(response.data);
 
         if (response.data.txn) {
           setTxnName("");
           setAmount("");
           setSelectedMemberIds([]);
+          refetchUser()
           refetchTxns();
           refreshTxn();
           bottomSheetRef.current?.close();
@@ -164,6 +164,7 @@ export const TxnSheet = ({
           setTxnName("");
           setAmount("");
           setSelectedMemberIds([]);
+          refetchUser()
           refetchTxns();
           bottomSheetRef.current?.close();
           alert("Transaction added successfully");

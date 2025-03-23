@@ -7,16 +7,17 @@ import { ScrollView, Text, View } from "react-native";
 
 export default function Activity() {
   const { data: user } = useUser();
-  const transactions = user?.involvedIn;
+  const transactions = user?.involvedIn.toReversed();
 
   if (!transactions || transactions.length === 0) {
-    return (
-      <View className="bg-black text-white flex-1">
-        <Text className="text-white text-xl">
-          There are no transactions here.
-        </Text>
-      </View>
-    );
+      return (
+        <ThemedView className="flex-1 justify-center items-center p-4">
+          <ThemedText className="text-center">
+            You dont have any transactions yet.
+          </ThemedText>
+        </ThemedView>
+      );
+
   }
 
   return (

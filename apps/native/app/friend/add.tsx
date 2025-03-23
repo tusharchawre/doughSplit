@@ -7,34 +7,40 @@ import { useState, useEffect } from "react";
 import { User, useUser } from "@/hooks/getUser";
 import api from "@/lib/axios";
 
-
 export default function AddScreen() {
   const { data: users } = useAllUsers();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false)
-  const { data: user , refetch: refetchUser } = useUser();
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const { data: user, refetch: refetchUser } = useUser();
 
   useEffect(() => {
     if (users) {
-        const requiredUsers = users.filter(friend => user?.id != friend.id)
+      const requiredUsers = users.filter(friend => user?.id != friend.id);
       setFilteredUsers(requiredUsers);
     }
-  }, [users]);
+  }, [users, user]);
 
   const handleAddFriend = async (friendId: string) => {
-    setLoading(true)
-    const response = await api.post("/user/friends/add", {
+    // Set loading state for this specific friend
+    setLoadingStates(prev => ({ ...prev, [friendId]: true }));
+    
+    try {
+      const response = await api.post("/user/friends/add", {
         friendId
-    })
+      });
 
+      await refetchUser();
 
-    refetchUser()
-
-    setLoading(false)
-
-    if(response.data.message == "Friends Created!"){
-        alert("You are friends now!")
+      if (response.data.message == "Friends Created!") {
+        alert("You are friends now!");
+      }
+    } catch (error) {
+      console.error("Error adding/removing friend:", error);
+      alert("Failed to update friend status. Please try again.");
+    } finally {
+      // Clear loading state for this specific friend
+      setLoadingStates(prev => ({ ...prev, [friendId]: false }));
     }
   };
 
@@ -48,6 +54,18 @@ export default function AddScreen() {
     );
 
     setFilteredUsers(filtered);
+  };
+
+  const getButtonText = (userId: string) => {
+    if (loadingStates[userId]) {
+      return user?.friends.some((friend) => friend.id === userId) 
+        ? "Removing..." 
+        : "Adding...";
+    }
+    
+    return user?.friends.some((friend) => friend.id === userId) 
+      ? "Remove" 
+      : "Add";
   };
 
   return (
@@ -82,11 +100,13 @@ export default function AddScreen() {
                 <ThemedText>{item.username}</ThemedText>
               </View>
 
-              <Pressable onPress={()=>handleAddFriend(item.id)} className="bg-white/20  px-2 py-1 rounded-md">
+              <Pressable 
+                onPress={() => handleAddFriend(item.id)}
+                disabled={loadingStates[item.id]}
+                className={`${loadingStates[item.id] ? 'bg-white/10' : 'bg-white/20'} px-2 py-1 rounded-md`}
+              >
                 <ThemedText>
-                  {user?.friends.some((friend) => friend.id === item.id)
-                    ? (loading ? "Removing...": "Remove")
-                    : (loading ? "Adding...": "Add")}
+                  {getButtonText(item.id)}
                 </ThemedText>
               </Pressable>
             </View>
