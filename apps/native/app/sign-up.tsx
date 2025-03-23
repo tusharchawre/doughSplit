@@ -80,7 +80,6 @@ export default function SignUp() {
         router.replace("/(tabs)");
         setLoading(false);
       } else {
-        // If registration is successful but doesn't automatically log in
         setLoading(false);
         router.replace("/sign-in");
       }

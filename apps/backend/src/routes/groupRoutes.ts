@@ -97,7 +97,7 @@ router.delete("/", userMiddleware, async (req, res) => {
   const userId = req.userId;
   if (!userId) {
     res.json({
-      message: "User Doesn't Exist",
+      error: "User Doesn't Exist",
     });
     return;
   }
@@ -207,59 +207,82 @@ router.put("/", userMiddleware, async (req, res) => {
   });
 });
 
-router.post("/leave-group", async (req, res) => {
-  const groupId = req.body.groupId
+router.post("/leave-group", userMiddleware, async (req, res) => {
+  const {groupId} = req.body;
+  const userId = req.userId;
 
-  const userId = req.userId
-
-  const unsettledTxn = await prismaClient.share.findMany({
-    where: {
-      userId,
-      transaction: {
-        groupId: groupId
-      },
-      isSettled: false
-    }
-  })
-
-  if (unsettledTxn.length > 0) {
-    const totalOwed = unsettledTxn.reduce((sum, share) => sum + share.amount, 0);
-    res.json({
-      message: `Cannot leave group: You have ${unsettledTxn.length} unsettled transactions totaling ${totalOwed}`
-    });
-  }
-
-  const updateGroup = await prismaClient.group.update({
-    where: {
-      id: groupId
-    },
-    data: {
-      members: {
-        disconnect: {
-          id: userId
-        }
+  try {
+    const owedByUser = await prismaClient.share.findMany({
+      where: {
+        userId,
+        transaction: {
+          groupId: groupId
+        },
+        isSettled: false
       }
-    },
-    include: {
-      members: true
-    }
-  })
+    });
 
-  if (updateGroup.members.length === 0) {
-    await prismaClient.group.delete({
+    const owedToUser = await prismaClient.share.findMany({
+      where: {
+        transaction: {
+          groupId: groupId,
+          paidById: userId
+        },
+        userId: {
+          not: userId
+        },
+        isSettled: false
+      }
+    });
+
+  const allUnsettledTransactions = [...owedByUser, ...owedToUser];
+
+    if (allUnsettledTransactions.length > 0) {
+      const totalOwed = owedByUser.reduce((sum, share) => sum + share.amount, 0);
+      const totalOwing = owedToUser.reduce((sum, share) => sum + share.amount, 0);
+      
+      res.status(400).json({
+        error: `Cannot leave group: You have ${allUnsettledTransactions.length} unsettled transactions. You owe ${totalOwed} and others owe you ${totalOwing}.`
+      });
+      return;
+    }
+
+    const updateGroup = await prismaClient.group.update({
       where: {
         id: groupId
+      },
+      data: {
+        members: {
+          disconnect: {
+            id: userId
+          }
+        }
+      },
+      include: {
+        members: true
       }
-    })
+    });
+
+    if (updateGroup.members.length === 0) {
+      await prismaClient.group.delete({
+        where: {
+          id: groupId
+        }
+      });
+    }
+
+    res.json({
+      message: "You have successfully left the group!"
+    });
+  } catch (error) {
+    console.error("Error leaving group:", error);
+      res.status(500).json({
+      error: "Failed to process your request to leave the group."
+    });
   }
-
-  res.json({
-    message: "You have sucessfully left the group!"
-  })
+});
 
 
-
-})
 
 
 export { router as GroupRouter };

@@ -1,5 +1,8 @@
-import { Image, Text, View } from "react-native";
+// components/Cards/friendsCard.tsx
+import { Image, Pressable, Text, View } from "react-native";
 import { ThemedText } from "../ThemedText";
+import { useRouter } from "expo-router";
+import { useTotalOwedToFriend } from "@/hooks/getOwedBtFriend";
 
 interface FriendsCardProps {
   id: string;
@@ -12,12 +15,18 @@ export const FriendsCard = ({
   groupDescription,
   groupName,
 }: FriendsCardProps) => {
+  const { data: balanceData, isLoading } = useTotalOwedToFriend(id);
+  const router = useRouter();
+
   return (
-    <View className="w-full h-28 bg-white/[0.05] rounded-xl">
+    <Pressable 
+      className="w-full h-28 bg-white/[0.05] rounded-xl"
+    >
       <View className="flex flex-row items-center">
         <Image
           source={{
-            uri: "https://plus.unsplash.com/premium_photo-1670279526726-128d22144ad9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            uri: balanceData?.friend?.imageUrl || 
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(groupName)}&background=bebebe`,
           }}
           className="w-20 h-20 rounded-lg m-4"
         />
@@ -26,15 +35,32 @@ export const FriendsCard = ({
           <ThemedText className="text-white text-xl font-semibold">
             {groupName}
           </ThemedText>
-          <ThemedText className="text-white/70 text-lg">
-            You are owed
-            <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]">
-              {" "}
-              ₹500.64
-            </Text>
-          </ThemedText>
+          
+          {isLoading ? (
+            <ThemedText className="text-white/70 text-lg">
+              Calculating...
+            </ThemedText>
+          ) : balanceData?.totalBalance === 0 ? (
+            <ThemedText className="text-white/70 text-lg">
+              All settled up
+            </ThemedText>
+          ) : balanceData?.totalBalance! > 0 ? (
+            <ThemedText className="text-white/70 text-lg">
+              Owes you
+              <Text className="dark:text-[#ADFFB1BF] text-[#51ff20]">
+                {" "}₹{Math.abs(balanceData?.totalBalance!).toFixed(2)}
+              </Text>
+            </ThemedText>
+          ) : (
+            <ThemedText className="text-white/70 text-lg">
+              You owe
+              <Text className="dark:text-[#ff8800] text-[#ff8800]">
+                {" "}₹{Math.abs(balanceData?.totalBalance!).toFixed(2)}
+              </Text>
+            </ThemedText>
+          )}
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };

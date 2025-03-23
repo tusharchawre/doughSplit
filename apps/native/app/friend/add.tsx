@@ -28,7 +28,7 @@ export default function AddScreen() {
         friendId
     })
 
-    console.log(response.data)
+
     refetchUser()
 
     setLoading(false)

@@ -24,6 +24,7 @@ export default function SignIn() {
 
       if (response.data.error) {
         setError(response.data.error);
+        setLoading(false)
         return;
       }
 

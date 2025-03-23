@@ -10,7 +10,7 @@ import Animated, {
 import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/themes/useColorScheme";
 import { ThemedText } from "../ThemedText";
-import { Plus } from "lucide-react-native";
+import { Check, Plus } from "lucide-react-native";
 
 const HEADER_HEIGHT = 250;
 const FADE_SCROLL_DISTANCE = 200;

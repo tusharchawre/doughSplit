@@ -24,7 +24,7 @@ export default function Friends() {
 
   return (
     <ThemedView className="flex-1 w-full bg-black px-4">
-      <ThemedText type="defaultSemiBold">Friends</ThemedText>
+      <ThemedText type="defaultSemiBold" className="mb-4">Friends</ThemedText>
       <ThemedView className="flex gap-4 mt-2 ">
         {friends.map((friend) => (
           <FriendsCard
