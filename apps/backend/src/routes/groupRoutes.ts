@@ -114,17 +114,17 @@ router.delete("/", userMiddleware, async (req, res) => {
   const unsettledTxn = await prismaClient.transaction.findMany({
     where: {
       groupId,
-      settledStatus: "PENDING"
-    }
-  })
+      settledStatus: "PENDING",
+    },
+  });
 
   if (unsettledTxn.length > 0) {
     res.status(400).json({
-      error: "There are unsettled transactions in the group. Please settle them before deleting the group."
+      error:
+        "There are unsettled transactions in the group. Please settle them before deleting the group.",
     });
-    return
+    return;
   }
-
 
   if (!group) {
     res.json({
@@ -146,27 +146,27 @@ router.delete("/", userMiddleware, async (req, res) => {
     await tx.share.deleteMany({
       where: {
         transaction: {
-          groupId
-        }
-      }
+          groupId,
+        },
+      },
     });
     await tx.settlement.deleteMany({
       where: {
         transaction: {
-          groupId
-        }
-      }
+          groupId,
+        },
+      },
     });
     await tx.transaction.deleteMany({
       where: {
-        groupId
-      }
+        groupId,
+      },
     });
 
     await tx.group.delete({
       where: {
-        id: groupId
-      }
+        id: groupId,
+      },
     });
   });
 
@@ -208,7 +208,7 @@ router.put("/", userMiddleware, async (req, res) => {
 });
 
 router.post("/leave-group", userMiddleware, async (req, res) => {
-  const {groupId} = req.body;
+  const { groupId } = req.body;
   const userId = req.userId;
 
   try {
@@ -216,73 +216,76 @@ router.post("/leave-group", userMiddleware, async (req, res) => {
       where: {
         userId,
         transaction: {
-          groupId: groupId
+          groupId: groupId,
         },
-        isSettled: false
-      }
+        isSettled: false,
+      },
     });
 
     const owedToUser = await prismaClient.share.findMany({
       where: {
         transaction: {
           groupId: groupId,
-          paidById: userId
+          paidById: userId,
         },
         userId: {
-          not: userId
+          not: userId,
         },
-        isSettled: false
-      }
+        isSettled: false,
+      },
     });
 
-  const allUnsettledTransactions = [...owedByUser, ...owedToUser];
+    const allUnsettledTransactions = [...owedByUser, ...owedToUser];
 
     if (allUnsettledTransactions.length > 0) {
-      const totalOwed = owedByUser.reduce((sum, share) => sum + share.amount, 0);
-      const totalOwing = owedToUser.reduce((sum, share) => sum + share.amount, 0);
-      
+      const totalOwed = owedByUser.reduce(
+        (sum, share) => sum + share.amount,
+        0,
+      );
+      const totalOwing = owedToUser.reduce(
+        (sum, share) => sum + share.amount,
+        0,
+      );
+
       res.status(400).json({
-        error: `Cannot leave group: You have ${allUnsettledTransactions.length} unsettled transactions. You owe ${totalOwed} and others owe you ${totalOwing}.`
+        error: `Cannot leave group: You have ${allUnsettledTransactions.length} unsettled transactions. You owe ${totalOwed} and others owe you ${totalOwing}.`,
       });
       return;
     }
 
     const updateGroup = await prismaClient.group.update({
       where: {
-        id: groupId
+        id: groupId,
       },
       data: {
         members: {
           disconnect: {
-            id: userId
-          }
-        }
+            id: userId,
+          },
+        },
       },
       include: {
-        members: true
-      }
+        members: true,
+      },
     });
 
     if (updateGroup.members.length === 0) {
       await prismaClient.group.delete({
         where: {
-          id: groupId
-        }
+          id: groupId,
+        },
       });
     }
 
     res.json({
-      message: "You have successfully left the group!"
+      message: "You have successfully left the group!",
     });
   } catch (error) {
     console.error("Error leaving group:", error);
-      res.status(500).json({
-      error: "Failed to process your request to leave the group."
+    res.status(500).json({
+      error: "Failed to process your request to leave the group.",
     });
   }
 });
-
-
-
 
 export { router as GroupRouter };

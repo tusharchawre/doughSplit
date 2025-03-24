@@ -21,7 +21,7 @@ export default function SignUp() {
     return emailRegex.test(email);
   };
 
-  const validatePassword = (password : string) => {
+  const validatePassword = (password: string) => {
     // Password should be at least 8 characters with at least one uppercase, one lowercase, and one special character
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(.{8,})$/;
     return passwordRegex.test(password);
@@ -52,7 +52,9 @@ export default function SignUp() {
     }
 
     if (!validatePassword(password)) {
-      setError("Password must be at least 8 characters with uppercase, lowercase, and special characters");
+      setError(
+        "Password must be at least 8 characters with uppercase, lowercase, and special characters",
+      );
       return;
     }
 
@@ -93,7 +95,9 @@ export default function SignUp() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className="flex-1 bg-black px-6 justify-center py-10">
-        <Text className="text-white text-3xl mb-10 font-bold">Create Account</Text>
+        <Text className="text-white text-3xl mb-10 font-bold">
+          Create Account
+        </Text>
 
         {error ? <Text className="text-red-500 mb-4">{error}</Text> : null}
 
@@ -134,12 +138,15 @@ export default function SignUp() {
           secureTextEntry
         />
 
-        <Pressable 
-          disabled={loading} 
-          className="bg-white p-4 rounded-lg" 
+        <Pressable
+          disabled={loading}
+          className="bg-white p-4 rounded-lg"
           onPress={handleSignUp}
         >
-          <Text disabled={loading} className="text-black text-center font-semibold">
+          <Text
+            disabled={loading}
+            className="text-black text-center font-semibold"
+          >
             {loading ? "Creating account..." : "Sign Up"}
           </Text>
         </Pressable>

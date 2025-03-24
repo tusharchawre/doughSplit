@@ -17,7 +17,7 @@ export default function Groups() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch();
-    handleRefetchAll()
+    handleRefetchAll();
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);

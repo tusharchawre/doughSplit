@@ -1,4 +1,11 @@
-import { Alert, Image, Pressable, Text, View, ActivityIndicator } from "react-native";
+import {
+  Alert,
+  Image,
+  Pressable,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -29,17 +36,15 @@ export default function Route() {
   }>();
   const router = useRouter();
   const groupId = params.id;
-  const [settlingUsers, setSettlingUsers] = useState<Record<string, boolean>>({});
+  const [settlingUsers, setSettlingUsers] = useState<Record<string, boolean>>(
+    {},
+  );
   const [settlingAll, setSettlingAll] = useState(false);
   const [successUsers, setSuccessUsers] = useState<Record<string, boolean>>({});
   const [allSuccess, setAllSuccess] = useState(false);
 
   const { data: group, refetch } = useGroupById(groupId);
   const { data: balances, refetch: refetchBalance } = useOwedInGroup(groupId);
-
-
-  
-  
 
   // Clear success states when balances change
   useEffect(() => {
@@ -50,29 +55,28 @@ export default function Route() {
   const handleSettleIndividual = async (userId: string) => {
     try {
       // Set loading state
-      setSettlingUsers(prev => ({ ...prev, [userId]: true }));
-      
+      setSettlingUsers((prev) => ({ ...prev, [userId]: true }));
+
       console.log("Settling with user:", userId, "in group:", groupId);
-      
+
       const response = await api.post("/group/transactions/bulk-settle-user", {
         friendId: userId,
         groupId,
       });
-      
+
       // Show success state briefly
-      setSettlingUsers(prev => ({ ...prev, [userId]: false }));
-      setSuccessUsers(prev => ({ ...prev, [userId]: true }));
-      
+      setSettlingUsers((prev) => ({ ...prev, [userId]: false }));
+      setSuccessUsers((prev) => ({ ...prev, [userId]: true }));
+
       // Refetch data after a short delay
       setTimeout(async () => {
-        handleRefetchAll()
+        handleRefetchAll();
         // Clear success state
-        setSuccessUsers(prev => ({ ...prev, [userId]: false }));
+        setSuccessUsers((prev) => ({ ...prev, [userId]: false }));
       }, 1500);
-      
     } catch (error) {
       console.error("Settlement error:", error);
-      setSettlingUsers(prev => ({ ...prev, [userId]: false }));
+      setSettlingUsers((prev) => ({ ...prev, [userId]: false }));
       Alert.alert("Error", "Failed to settle the balance. Please try again.");
     }
   };
@@ -81,12 +85,12 @@ export default function Route() {
     try {
       setSettlingAll(true);
 
-      balances.map((balance: Balance)=>{
-        handleSettleIndividual(balance.userId)
-      })
+      balances.map((balance: Balance) => {
+        handleSettleIndividual(balance.userId);
+      });
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setSettlingAll(false);
       setAllSuccess(true);
       setTimeout(async () => {
@@ -94,7 +98,6 @@ export default function Route() {
         await refetch();
         setAllSuccess(false);
       }, 1500);
-      
     } catch (error) {
       console.error("Settlement error:", error);
       setSettlingAll(false);
@@ -113,7 +116,8 @@ export default function Route() {
   }
 
   // Calculate whether there are any balances where you owe money (negative balances)
-  const hasNegativeBalances = balances && balances.some((balance: Balance) => balance.balance < 0);
+  const hasNegativeBalances =
+    balances && balances.some((balance: Balance) => balance.balance < 0);
 
   return (
     <ThemedView style={{ flex: 1 }} className="relative mt-12">
@@ -182,11 +186,19 @@ export default function Route() {
                 {balance.balance < 0 && (
                   <Pressable
                     onPress={() => handleSettleIndividual(balance.userId)}
-                    disabled={settlingUsers[balance.userId] || successUsers[balance.userId]}
+                    disabled={
+                      settlingUsers[balance.userId] ||
+                      successUsers[balance.userId]
+                    }
                     className={`
                       px-4 py-2 rounded-lg flex-row items-center
-                      ${successUsers[balance.userId] ? "bg-green-500/30" : 
-                        settlingUsers[balance.userId] ? "bg-white/30" : "bg-white/15"}
+                      ${
+                        successUsers[balance.userId]
+                          ? "bg-green-500/30"
+                          : settlingUsers[balance.userId]
+                            ? "bg-white/30"
+                            : "bg-white/15"
+                      }
                     `}
                   >
                     {successUsers[balance.userId] ? (
@@ -197,8 +209,11 @@ export default function Route() {
                       <Check size={16} color="#ffffff" />
                     )}
                     <ThemedText className="ml-2 font-medium">
-                      {successUsers[balance.userId] ? "Settled!" : 
-                       settlingUsers[balance.userId] ? "Settling..." : "Settle"}
+                      {successUsers[balance.userId]
+                        ? "Settled!"
+                        : settlingUsers[balance.userId]
+                          ? "Settling..."
+                          : "Settle"}
                     </ThemedText>
                   </Pressable>
                 )}
@@ -235,7 +250,7 @@ export default function Route() {
                     .filter((b: any) => b.balance < 0)
                     .reduce(
                       (sum: number, b: any) => sum + Math.abs(b.balance),
-                      0
+                      0,
                     )}
                 </Text>
               </View>
@@ -258,7 +273,7 @@ export default function Route() {
                 className={
                   balances.reduce(
                     (sum: number, b: any) => sum + b.balance,
-                    0
+                    0,
                   ) >= 0
                     ? "font-medium text-[#ADFFB1BF]"
                     : "font-medium text-[#ff8800]"
@@ -266,7 +281,7 @@ export default function Route() {
               >
                 ₹
                 {Math.abs(
-                  balances.reduce((sum: number, b: any) => sum + b.balance, 0)
+                  balances.reduce((sum: number, b: any) => sum + b.balance, 0),
                 )}
               </Text>
             </View>
@@ -282,8 +297,13 @@ export default function Route() {
               disabled={settlingAll || allSuccess}
               className={`
                 py-4 rounded-xl flex-row justify-center items-center mb-4
-                ${allSuccess ? "bg-green-500/30" : 
-                  settlingAll ? "bg-white/30" : "bg-white/15"}
+                ${
+                  allSuccess
+                    ? "bg-green-500/30"
+                    : settlingAll
+                      ? "bg-white/30"
+                      : "bg-white/15"
+                }
               `}
             >
               {allSuccess ? (
@@ -294,8 +314,11 @@ export default function Route() {
                 <CheckCircle size={20} color="#ffffff" />
               )}
               <ThemedText className="ml-2 font-medium">
-                {allSuccess ? "All Settled!" : 
-                 settlingAll ? "Settling All..." : "Settle All Balances"}
+                {allSuccess
+                  ? "All Settled!"
+                  : settlingAll
+                    ? "Settling All..."
+                    : "Settle All Balances"}
               </ThemedText>
             </Pressable>
           )}

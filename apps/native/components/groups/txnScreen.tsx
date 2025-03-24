@@ -25,11 +25,10 @@ export function TxnScreen({ route }: { route: any }) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const { data: balances, refetch: refetchBalance } = useOwedInGroup(groupId);
 
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetch();
-    refetchBalance()
+    refetchBalance();
     setTimeout(() => {
       setRefreshing(false);
     }, 1500);

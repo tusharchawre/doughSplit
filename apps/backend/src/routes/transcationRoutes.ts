@@ -254,8 +254,8 @@ router.post("/settle-share", userMiddleware, async (req, res) => {
 });
 
 router.post("/bulk-settle-user", userMiddleware, async (req, res) => {
-  const userId = req.userId
-  const {  groupId, friendId } = req.body;
+  const userId = req.userId;
+  const { groupId, friendId } = req.body;
 
   if (!userId) {
     res.status(400).json({

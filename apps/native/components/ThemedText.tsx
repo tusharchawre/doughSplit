@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
     color: "#aeaeae",
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
   },
 });

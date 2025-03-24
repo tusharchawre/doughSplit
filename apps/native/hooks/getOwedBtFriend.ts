@@ -30,12 +30,14 @@ export function useTotalOwedToFriend(friendId: string) {
   });
 }
 
-const getTotalOwedToFriend = async (friendId: string): Promise<FriendBalanceData> => {
+const getTotalOwedToFriend = async (
+  friendId: string,
+): Promise<FriendBalanceData> => {
   try {
     const response = await api.post(`/user/friends/total-owed-to-friend`, {
-      friendId
+      friendId,
     });
-    
+
     return response.data.data;
   } catch (error) {
     console.error("Failed to fetch total balance with friend:", error);

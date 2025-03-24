@@ -158,7 +158,7 @@ export const ActivityCard = ({
                       }`}
                     >
                       {currency === "INR" ? "₹" : "$"}
-                      {(amount - (amount / participants)).toFixed(2)}
+                      {(amount - amount / participants).toFixed(2)}
                     </Text>
                   </View>
 

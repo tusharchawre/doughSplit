@@ -2,7 +2,14 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAllUsers } from "@/hooks/getAllUsers";
 import { Search } from "lucide-react-native";
-import { FlatList, View, TextInput, Image, Pressable, ActivityIndicator } from "react-native";
+import {
+  FlatList,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { User, useUser } from "@/hooks/getUser";
 import api from "@/lib/axios";
@@ -11,23 +18,25 @@ export default function AddScreen() {
   const { data: users } = useAllUsers();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {},
+  );
   const { data: user, refetch: refetchUser } = useUser();
 
   useEffect(() => {
     if (users) {
-      const requiredUsers = users.filter(friend => user?.id != friend.id);
+      const requiredUsers = users.filter((friend) => user?.id != friend.id);
       setFilteredUsers(requiredUsers);
     }
   }, [users, user]);
 
   const handleAddFriend = async (friendId: string) => {
     // Set loading state for this specific friend
-    setLoadingStates(prev => ({ ...prev, [friendId]: true }));
-    
+    setLoadingStates((prev) => ({ ...prev, [friendId]: true }));
+
     try {
       const response = await api.post("/user/friends/add", {
-        friendId
+        friendId,
       });
 
       await refetchUser();
@@ -40,7 +49,7 @@ export default function AddScreen() {
       alert("Failed to update friend status. Please try again.");
     } finally {
       // Clear loading state for this specific friend
-      setLoadingStates(prev => ({ ...prev, [friendId]: false }));
+      setLoadingStates((prev) => ({ ...prev, [friendId]: false }));
     }
   };
 
@@ -50,7 +59,7 @@ export default function AddScreen() {
     if (!users) return;
 
     const filtered = users.filter((user) =>
-      user.username.toLowerCase().includes(text.toLowerCase())
+      user.username.toLowerCase().includes(text.toLowerCase()),
     );
 
     setFilteredUsers(filtered);
@@ -58,13 +67,13 @@ export default function AddScreen() {
 
   const getButtonText = (userId: string) => {
     if (loadingStates[userId]) {
-      return user?.friends.some((friend) => friend.id === userId) 
-        ? "Removing..." 
+      return user?.friends.some((friend) => friend.id === userId)
+        ? "Removing..."
         : "Adding...";
     }
-    
-    return user?.friends.some((friend) => friend.id === userId) 
-      ? "Remove" 
+
+    return user?.friends.some((friend) => friend.id === userId)
+      ? "Remove"
       : "Add";
   };
 
@@ -100,14 +109,12 @@ export default function AddScreen() {
                 <ThemedText>{item.username}</ThemedText>
               </View>
 
-              <Pressable 
+              <Pressable
                 onPress={() => handleAddFriend(item.id)}
                 disabled={loadingStates[item.id]}
-                className={`${loadingStates[item.id] ? 'bg-white/10' : 'bg-white/20'} px-2 py-1 rounded-md`}
+                className={`${loadingStates[item.id] ? "bg-white/10" : "bg-white/20"} px-2 py-1 rounded-md`}
               >
-                <ThemedText>
-                  {getButtonText(item.id)}
-                </ThemedText>
+                <ThemedText>{getButtonText(item.id)}</ThemedText>
               </Pressable>
             </View>
           )}

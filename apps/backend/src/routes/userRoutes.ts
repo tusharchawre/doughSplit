@@ -9,7 +9,7 @@ import { FriendsRouter } from "./friendRoutes";
 
 const router = express.Router();
 
-router.use("/friends", FriendsRouter)
+router.use("/friends", FriendsRouter);
 
 router.post("/register", async (req, res) => {
   const validatedBody = registerSchema.safeParse(req.body);
@@ -205,7 +205,6 @@ router.put("/", userMiddleware, async (req, res) => {
   });
 });
 
-
 router.post("/net-balances", userMiddleware, async (req, res) => {
   try {
     const userId = req.userId;
@@ -218,36 +217,36 @@ router.post("/net-balances", userMiddleware, async (req, res) => {
             shares: {
               some: {
                 userId: userId,
-                isSettled: false
-              }
-            }
-          }
+                isSettled: false,
+              },
+            },
+          },
         ],
-        settledStatus: "PENDING"
+        settledStatus: "PENDING",
       },
       include: {
         paidBy: {
           select: {
             id: true,
             username: true,
-            imageUrl: true
-          }
+            imageUrl: true,
+          },
         },
         shares: {
           where: {
-            isSettled: false
+            isSettled: false,
           },
           include: {
             user: {
               select: {
                 id: true,
                 username: true,
-                imageUrl: true
-              }
-            }
-          }
-        }
-      }
+                imageUrl: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     const friendBalances = {};
@@ -264,17 +263,17 @@ router.post("/net-balances", userMiddleware, async (req, res) => {
               userId: share.user.id,
               username: share.user.username,
               imageUrl: share.user.imageUrl,
-              netBalance: 0
+              netBalance: 0,
             };
           }
 
           friendBalances[share.user.id].netBalance += share.amount;
           totalNetBalance += share.amount;
         }
-      }
-      else {
-
-        const userShare = transaction.shares.find(share => share.user.id === userId);
+      } else {
+        const userShare = transaction.shares.find(
+          (share) => share.user.id === userId,
+        );
 
         if (userShare) {
           const friendId = transaction.paidBy.id;
@@ -284,7 +283,7 @@ router.post("/net-balances", userMiddleware, async (req, res) => {
               userId: friendId,
               username: transaction.paidBy.username,
               imageUrl: transaction.paidBy.imageUrl,
-              netBalance: 0
+              netBalance: 0,
             };
           }
 
@@ -299,18 +298,17 @@ router.post("/net-balances", userMiddleware, async (req, res) => {
     res.status(200).json({
       success: true,
       totalNetBalance,
-      netBalances
+      netBalances,
     });
   } catch (error: any) {
     console.error("Error calculating net balances:", error);
     res.status(500).json({
       success: false,
       message: "Failed to calculate net balances",
-      error: error.message
+      error: error.message,
     });
     return;
   }
 });
-
 
 export { router as UserRouter };

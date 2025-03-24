@@ -10,14 +10,13 @@ export default function Activity() {
   const transactions = user?.involvedIn.toReversed();
 
   if (!transactions || transactions.length === 0) {
-      return (
-        <ThemedView className="flex-1 justify-center items-center p-4">
-          <ThemedText className="text-center">
-            You dont have any transactions yet.
-          </ThemedText>
-        </ThemedView>
-      );
-
+    return (
+      <ThemedView className="flex-1 justify-center items-center p-4">
+        <ThemedText className="text-center">
+          You dont have any transactions yet.
+        </ThemedText>
+      </ThemedView>
+    );
   }
 
   return (

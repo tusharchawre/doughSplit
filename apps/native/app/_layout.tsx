@@ -66,18 +66,26 @@ export default function RootLayout() {
                   />
 
                   <Stack.Screen
-                  name="settle/[id]"
-                  options={{
-                    headerShown: true,
-                    headerBackButtonDisplayMode: "minimal",
-                    headerTransparent: true,
-                    headerTitle: "",
-                    gestureEnabled: true,
-                  }}
-                   />
+                    name="camera-module"
+                    options={{
+                      headerShown: true,
+                      headerBackButtonDisplayMode: "minimal",
+                      headerTransparent: true,
+                      headerTitle: "",
+                      gestureEnabled: true,
+                    }}
+                  />
 
-
-                
+                  <Stack.Screen
+                    name="settle/[id]"
+                    options={{
+                      headerShown: true,
+                      headerBackButtonDisplayMode: "minimal",
+                      headerTransparent: true,
+                      headerTitle: "",
+                      gestureEnabled: true,
+                    }}
+                  />
 
                   <Stack.Screen
                     name="group/txn/[id]"

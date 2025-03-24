@@ -13,7 +13,7 @@ import { ThemedText } from "../ThemedText";
 import { Check, Plus } from "lucide-react-native";
 
 const HEADER_HEIGHT = 200;
-const FADE_SCROLL_DISTANCE = 200;
+const FADE_SCROLL_DISTANCE = 120;
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
@@ -86,7 +86,7 @@ export default function ParallaxScrollView({
         <Animated.View style={[headerBaseStyle, headerAnimatedStyle]}>
           {headerImage}
         </Animated.View>
-        <ThemedView className="flex-1 mt-14 px-8 py-10 gap-4">
+        <ThemedView className="flex-1 mt-14 px-6 py-10 gap-4">
           {children}
         </ThemedView>
 

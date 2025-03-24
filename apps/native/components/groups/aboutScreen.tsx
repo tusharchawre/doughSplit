@@ -33,7 +33,7 @@ export function AboutScreen({ route }: { route: any }) {
   }
 
   const handleBulkSettle = async () => {
-    router.push(`/settle/${groupId}`)
+    router.push(`/settle/${groupId}`);
   };
 
   const handleLeave = async () => {
@@ -74,7 +74,7 @@ export function AboutScreen({ route }: { route: any }) {
       ],
       {
         cancelable: true,
-      }
+      },
     );
 
   const handleDelete = async () => {
@@ -108,7 +108,6 @@ export function AboutScreen({ route }: { route: any }) {
         nestedScrollEnabled={true}
         style={{ flex: 1 }}
         className="pt-4 "
-        
       >
         <View
           key="header"

@@ -25,7 +25,7 @@ export const TxnCard = ({
 }: TxnCard) => {
   const isPayer = paidById === userId;
   const { data: txn, isLoading, refetch } = useTxnById(id.toString());
-  const {data: user} = useUser()
+  const { data: user } = useUser();
   const router = useRouter();
 
   const amountPerPerson =
@@ -74,8 +74,10 @@ export const TxnCard = ({
                     : "dark:text-[#ff8800] text-[#ff8800]"
                 }
               >
-                ₹ {txn?.shares!.find((s) => s.userId === user?.id)
-                ?.amount.toFixed(2)}
+                ₹{" "}
+                {txn
+                  ?.shares!.find((s) => s.userId === user?.id)
+                  ?.amount.toFixed(2)}
               </Text>
             </View>
           </View>

@@ -8,7 +8,7 @@ import { Pressable, Text, View } from "react-native";
 export default function Friends() {
   const { data: user, refetch, isPending } = useUser();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const friends = user?.friends;
 
@@ -24,7 +24,9 @@ export default function Friends() {
 
   return (
     <ThemedView className="flex-1 w-full bg-black px-4">
-      <ThemedText type="defaultSemiBold" className="mb-4">Friends</ThemedText>
+      <ThemedText type="defaultSemiBold" className="mb-4">
+        Friends
+      </ThemedText>
       <ThemedView className="flex gap-4 mt-2 ">
         {friends.map((friend) => (
           <FriendsCard
@@ -34,7 +36,10 @@ export default function Friends() {
             groupDescription=""
           />
         ))}
-        <Pressable className="mx-auto my-4 bg-white/20 px-4 py-2 rounded-md" onPress={()=> router.push("/friend/add")}>
+        <Pressable
+          className="mx-auto my-4 bg-white/20 px-4 py-2 rounded-md"
+          onPress={() => router.push("/friend/add")}
+        >
           <ThemedText>Add + </ThemedText>
         </Pressable>
       </ThemedView>

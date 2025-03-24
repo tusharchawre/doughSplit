@@ -59,7 +59,7 @@ export default function Route() {
           />
         }
       >
-        <ThemedView>
+        <ThemedView className="ml-2">
           <ThemedText type="defaultSemiBold">{group?.groupName}</ThemedText>
           <ThemedText type="subtitle" className="mt-2">
             {group?.groupDescription}

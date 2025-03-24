@@ -23,7 +23,7 @@ export default function Account() {
     if (!user?.involvedIn) return 0;
     return user.involvedIn
       .filter(
-        (txn) => txn.settledStatus === "PENDING" && txn.paidById === user.id
+        (txn) => txn.settledStatus === "PENDING" && txn.paidById === user.id,
       )
       .reduce((sum, txn) => sum + txn.amount / txn.participants.length, 0);
   };
@@ -78,11 +78,11 @@ export default function Account() {
         <ThemedText className="text-xl font-bold mb-3">My Groups</ThemedText>
         {user?.group.length === 0 ? (
           <View className="w-full rounded-xl bg-white/5 mb-4">
-          <View className="px-4 py-3">
-            <ThemedText className="text-white/70">
-              No groups to show
-            </ThemedText>
-          </View>
+            <View className="px-4 py-3">
+              <ThemedText className="text-white/70">
+                No groups to show
+              </ThemedText>
+            </View>
           </View>
         ) : (
           ""
@@ -120,11 +120,11 @@ export default function Account() {
 
         {user?.involvedIn.length === 0 ? (
           <View className="w-full rounded-xl bg-white/5 mb-4">
-          <View className="px-4 py-3">
-            <ThemedText className="text-white/70">
-              No balances to show
-            </ThemedText>
-          </View>
+            <View className="px-4 py-3">
+              <ThemedText className="text-white/70">
+                No balances to show
+              </ThemedText>
+            </View>
           </View>
         ) : (
           ""

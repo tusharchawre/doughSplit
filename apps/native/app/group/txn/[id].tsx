@@ -350,17 +350,20 @@ export default function TransactionDetailScreen() {
               <Ionicons name="pencil" size={18} color="#bebebe" />
               <ThemedText className="ml-2 text-[#000000]">Edit</ThemedText>
             </Pressable>
-            {txn.settledStatus !== "COMPLETED" && (txn.paidById != user?.id && txn.shares?.find(share => share.userId === user?.id)?.isSettled === false ) && (
-              <Pressable
-                className="flex-1 bg-[#51ff20]/20 py-3 rounded-lg ml-2 flex-row justify-center items-center"
-                onPress={handleSettleUp}
-              >
-                <Ionicons name="checkmark-circle" size={18} color="#51ff20" />
-                <ThemedText className="ml-2 text-[#51ff20]">
-                  Settle Up
-                </ThemedText>
-              </Pressable>
-            )}
+            {txn.settledStatus !== "COMPLETED" &&
+              txn.paidById != user?.id &&
+              txn.shares?.find((share) => share.userId === user?.id)
+                ?.isSettled === false && (
+                <Pressable
+                  className="flex-1 bg-[#51ff20]/20 py-3 rounded-lg ml-2 flex-row justify-center items-center"
+                  onPress={handleSettleUp}
+                >
+                  <Ionicons name="checkmark-circle" size={18} color="#51ff20" />
+                  <ThemedText className="ml-2 text-[#51ff20]">
+                    Settle Up
+                  </ThemedText>
+                </Pressable>
+              )}
           </View>
         </FadeInView>
       </SafeAreaView>

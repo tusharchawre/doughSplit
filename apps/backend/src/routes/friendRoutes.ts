@@ -34,15 +34,13 @@ router.post("/", userMiddleware, async (req, res) => {
   });
 });
 
+router.get("/getUsers", userMiddleware, async (req, res) => {
+  const users = await prismaClient.user.findMany();
 
-router.get("/getUsers", userMiddleware, async(req,res)=> {
-    const users = await prismaClient.user.findMany()
-
-    res.json({
-        users
-    })
-})
-
+  res.json({
+    users,
+  });
+});
 
 router.post("/add", userMiddleware, async (req, res) => {
   try {
@@ -50,91 +48,93 @@ router.post("/add", userMiddleware, async (req, res) => {
     const { friendId } = req.body;
 
     if (!userId || !friendId) {
-        res.status(400).json({ message: "Missing userId or friendId" });
+      res.status(400).json({ message: "Missing userId or friendId" });
     }
 
     if (userId === friendId) {
-        res.status(400).json({ message: "Cannot add yourself as a friend" });
+      res.status(400).json({ message: "Cannot add yourself as a friend" });
     }
 
     const friendExists = await prismaClient.user.findUnique({
-      where: { id: friendId }
+      where: { id: friendId },
     });
 
     if (!friendExists) {
-        res.status(404).json({ message: "Friend not found" });
-        return;
+      res.status(404).json({ message: "Friend not found" });
+      return;
     }
 
     const user = await prismaClient.user.findUnique({
       where: { id: userId },
-      include: { friends: true }
+      include: { friends: true },
     });
 
-    const alreadyFriends = user?.friends.some(friend => friend.id === friendId);
-    
+    const alreadyFriends = user?.friends.some(
+      (friend) => friend.id === friendId,
+    );
+
     if (alreadyFriends) {
       const updatedUser = await prismaClient.user.update({
         where: { id: userId },
         data: {
           friends: {
-            disconnect: [{ id: friendId }]
-          }
+            disconnect: [{ id: friendId }],
+          },
         },
         include: {
-          friends: true
-        }
+          friends: true,
+        },
       });
 
       const updateFriend = await prismaClient.user.update({
         where: { id: friendId },
         data: {
           friends: {
-            disconnect: [{ id: userId }]
-          }
+            disconnect: [{ id: userId }],
+          },
         },
         include: {
-          friends: true
-        }
+          friends: true,
+        },
       });
 
-        res.json({ message: "Remove Friend!" });
-        return
+      res.json({ message: "Remove Friend!" });
+      return;
     }
 
     const updatedUser = await prismaClient.user.update({
       where: { id: userId },
       data: {
         friends: {
-          connect: [{ id: friendId }]
-        }
+          connect: [{ id: friendId }],
+        },
       },
       include: {
-        friends: true
-      }
+        friends: true,
+      },
     });
 
     const updateFriend = await prismaClient.user.update({
-        where: { id: friendId },
-        data: {
-          friends: {
-            connect: [{ id: userId }]
-          }
+      where: { id: friendId },
+      data: {
+        friends: {
+          connect: [{ id: userId }],
         },
-        include: {
-          friends: true
-        }
-      });
+      },
+      include: {
+        friends: true,
+      },
+    });
 
-    res.json({ 
+    res.json({
       message: "Friends Created!",
-      friends: updatedUser.friends.length
+      friends: updatedUser.friends.length,
     });
   } catch (error) {
     console.error("Error adding friend:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Error creating friend relationship",
-      error: error 
+      error: error,
     });
   }
 });
@@ -148,31 +148,31 @@ router.post("/owed-in-group", userMiddleware, async (req, res) => {
     const groupTransactions = await prismaClient.transaction.findMany({
       where: {
         groupId: groupId,
-        settledStatus: "PENDING"
+        settledStatus: "PENDING",
       },
       include: {
         paidBy: {
           select: {
             id: true,
             username: true,
-            imageUrl: true
-          }
+            imageUrl: true,
+          },
         },
         shares: {
           where: {
-            isSettled: false
+            isSettled: false,
           },
           include: {
             user: {
               select: {
                 id: true,
                 username: true,
-                imageUrl: true
-              }
-            }
-          }
-        }
-      }
+                imageUrl: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     // Calculate balances with each friend
@@ -191,31 +191,33 @@ router.post("/owed-in-group", userMiddleware, async (req, res) => {
               userId: share.user.id,
               username: share.user.username,
               imageUrl: share.user.imageUrl,
-              balance: 0
+              balance: 0,
             };
           }
-          
+
           // Positive means friend owes money to user
           friendBalances[share.user.id].balance += share.amount;
         }
-      } 
+      }
       // If someone else paid
       else {
         // Find user's share in this transaction
-        const userShare = transaction.shares.find(share => share.user.id === userId);
-        
+        const userShare = transaction.shares.find(
+          (share) => share.user.id === userId,
+        );
+
         if (userShare) {
           const friendId = transaction.paidBy.id;
-          
+
           if (!friendBalances[friendId]) {
             friendBalances[friendId] = {
               userId: friendId,
               username: transaction.paidBy.username,
               imageUrl: transaction.paidBy.imageUrl,
-              balance: 0
+              balance: 0,
             };
           }
-          
+
           // Negative means user owes money to friend
           friendBalances[friendId].balance -= userShare.amount;
         }
@@ -224,22 +226,21 @@ router.post("/owed-in-group", userMiddleware, async (req, res) => {
 
     // Convert to array for easier frontend handling
     const balances = Object.values(friendBalances);
-    
+
     res.status(200).json({
       success: true,
-      balances
+      balances,
     });
   } catch (error: any) {
     console.error("Error calculating balances:", error);
     res.status(500).json({
       success: false,
       message: "Failed to calculate balances",
-      error: error.message
+      error: error.message,
     });
-    return
+    return;
   }
 });
-
 
 router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
   try {
@@ -255,53 +256,50 @@ router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
           {
             participants: {
               some: {
-                id: userId
-              }
-            }
+                id: userId,
+              },
+            },
           },
           {
             participants: {
               some: {
-                id: friendId
-              }
-            }
-          }
+                id: friendId,
+              },
+            },
+          },
         ],
-        settledStatus: "PENDING"
+        settledStatus: "PENDING",
       },
       include: {
         paidBy: {
           select: {
             id: true,
             username: true,
-            imageUrl: true
-          }
+            imageUrl: true,
+          },
         },
         shares: {
           where: {
             isSettled: false,
-            OR: [
-              { userId: userId },
-              { userId: friendId }
-            ]
+            OR: [{ userId: userId }, { userId: friendId }],
           },
           include: {
             user: {
               select: {
                 id: true,
                 username: true,
-                imageUrl: true
-              }
-            }
-          }
+                imageUrl: true,
+              },
+            },
+          },
         },
         group: {
           select: {
             id: true,
-            groupName: true
-          }
-        }
-      }
+            groupName: true,
+          },
+        },
+      },
     });
 
     // Calculate the total balance
@@ -312,12 +310,14 @@ router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
       // If user paid for the transaction
       if (transaction.paidBy.id === userId) {
         // Find friend's share
-        const friendShare = transaction.shares.find(share => share.user.id === friendId);
-        
+        const friendShare = transaction.shares.find(
+          (share) => share.user.id === friendId,
+        );
+
         if (friendShare) {
           // Friend owes user (positive)
           totalBalance += friendShare.amount;
-          
+
           transactionDetails.push({
             transactionId: transaction.id,
             transactionName: transaction.txnName,
@@ -325,27 +325,29 @@ router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
             groupName: transaction.group.groupName,
             amount: friendShare.amount,
             date: transaction.date,
-            type: "friend_owes_user"
+            type: "friend_owes_user",
           });
         }
-      } 
+      }
       // If friend paid for the transaction
       else if (transaction.paidBy.id === friendId) {
         // Find user's share
-        const userShare = transaction.shares.find(share => share.user.id === userId);
-        
+        const userShare = transaction.shares.find(
+          (share) => share.user.id === userId,
+        );
+
         if (userShare) {
           // User owes friend (negative)
           totalBalance -= userShare.amount;
-          
+
           transactionDetails.push({
             transactionId: transaction.id,
             transactionName: transaction.txnName,
-            groupId: transaction.group.id, 
+            groupId: transaction.group.id,
             groupName: transaction.group.groupName,
             amount: -userShare.amount,
             date: transaction.date,
-            type: "user_owes_friend"
+            type: "user_owes_friend",
           });
         }
       }
@@ -354,13 +356,13 @@ router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
     // Get friend info
     const friend = await prismaClient.user.findUnique({
       where: {
-        id: friendId
+        id: friendId,
       },
       select: {
         id: true,
         username: true,
-        imageUrl: true
-      }
+        imageUrl: true,
+      },
     });
 
     res.status(200).json({
@@ -368,15 +370,15 @@ router.post("/total-owed-to-friend", userMiddleware, async (req, res) => {
       data: {
         friend,
         totalBalance,
-        transactionDetails
-      }
+        transactionDetails,
+      },
     });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error calculating total owed:", error);
     res.status(500).json({
       success: false,
       message: "Failed to calculate total balance with friend",
-      error: error.message
+      error: error.message,
     });
   }
 });

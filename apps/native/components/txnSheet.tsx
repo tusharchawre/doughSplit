@@ -14,6 +14,9 @@ import api from "@/lib/axios";
 import { useUser } from "@/hooks/getUser";
 import { Transaction, useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import { useTxnById } from "@/hooks/useTxnById";
+import { Camera } from "lucide-react-native";
+import CameraModule from "../app/camera-module";
+import { useRouter } from "expo-router";
 
 interface TxnSheetProps extends SheetProps {
   groupId: string;
@@ -31,13 +34,14 @@ export const TxnSheet = ({
   const [loading, setLoading] = useState(false);
   const [splitEqually, setSplitEqually] = useState(true);
   const { refetch: refreshTxn } = useTxnById(txnData?.id.toString() || "");
+  const router = useRouter();
 
   const txnMembers = txnData?.participants.map((member) => member.id);
 
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(
     txnMembers || [],
   );
-  const { data: user , refetch: refetchUser } = useUser();
+  const { data: user, refetch: refetchUser } = useUser();
   const { data: group } = useGroupById(groupId);
   const { refetch: refetchTxns } = useTxnByGroupId(groupId);
 
@@ -107,12 +111,11 @@ export const TxnSheet = ({
           txnId: txnData.id,
         });
 
-
         if (response.data.txn) {
           setTxnName("");
           setAmount("");
           setSelectedMemberIds([]);
-          refetchUser()
+          refetchUser();
           refetchTxns();
           refreshTxn();
           bottomSheetRef.current?.close();
@@ -164,7 +167,7 @@ export const TxnSheet = ({
           setTxnName("");
           setAmount("");
           setSelectedMemberIds([]);
-          refetchUser()
+          refetchUser();
           refetchTxns();
           bottomSheetRef.current?.close();
           alert("Transaction added successfully");
@@ -179,157 +182,169 @@ export const TxnSheet = ({
   };
 
   return (
-    <BottomSheetModal
-      ref={bottomSheetRef}
-      enableDismissOnClose={true}
-      handleIndicatorStyle={{ display: "none" }}
-      handleStyle={{ display: "none" }}
-      keyboardBehavior="extend"
-      android_keyboardInputMode="adjustResize"
-    >
-      <BottomSheetScrollView scrollEnabled={false}>
-        <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 flex flex-col gap-6">
-          <Text className="text-white text-2xl font-semibold">
-            {txnData ? "Update" : "Add"} a Transaction
-          </Text>
+    <View>
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        enableDismissOnClose={true}
+        handleIndicatorStyle={{ display: "none" }}
+        handleStyle={{ display: "none" }}
+        keyboardBehavior="extend"
+        android_keyboardInputMode="adjustResize"
+      >
+        <BottomSheetScrollView scrollEnabled={false}>
+          <BottomSheetView className="bg-zinc-900 overflow-hidden rounded-t-xl w-full flex-1 h-[80vh] px-4 pt-6 pb-8 flex flex-col gap-6">
+            <Text className="text-white text-2xl font-semibold">
+              {txnData ? "Update" : "Add"} a Transaction
+            </Text>
 
-          <View>
-            <ThemedText type="defaultSemiBold" className="mb-4">
-              Transaction Name
-            </ThemedText>
-            <TextInput
-              className="bg-white/10 p-4 text-xl rounded-lg mb-4 text-white"
-              placeholder="Transaction Name"
-              placeholderTextColor="#ffffff80"
-              autoCapitalize="none"
-              defaultValue={txnName}
-              onChangeText={(txnName) => setTxnName(txnName)}
-            />
-          </View>
-
-          <View>
-            <ThemedText type="defaultSemiBold" className="mb-4">
-              Amount
-            </ThemedText>
-            <View className="relative flex flex-row items-center">
-              <View className="w-24 mr-2" style={{ zIndex: 10 }}>
-                <SelectList
-                  setSelected={setSelected}
-                  data={currencyData}
-                  save="key"
-                  defaultOption={{ key: "INR", value: "₹" }}
-                  boxStyles={{
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    borderWidth: 0,
-                    borderRadius: 8,
-                    height: 56,
-                    justifyContent: "center",
-                  }}
-                  inputStyles={{
-                    color: "white",
-                    fontSize: 20,
-                    textAlign: "center",
-                    fontWeight: "bold",
-                  }}
-                  dropdownStyles={{
-                    backgroundColor: "rgba(30, 30, 30, 0.95)",
-                    borderWidth: 0,
-                    position: "absolute",
-                    width: "100%",
-                    zIndex: 100,
-                    top: 54,
-                    maxHeight: 200,
-                  }}
-                  dropdownTextStyles={{
-                    color: "white",
-                    fontSize: 20,
-                  }}
-                  search={false}
-                  placeholder={getSymbol()}
-                />
-              </View>
-
+            <View>
+              <ThemedText type="defaultSemiBold" className="mb-4">
+                Transaction Name
+              </ThemedText>
               <TextInput
-                className="flex-1 bg-white/10 p-4 text-xl rounded-lg text-white"
-                placeholder="0.00"
+                className="bg-white/10 p-4 text-xl rounded-lg mb-4 text-white"
+                placeholder="Transaction Name"
                 placeholderTextColor="#ffffff80"
-                keyboardType="numeric"
-                defaultValue={amount}
-                onChangeText={(amount) => setAmount(amount)}
+                autoCapitalize="none"
+                defaultValue={txnName}
+                onChangeText={(txnName) => setTxnName(txnName)}
               />
             </View>
-          </View>
-          <View>
-            <View className="flex-row justify-between items-center mb-4">
-              <ThemedText type="defaultSemiBold">Split Equally</ThemedText>
-              <Switch
-                value={splitEqually}
-                onValueChange={toggleSplitEqually}
-                trackColor={{ false: "#767577", true: "#4CAF50" }}
-                thumbColor="#f4f3f4"
-              />
-            </View>
-            {!splitEqually && (
-              <View style={{ zIndex: 5 }}>
-                <ThemedText type="defaultSemiBold" className="mb-4">
-                  Split Among
-                </ThemedText>
-                <MultipleSelectList
-                  setSelected={setSelectedMemberIds}
-                  data={membersData}
-                  save="key"
-                  label="Group Members"
-                  onSelect={() => console.log(selectedMemberIds)}
-                  placeholder="Select members"
-                  notFoundText="No members found"
-                  dropdownTextStyles={{ color: "white" }}
-                  labelStyles={{ color: "white" }}
-                  checkBoxStyles={{
-                    backgroundColor: "transparent",
-                    borderColor: "white",
-                  }}
-                  boxStyles={{
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    borderWidth: 0,
-                    borderRadius: 8,
-                    padding: 12,
-                  }}
-                  inputStyles={{ color: "white" }}
-                  badgeStyles={{ backgroundColor: "#ffffff30" }}
-                  closeicon={
-                    <Text style={{ fontSize: 20, color: "white" }}>✕</Text>
-                  }
-                  dropdownStyles={{
-                    backgroundColor: "rgba(30, 30, 30, 0.95)",
-                    borderWidth: 0,
-                    position: "absolute",
-                    width: "100%",
-                    zIndex: 100,
-                    maxHeight: 200,
-                  }}
+
+            <View>
+              <ThemedText type="defaultSemiBold" className="mb-4">
+                Amount
+              </ThemedText>
+              <View className="relative flex flex-row items-center">
+                <View className="w-24 mr-2" style={{ zIndex: 10 }}>
+                  <SelectList
+                    setSelected={setSelected}
+                    data={currencyData}
+                    save="key"
+                    defaultOption={{ key: "INR", value: "₹" }}
+                    boxStyles={{
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: 0,
+                      borderRadius: 8,
+                      height: 56,
+                      justifyContent: "center",
+                    }}
+                    inputStyles={{
+                      color: "white",
+                      fontSize: 20,
+                      textAlign: "center",
+                      fontWeight: "bold",
+                    }}
+                    dropdownStyles={{
+                      backgroundColor: "rgba(30, 30, 30, 0.95)",
+                      borderWidth: 0,
+                      position: "absolute",
+                      width: "100%",
+                      zIndex: 100,
+                      top: 54,
+                      maxHeight: 200,
+                    }}
+                    dropdownTextStyles={{
+                      color: "white",
+                      fontSize: 20,
+                    }}
+                    search={false}
+                    placeholder={getSymbol()}
+                  />
+                </View>
+
+                <TextInput
+                  className="flex-1 bg-white/10 p-4 text-xl rounded-lg text-white"
+                  placeholder="0.00"
+                  placeholderTextColor="#ffffff80"
+                  keyboardType="numeric"
+                  defaultValue={amount}
+                  onChangeText={(amount) => setAmount(amount)}
                 />
               </View>
-            )}
-          </View>
-          <View className="mt-auto mb-8">
-            <Pressable
-              onPress={submitTxn}
-              className={`w-full bg-white h-16 rounded-xl flex items-center justify-center ${loading ? "opacity-50" : ""}`}
-              disabled={loading}
-            >
-              {txnData ? (
-                <Text className="text-xl font-semibold">
-                  {loading ? `Updating...` : "Update Transaction"}
-                </Text>
-              ) : (
-                <Text className="text-xl font-semibold">
-                  {loading ? `Adding...` : "Add Transaction"}
-                </Text>
+            </View>
+            <View>
+              <View className="flex-row justify-between items-center mb-4">
+                <ThemedText type="defaultSemiBold">Split Equally</ThemedText>
+                <Switch
+                  value={splitEqually}
+                  onValueChange={toggleSplitEqually}
+                  trackColor={{ false: "#767577", true: "#4CAF50" }}
+                  thumbColor="#f4f3f4"
+                />
+              </View>
+              {!splitEqually && (
+                <View style={{ zIndex: 5 }}>
+                  <ThemedText type="defaultSemiBold" className="mb-4">
+                    Split Among
+                  </ThemedText>
+                  <MultipleSelectList
+                    setSelected={setSelectedMemberIds}
+                    data={membersData}
+                    save="key"
+                    label="Group Members"
+                    onSelect={() => console.log(selectedMemberIds)}
+                    placeholder="Select members"
+                    notFoundText="No members found"
+                    dropdownTextStyles={{ color: "white" }}
+                    labelStyles={{ color: "white" }}
+                    checkBoxStyles={{
+                      backgroundColor: "transparent",
+                      borderColor: "white",
+                    }}
+                    boxStyles={{
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: 0,
+                      borderRadius: 8,
+                      padding: 12,
+                    }}
+                    inputStyles={{ color: "white" }}
+                    badgeStyles={{ backgroundColor: "#ffffff30" }}
+                    closeicon={
+                      <Text style={{ fontSize: 20, color: "white" }}>✕</Text>
+                    }
+                    dropdownStyles={{
+                      backgroundColor: "rgba(30, 30, 30, 0.95)",
+                      borderWidth: 0,
+                      position: "absolute",
+                      width: "100%",
+                      zIndex: 100,
+                      maxHeight: 200,
+                    }}
+                  />
+                </View>
               )}
-            </Pressable>
-          </View>
-        </BottomSheetView>
-      </BottomSheetScrollView>
-    </BottomSheetModal>
+            </View>
+
+            <View className="mt-auto w-full gap-4 mb-8 flex flex-row justify-center items-center">
+              <Pressable
+                onPress={() => {
+                  bottomSheetRef.current?.close();
+                  router.push("/camera-module");
+                }}
+                className="h-16 w-16 flex items-center justify-center bg-white rounded-xl"
+              >
+                <Camera color="black" />
+              </Pressable>
+              <Pressable
+                onPress={submitTxn}
+                className={`w-[80%] bg-white h-16 rounded-xl flex items-center justify-center ${loading ? "opacity-50" : ""}`}
+                disabled={loading}
+              >
+                {txnData ? (
+                  <Text className="text-xl font-semibold">
+                    {loading ? `Updating...` : "Update Transaction"}
+                  </Text>
+                ) : (
+                  <Text className="text-xl font-semibold">
+                    {loading ? `Adding...` : "Add Transaction"}
+                  </Text>
+                )}
+              </Pressable>
+            </View>
+          </BottomSheetView>
+        </BottomSheetScrollView>
+      </BottomSheetModal>
+    </View>
   );
 };
