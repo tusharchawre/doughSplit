@@ -8,29 +8,53 @@ import { Pressable, Text, TextInput, View, Switch } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SelectList } from "react-native-dropdown-select-list";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGroupById } from "@/hooks/getGroupById";
 import api from "@/lib/axios";
 import { useUser } from "@/hooks/getUser";
 import { Transaction, useTxnByGroupId } from "@/hooks/getTxnByGroupId";
 import { useTxnById } from "@/hooks/useTxnById";
 import { Camera } from "lucide-react-native";
-import CameraModule from "../app/camera-module";
 import { useRouter } from "expo-router";
 
 interface TxnSheetProps extends SheetProps {
   groupId: string;
   txnData?: Transaction;
+  extractedTxnData?: {
+    txnName: string;
+    amount: string;
+    desc: string;
+  };
 }
 
 export const TxnSheet = ({
   bottomSheetRef,
   groupId,
   txnData,
+  extractedTxnData,
 }: TxnSheetProps) => {
   const [selected, setSelected] = useState(txnData?.currency || "INR");
-  const [txnName, setTxnName] = useState(txnData?.txnName || "");
-  const [amount, setAmount] = useState(txnData?.amount.toString() || "");
+  const [txnName, setTxnName] = useState(
+    txnData?.txnName || extractedTxnData?.txnName || "",
+  );
+  const [amount, setAmount] = useState(
+    txnData?.amount.toString() ||
+      (extractedTxnData?.amount
+        ? extractedTxnData.amount.replace("₹", "")
+        : ""),
+  );
+  const [description, setDescription] = useState(
+    txnData?.description || extractedTxnData?.desc || "",
+  );
+
+  useEffect(() => {
+    if (extractedTxnData) {
+      setTxnName(extractedTxnData.txnName);
+      setAmount(extractedTxnData.amount.replace("₹", ""));
+      setDescription(extractedTxnData.desc);
+    }
+  }, [extractedTxnData]);
+
   const [loading, setLoading] = useState(false);
   const [splitEqually, setSplitEqually] = useState(true);
   const { refetch: refreshTxn } = useTxnById(txnData?.id.toString() || "");
@@ -102,7 +126,9 @@ export const TxnSheet = ({
 
         const response = await api.put("/group/transactions", {
           txnName,
-          description: "Transaction added by " + user?.username,
+          description: extractedTxnData
+            ? extractedTxnData.desc
+            : "Transaction added by " + user?.username,
           groupId: txnData?.groupId,
           paidById: user?.id,
           participants: participantsToSubmit,
@@ -320,7 +346,10 @@ export const TxnSheet = ({
               <Pressable
                 onPress={() => {
                   bottomSheetRef.current?.close();
-                  router.push("/camera-module");
+                  router.push({
+                    pathname: "/group/[id]/camera",
+                    params: { id: groupId },
+                  });
                 }}
                 className="h-16 w-16 flex items-center justify-center bg-white rounded-xl"
               >

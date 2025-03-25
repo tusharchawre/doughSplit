@@ -7,21 +7,54 @@ import { ThemedView } from "@/components/ThemedView";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TxnScreen } from "@/components/groups/txnScreen";
 import { AboutScreen } from "@/components/groups/aboutScreen";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { TxnSheet } from "@/components/txnSheet";
 import { useGroupById } from "@/hooks/getGroupById";
+import { Transaction } from "@/hooks/getTxnByGroupId";
 
 export default function Route() {
   const params = useLocalSearchParams<{
     id: string;
+    extractedData?: any;
   }>();
   const Tab = createMaterialTopTabNavigator();
   const groupId = params.id;
   const { data: user, refetch, isPending } = useUser();
+  const [txnData, setTxnData] = useState<{
+    txnName: string;
+    amount: string;
+    desc: string;
+  }>();
   const { data: group, isPending: grpPending } = useGroupById(groupId);
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  useEffect(() => {
+    if (params.extractedData) {
+      try {
+        const parsedData = JSON.parse(params.extractedData);
+        console.log("Extracted Data (Parsed):", parsedData);
+
+        // Additional logging for each property
+        console.log("Transaction Name:", parsedData.txnName);
+        console.log("Description:", parsedData.desc);
+        console.log("Amount:", parsedData.amount);
+
+        setTxnData({
+          txnName: parsedData.txnName,
+          desc: parsedData.desc,
+          amount: parsedData.amount,
+        });
+
+        bottomSheetRef.current?.present();
+      } catch (error) {
+        console.error("Error parsing extracted data:", error);
+      }
+    } else {
+      console.log("No extracted data found");
+    }
+  }, [params.extractedData]);
 
   const handleSheetToggle = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -90,7 +123,11 @@ export default function Route() {
           />
         </Tab.Navigator>
       </ParallaxScrollView>
-      <TxnSheet groupId={groupId} bottomSheetRef={bottomSheetRef} />
+      <TxnSheet
+        extractedTxnData={txnData}
+        groupId={groupId}
+        bottomSheetRef={bottomSheetRef}
+      />
     </View>
   );
 }

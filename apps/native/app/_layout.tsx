@@ -44,7 +44,7 @@ export default function RootLayout() {
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
-                    name="group/[id]"
+                    name="group/[id]/index"
                     options={{
                       headerShown: true,
                       headerBackButtonDisplayMode: "minimal",
@@ -66,7 +66,7 @@ export default function RootLayout() {
                   />
 
                   <Stack.Screen
-                    name="camera-module"
+                    name="group/[id]/camera"
                     options={{
                       headerShown: true,
                       headerBackButtonDisplayMode: "minimal",

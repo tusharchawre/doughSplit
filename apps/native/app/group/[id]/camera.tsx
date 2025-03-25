@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import { Camera, Check, RefreshCcw, X } from "lucide-react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
-import axios from "axios";
 
 export default function CameraModule() {
+  const { id: groupId } = useLocalSearchParams<{ id: string }>();
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef<CameraView>(null);
   const router = useRouter();
@@ -23,6 +23,7 @@ export default function CameraModule() {
   const [extractedData, setExtractedData] = useState<{
     txnName: string;
     amount: string;
+    desc: string;
   } | null>(null);
 
   if (!permission) {
@@ -68,53 +69,67 @@ export default function CameraModule() {
       return;
     }
 
-
     const formData = new FormData();
-    formData.append('document', {
+    formData.append("document", {
       uri: imageUri,
-      name: 'receipt.png',
-      type: 'image/png', 
-    }as any);
-  
+      name: "receipt.png",
+      type: "image/png",
+    } as any);
 
     try {
       const response = await fetch(
-        'https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict',
+        "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': 'Token 355dad5efc413bb31bc5b4e7c9c31cf2',
-            'Content-Type': 'multipart/form-data',
+            Authorization: `Token ${process.env.EXPO_PUBLIC_MINDEE_API_KEY}`,
+            "Content-Type": "multipart/form-data",
           },
           body: formData,
-        }
+        },
       );
-  
+
       const result = await response.json();
+      console.log(result.pages);
       const prediction = result.document?.inference?.prediction;
-    
+
       if (prediction) {
-        // Extract transaction name (merchant name)
-        const txnName = prediction.merchant_name?.value || 'Unknown Merchant';
-        
-        // Extract total amount
-        const amount = prediction.total_amount?.value 
-          ? `${prediction.total_amount.value.toFixed(2)}` 
-          : 'N/A';
-        
+        const supplierName =
+          prediction.supplier_name?.value || "Unknown Supplier";
+        const category = prediction.category?.value || "Unknown Category";
+        const amount = prediction.total_amount?.value
+          ? `₹${prediction.total_amount.value.toFixed(2)}`
+          : "N/A";
+
         // Update state with extracted details
         setExtractedData({
-          txnName,
-          amount
+          desc: supplierName,
+          txnName: category,
+          amount,
         });
-  
-        console.log('Extracted Details:', { txnName, amount });
+
+        console.log("Extracted Details:", {
+          desc: supplierName,
+          txnName: category,
+          amount,
+        });
+        console.log(groupId);
+
+        router.push({
+          pathname: `/group/${groupId}` as any,
+          params: {
+            id: groupId,
+            extractedData: JSON.stringify({
+              desc: supplierName,
+              txnName: category,
+              amount,
+            }),
+          },
+        });
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
     }
-
-
   };
 
   const renderPicture = () => {
