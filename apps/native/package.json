@@ -49,6 +49,7 @@
     "metro": "0.81.0",
     "metro-config": "0.81.0",
     "metro-resolver": "0.81.0",
+    "mindee": "^4.23.1",
     "moti": "^0.30.0",
     "nativewind": "^4.1.23",
     "patch-package": "^8.0.0",
