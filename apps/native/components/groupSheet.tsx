@@ -84,10 +84,6 @@ export const GroupSheet = ({ bottomSheetRef }: SheetProps) => {
             <MultipleSelectList
               dropdownTextStyles={{ color: "white" }}
               labelStyles={{ color: "white" }}
-              checkBoxStyles={{
-                backgroundColor: "black",
-                borderColor: "white",
-              }}
               boxStyles={{ borderColor: "white" }}
               inputStyles={{ color: "white" }}
               badgeStyles={{ backgroundColor: "#ffffff30" }}

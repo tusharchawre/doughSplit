@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "userInterfaceStyle": "automatic",
       "package": "com.tusharchawre0240.doughsplit"
@@ -39,9 +39,7 @@
           "backgroundColor": "#000000",
           "statusBar": "light",
           "imageStyle": {
-            "borderRadius": 100,
-            "borderWidth": 4,
-            "borderColor": "#FFFFFF"
+            "borderRadius": 100
           }
         }
       ],
