@@ -36,7 +36,13 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000",
+          "statusBar": "light",
+          "imageStyle": {
+            "borderRadius": 100,
+            "borderWidth": 4,
+            "borderColor": "#FFFFFF"
+          }
         }
       ],
       "expo-asset"

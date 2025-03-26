@@ -8,6 +8,7 @@ import {
   View,
   Alert,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Image } from "expo-image";
 import { Camera, Check, RefreshCcw, X } from "lucide-react-native";
@@ -25,6 +26,7 @@ export default function CameraModule() {
     amount: string;
     desc: string;
   } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   if (!permission) {
     return null;
@@ -60,6 +62,7 @@ export default function CameraModule() {
   };
 
   const extractDetails = async (imageUri: string) => {
+    setLoading(true);
     console.log(imageUri);
 
     const fileInfo = await FileSystem.getInfoAsync(imageUri);
@@ -82,7 +85,7 @@ export default function CameraModule() {
         {
           method: "POST",
           headers: {
-            Authorization: `Token ${process.env.EXPO_PUBLIC_MINDEE_API_KEY}`,
+            Authorization: `Token ${process.env.MINDEE_API_KEY}`,
             "Content-Type": "multipart/form-data",
           },
           body: formData,
@@ -115,6 +118,8 @@ export default function CameraModule() {
         });
         console.log(groupId);
 
+        setLoading(false);
+
         router.push({
           pathname: `/group/${groupId}` as any,
           params: {
@@ -135,6 +140,11 @@ export default function CameraModule() {
   const renderPicture = () => {
     return (
       <View className="bg-black w-full h-full flex items-center justify-center">
+        {loading && (
+          <View className="absolute w-full h-screen flex justify-center items-center bg-black opacity-40 z-50">
+            <ActivityIndicator size="large" color="white" />
+          </View>
+        )}
         <Image
           source={{ uri }}
           contentFit="contain"
@@ -157,9 +167,13 @@ export default function CameraModule() {
               <RefreshCcw color="black" />
             </View>
           </Pressable>
-          <Pressable onPress={() => extractDetails(uri!)}>
+          <Pressable disabled={loading} onPress={() => extractDetails(uri!)}>
             <View className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
-              <Check color="white" />
+              {loading ? (
+                <ActivityIndicator size="small" color="#bebebe" />
+              ) : (
+                <Check color="white" />
+              )}
             </View>
           </Pressable>
         </View>

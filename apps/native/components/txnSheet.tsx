@@ -126,9 +126,7 @@ export const TxnSheet = ({
 
         const response = await api.put("/group/transactions", {
           txnName,
-          description: extractedTxnData
-            ? extractedTxnData.desc
-            : "Transaction added by " + user?.username,
+          description: txnData.description,
           groupId: txnData?.groupId,
           paidById: user?.id,
           participants: participantsToSubmit,
@@ -181,7 +179,9 @@ export const TxnSheet = ({
 
         const response = await api.post("/group/transactions/add", {
           txnName,
-          description: "Transaction added by " + user?.username,
+          description: extractedTxnData
+            ? extractedTxnData.desc
+            : "Transaction added by " + user?.username,
           groupId,
           paidById: user?.id,
           participants: participantsToSubmit,
@@ -192,6 +192,7 @@ export const TxnSheet = ({
         if (response.data.txn) {
           setTxnName("");
           setAmount("");
+
           setSelectedMemberIds([]);
           refetchUser();
           refetchTxns();
