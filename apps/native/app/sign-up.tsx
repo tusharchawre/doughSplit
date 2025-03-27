@@ -14,6 +14,15 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // New state for password validation
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChar: false,
+  });
+
   const { signIn } = useSession();
 
   const validateEmail = (email: string) => {
@@ -22,8 +31,18 @@ export default function SignUp() {
   };
 
   const validatePassword = (password: string) => {
-    // Password should be at least 8 characters with at least one uppercase, one lowercase, and one special character
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(.{8,})$/;
+    // Update validation state
+    setPasswordValidation({
+      length: password.length >= 8 && password.length <= 18,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      specialChar: /[@$!%*?&]/.test(password),
+    });
+
+    // Full regex validation
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,18}$/;
     return passwordRegex.test(password);
   };
 
@@ -53,7 +72,7 @@ export default function SignUp() {
 
     if (!validatePassword(password)) {
       setError(
-        "Password must be at least 8 characters with uppercase, lowercase, and special characters",
+        "Password must be at least 8 characters with uppercase, lowercase, and special characters"
       );
       return;
     }
@@ -120,14 +139,82 @@ export default function SignUp() {
           keyboardType="email-address"
         />
 
-        <TextInput
-          className="bg-white/10 p-4 rounded-lg mb-4 text-white"
-          placeholder="Password"
-          placeholderTextColor="#ffffff80"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View>
+          <TextInput
+            className="bg-white/10 p-4 rounded-lg mb-4 text-white"
+            placeholder="Password"
+            placeholderTextColor="#ffffff80"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              validatePassword(text);
+            }}
+            secureTextEntry
+          />
+          
+        {password &&  <View className="mb-4">
+            <View className="flex-row items-center">
+              <Text
+                className={`mr-2 ${passwordValidation.length ? "text-green-500" : "text-gray-500"}`}
+              >
+                {passwordValidation.length ? "✓" : "✗"}
+              </Text>
+              <Text
+                className={`${passwordValidation.length ? "text-green-500" : "text-white"}`}
+              >
+                8-18 characters long
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Text
+                className={`mr-2 ${passwordValidation.uppercase ? "text-green-500" : "text-gray-500"}`}
+              >
+                {passwordValidation.uppercase ? "✓" : "✗"}
+              </Text>
+              <Text
+                className={`${passwordValidation.uppercase ? "text-green-500" : "text-white"}`}
+              >
+                At least one uppercase letter
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Text
+                className={`mr-2 ${passwordValidation.lowercase ? "text-green-500" : "text-gray-500"}`}
+              >
+                {passwordValidation.lowercase ? "✓" : "✗"}
+              </Text>
+              <Text
+                className={`${passwordValidation.lowercase ? "text-green-500" : "text-white"}`}
+              >
+                At least one lowercase letter
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Text
+                className={`mr-2 ${passwordValidation.number ? "text-green-500" : "text-gray-500"}`}
+              >
+                {passwordValidation.number ? "✓" : "✗"}
+              </Text>
+              <Text
+                className={`${passwordValidation.number ? "text-green-500" : "text-white"}`}
+              >
+                At least one number
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Text
+                className={`mr-2 ${passwordValidation.specialChar ? "text-green-500" : "text-gray-500"}`}
+              >
+                {passwordValidation.specialChar ? "✓" : "✗"}
+              </Text>
+              <Text
+                className={`${passwordValidation.specialChar ? "text-green-500" : "text-white"}`}
+              >
+                At least one special character
+              </Text>
+            </View>
+          </View>}
+        </View>
 
         <TextInput
           className="bg-white/10 p-4 rounded-lg mb-6 text-white"

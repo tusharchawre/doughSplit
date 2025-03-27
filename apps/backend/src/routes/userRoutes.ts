@@ -26,6 +26,7 @@ router.post("/register", async (req, res) => {
   const existingUser = await prismaClient.user.findFirst({
     where: {
       email,
+      username
     },
   });
 
