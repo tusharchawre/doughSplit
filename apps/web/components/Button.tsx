@@ -13,32 +13,30 @@ export const Button = ({
   icon,
   variant = "primary",
 }: ButtonProps) => {
-  const bgColor = variant === "primary" ? "bg-black" : "bg-gray-500";
-  
   return (
-    <motion.button 
-      className={`flex w-40 items-center justify-center gap-2 rounded-md ${bgColor} px-4 py-1 font-medium text-white relative`}
+    <motion.button
+      className={`relative flex w-36 items-center justify-center gap-2 rounded-md bg-black px-2 py-2 font-medium text-white`}
       whileHover="hover"
       initial="initial"
     >
-      <span>{children}</span>
+      <span className="text-sm font-semibold">{children}</span>
       <div className="relative h-5 w-5 overflow-hidden">
-        <motion.div 
+        <motion.div
           className="absolute"
           variants={{
-            initial: { y: 0 },
-            hover: { y: 24 }
+            initial: variant == "primary" ? { y: 0 } : { x: 0 },
+            hover: variant === "primary" ? { y: 20 } : { x: 20 },
           }}
           transition={{ duration: 0.3 }}
         >
           {icon}
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           className="absolute"
           variants={{
-            initial: { y: -24 },
-            hover: { y: 0 }
+            initial: variant === "primary" ? { y: -20 } : { x: -20 },
+            hover: { x: 0, y: 0 },
           }}
           transition={{ duration: 0.3 }}
         >

@@ -72,7 +72,7 @@ export default function SignUp() {
 
     if (!validatePassword(password)) {
       setError(
-        "Password must be at least 8 characters with uppercase, lowercase, and special characters"
+        "Password must be at least 8 characters with uppercase, lowercase, and special characters",
       );
       return;
     }
@@ -151,69 +151,71 @@ export default function SignUp() {
             }}
             secureTextEntry
           />
-          
-        {password &&  <View className="mb-4">
-            <View className="flex-row items-center">
-              <Text
-                className={`mr-2 ${passwordValidation.length ? "text-green-500" : "text-gray-500"}`}
-              >
-                {passwordValidation.length ? "✓" : "✗"}
-              </Text>
-              <Text
-                className={`${passwordValidation.length ? "text-green-500" : "text-white"}`}
-              >
-                8-18 characters long
-              </Text>
+
+          {password && (
+            <View className="mb-4">
+              <View className="flex-row items-center">
+                <Text
+                  className={`mr-2 ${passwordValidation.length ? "text-green-500" : "text-gray-500"}`}
+                >
+                  {passwordValidation.length ? "✓" : "✗"}
+                </Text>
+                <Text
+                  className={`${passwordValidation.length ? "text-green-500" : "text-white"}`}
+                >
+                  8-18 characters long
+                </Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text
+                  className={`mr-2 ${passwordValidation.uppercase ? "text-green-500" : "text-gray-500"}`}
+                >
+                  {passwordValidation.uppercase ? "✓" : "✗"}
+                </Text>
+                <Text
+                  className={`${passwordValidation.uppercase ? "text-green-500" : "text-white"}`}
+                >
+                  At least one uppercase letter
+                </Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text
+                  className={`mr-2 ${passwordValidation.lowercase ? "text-green-500" : "text-gray-500"}`}
+                >
+                  {passwordValidation.lowercase ? "✓" : "✗"}
+                </Text>
+                <Text
+                  className={`${passwordValidation.lowercase ? "text-green-500" : "text-white"}`}
+                >
+                  At least one lowercase letter
+                </Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text
+                  className={`mr-2 ${passwordValidation.number ? "text-green-500" : "text-gray-500"}`}
+                >
+                  {passwordValidation.number ? "✓" : "✗"}
+                </Text>
+                <Text
+                  className={`${passwordValidation.number ? "text-green-500" : "text-white"}`}
+                >
+                  At least one number
+                </Text>
+              </View>
+              <View className="flex-row items-center">
+                <Text
+                  className={`mr-2 ${passwordValidation.specialChar ? "text-green-500" : "text-gray-500"}`}
+                >
+                  {passwordValidation.specialChar ? "✓" : "✗"}
+                </Text>
+                <Text
+                  className={`${passwordValidation.specialChar ? "text-green-500" : "text-white"}`}
+                >
+                  At least one special character
+                </Text>
+              </View>
             </View>
-            <View className="flex-row items-center">
-              <Text
-                className={`mr-2 ${passwordValidation.uppercase ? "text-green-500" : "text-gray-500"}`}
-              >
-                {passwordValidation.uppercase ? "✓" : "✗"}
-              </Text>
-              <Text
-                className={`${passwordValidation.uppercase ? "text-green-500" : "text-white"}`}
-              >
-                At least one uppercase letter
-              </Text>
-            </View>
-            <View className="flex-row items-center">
-              <Text
-                className={`mr-2 ${passwordValidation.lowercase ? "text-green-500" : "text-gray-500"}`}
-              >
-                {passwordValidation.lowercase ? "✓" : "✗"}
-              </Text>
-              <Text
-                className={`${passwordValidation.lowercase ? "text-green-500" : "text-white"}`}
-              >
-                At least one lowercase letter
-              </Text>
-            </View>
-            <View className="flex-row items-center">
-              <Text
-                className={`mr-2 ${passwordValidation.number ? "text-green-500" : "text-gray-500"}`}
-              >
-                {passwordValidation.number ? "✓" : "✗"}
-              </Text>
-              <Text
-                className={`${passwordValidation.number ? "text-green-500" : "text-white"}`}
-              >
-                At least one number
-              </Text>
-            </View>
-            <View className="flex-row items-center">
-              <Text
-                className={`mr-2 ${passwordValidation.specialChar ? "text-green-500" : "text-gray-500"}`}
-              >
-                {passwordValidation.specialChar ? "✓" : "✗"}
-              </Text>
-              <Text
-                className={`${passwordValidation.specialChar ? "text-green-500" : "text-white"}`}
-              >
-                At least one special character
-              </Text>
-            </View>
-          </View>}
+          )}
         </View>
 
         <TextInput

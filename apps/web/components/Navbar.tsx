@@ -1,19 +1,11 @@
 "use client";
 import { ArrowDown } from "lucide-react";
 import { Button } from "./Button";
-import {
-  useMotionValueEvent,
-  useScroll,
-  motion,
-  useTransform,
-} from "motion/react";
-import { useState } from "react";
+import { useScroll, motion, useTransform } from "motion/react";
 
 export const Navbar = () => {
   const { scrollYProgress } = useScroll();
-  const [scrolled, setScrolled] = useState(false);
 
-  // Convert scrollYProgress to our style values
   const borderRadius = useTransform(scrollYProgress, [0, 0.5], [0, 20]);
   const backgroundColor = useTransform(
     scrollYProgress,
@@ -32,34 +24,66 @@ export const Navbar = () => {
     ["0 4px 6px rgba(0, 0, 0, 0)", "0 8px 24px rgba(0, 0, 0, 0.2)"],
   );
 
-  // Track when we pass 50% threshold for conditional rendering
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.5 && !scrolled) {
-      setScrolled(true);
-    } else if (latest <= 0.5 && scrolled) {
-      setScrolled(false);
-    }
-  });
+  const width = useTransform(scrollYProgress, [0, 0.5], ["70vw", "60vw"]);
+
+  // Button animation
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.5], [1, 1, 0]);
+  const visibility = useTransform(scrollYProgress, (value) =>
+    value > 0.5 ? "hidden" : "visible",
+  );
+
+  const navPosition = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, 0, 200]);
+
+  const navItem = ["Home", "Features", "Download", "FAQs"];
 
   return (
     <motion.div
+      layout
+      transition={{
+        ease: "easeInOut",
+        duration: 0.5,
+      }}
       style={{
         borderRadius,
         backgroundColor,
         boxShadow,
         backdropFilter: backdropBlur,
+        width: width,
       }}
-      className="fixed mx-auto mt-2 flex h-16 w-full max-w-6xl items-center justify-between px-8 backdrop-blur-md transition-all duration-300 ease-in-out"
+      className="fixed z-50 mx-auto mt-2 flex h-14 w-full max-w-6xl items-center justify-between px-8 backdrop-blur-md transition-all duration-300 ease-in-out"
     >
-      <p className="text-2xl font-bold">doughSplit</p>
-      <div className="flex gap-8 font-medium">
-        <p>Home</p>
-        <p>Features</p>
-        <p>Download</p>
-        <p>FAQs</p>
-      </div>
+      <p className="text-xl font-bold">doughSplit</p>
 
-      <Button icon={<ArrowDown color="white" size={20} />}>Download</Button>
+      <motion.div
+        className="absolute left-1/2 flex -translate-x-1/2 transform gap-12 text-sm font-medium"
+        style={{
+          x: navPosition,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 100,
+          damping: 15,
+        }}
+      >
+        {navItem.map((item, index) => (
+          <motion.p
+            key={index}
+            layout
+            transition={{
+              delay: 0.05 * index,
+              type: "spring",
+              stiffness: 120,
+              damping: 14,
+            }}
+          >
+            {item}
+          </motion.p>
+        ))}
+      </motion.div>
+
+      <motion.div style={{ opacity, visibility }}>
+        <Button icon={<ArrowDown color="white" size={20} />}>Download</Button>
+      </motion.div>
     </motion.div>
   );
 };
