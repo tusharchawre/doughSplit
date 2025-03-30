@@ -6,11 +6,11 @@ import { useScroll, motion, useTransform } from "motion/react";
 export const Navbar = () => {
   const { scrollYProgress } = useScroll();
 
-  const borderRadius = useTransform(scrollYProgress, [0, 0.5], [0, 20]);
+  const borderRadius = useTransform(scrollYProgress, [0, 0.5], [0, 12]);
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.5],
-    ["rgba(255, 255, 255, 1)", "rgba(255, 255, 255, 0.75)"],
+    ["rgba(255, 255, 255, 1)", "rgba(255, 255, 255, 0.85)"],
   );
   const backdropBlur = useTransform(
     scrollYProgress,
@@ -37,53 +37,54 @@ export const Navbar = () => {
   const navItem = ["Home", "Features", "Download", "FAQs"];
 
   return (
-    <motion.div
-      layout
-      transition={{
-        ease: "easeInOut",
-        duration: 0.5,
-      }}
-      style={{
-        borderRadius,
-        backgroundColor,
-        boxShadow,
-        backdropFilter: backdropBlur,
-        width: width,
-      }}
-      className="fixed z-50 mx-auto mt-2 flex h-14 w-full max-w-6xl items-center justify-between px-8 backdrop-blur-md transition-all duration-300 ease-in-out"
-    >
-      <p className="text-xl font-bold">doughSplit</p>
-
+    <div className="flex h-fit w-full justify-center">
       <motion.div
-        className="absolute left-1/2 flex -translate-x-1/2 transform gap-12 text-sm font-medium"
-        style={{
-          x: navPosition,
-        }}
+        layout
         transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 15,
+          ease: "easeInOut",
+          duration: 0.5,
         }}
+        style={{
+          borderRadius,
+          backgroundColor,
+          boxShadow,
+          backdropFilter: backdropBlur,
+          width: width,
+        }}
+        className="fixed z-50 mx-auto mt-2 flex h-14 w-full max-w-6xl items-center justify-between px-8 backdrop-blur-md transition-all duration-300 ease-in-out"
       >
-        {navItem.map((item, index) => (
-          <motion.p
-            key={index}
-            layout
-            transition={{
-              delay: 0.05 * index,
-              type: "spring",
-              stiffness: 120,
-              damping: 14,
-            }}
-          >
-            {item}
-          </motion.p>
-        ))}
-      </motion.div>
+        <p className="text-xl font-bold">doughSplit</p>
 
-      <motion.div style={{ opacity, visibility }}>
-        <Button icon={<ArrowDown color="white" size={20} />}>Download</Button>
+        <motion.div
+          className="absolute left-1/2 flex -translate-x-1/2 transform gap-12 text-sm font-medium"
+          style={{
+            x: navPosition,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
+          }}
+        >
+          {navItem.map((item, index) => (
+            <motion.p
+              key={index}
+              layout
+              transition={{
+                delay: 0.05 * index,
+                type: "spring",
+                stiffness: 120,
+                damping: 14,
+              }}
+            >
+              {item}
+            </motion.p>
+          ))}
+        </motion.div>
+        <motion.div style={{ opacity, visibility }}>
+          <Button icon={<ArrowDown color="white" size={20} />}>Download</Button>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };

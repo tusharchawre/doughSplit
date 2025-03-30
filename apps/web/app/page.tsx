@@ -5,9 +5,12 @@ import { Navbar } from "@/components/Navbar";
 
 const HomePage = () => {
   return (
-    <div className="flex h-screen w-full justify-center">
+    <div className="h-screen w-full">
       <Navbar />
       <Hero />
+      <div className="w-full h-screen">
+
+      </div>
     </div>
   );
 };
