@@ -2,9 +2,12 @@
 import { ArrowDown } from "lucide-react";
 import { Button } from "./Button";
 import { useScroll, motion, useTransform } from "motion/react";
+import { Reference, RefObject, useRef } from "react";
 
 export const Navbar = () => {
-  const { scrollYProgress } = useScroll();
+  const { scrollYProgress } = useScroll({
+    offset: ["start start", "100vh"],
+  });
 
   const borderRadius = useTransform(scrollYProgress, [0, 0.5], [0, 12]);
   const backgroundColor = useTransform(

@@ -1,12 +1,15 @@
 import Image from "next/image";
-import React from "react";
+import React, { RefObject, useRef } from "react";
 import { Button } from "./Button";
 import { ArrowRight } from "lucide-react";
 import { useScroll, useTransform, motion } from "motion/react";
 
 export const Hero = () => {
-  const { scrollYProgress } = useScroll();
-
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end center"],
+  });
   const width = useTransform(scrollYProgress, [0, 0.3], ["64rem", "72rem"]);
   const paddingInline = useTransform(
     scrollYProgress,
@@ -16,22 +19,23 @@ export const Hero = () => {
 
   return (
     <motion.div
+      ref={ref}
       style={{
         paddingInline,
       }}
-      className="h-screen w-full py-8 "
+      className="mb-16 h-screen w-full py-8"
     >
-      <div className="relative overflow-hidden mt-16 flex h-full w-full flex-col justify-between items-center gap-8 rounded-2xl bg-linear-to-b from-white from-25% to-[#00DDFF] pt-16 md:pt-24">
+      <div className="relative mt-16 flex h-full w-full flex-col items-center justify-between gap-8 overflow-hidden rounded-2xl bg-linear-to-b from-white from-25% to-[#00DDFF] pt-16 md:pt-24">
         <motion.div
           style={{ width }}
           className="absolute top-0 left-[50%] aspect-square w-[64rem] -translate-x-[50%] rounded-full border-[3px] border-white"
         />
 
-        <motion.h1 className="relative z-10 bg-linear-to-t from-black to-[#AEAEAE] to-95% bg-clip-text text-center text-2xl md:text-4xl font-bold text-transparent w-full">
+        <motion.h1 className="relative z-10 w-full bg-linear-to-t from-black to-[#AEAEAE] to-95% bg-clip-text text-center text-2xl font-bold text-transparent md:text-4xl">
           Split Bills, Not Friendships with DoughSplit
         </motion.h1>
 
-        <p className="max-w-96 md:max-w-xl -translate-y-3 text-center text-sm md:text-base">
+        <p className="max-w-96 -translate-y-3 text-center text-sm md:max-w-xl md:text-base">
           The hassle-free way to handle group expenses without the awkward "who
           owes what" conversations
         </p>
@@ -44,7 +48,6 @@ export const Hero = () => {
         </Button>
 
         <motion.div
-        
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ease: "easeInOut", duration: 0.8 }}
