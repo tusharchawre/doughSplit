@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React, { RefObject, useRef } from "react";
-import { Button } from "./Button";
+import { Button } from "./ui/Button";
 import { ArrowRight } from "lucide-react";
 import { useScroll, useTransform, motion } from "motion/react";
 

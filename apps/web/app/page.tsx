@@ -3,6 +3,7 @@
 import { Features } from "@/components/Features";
 import { Hero } from "@/components/Hero";
 import { Navbar } from "@/components/Navbar";
+import { Testimonials } from "@/components/Testimonials";
 import { useRef } from "react";
 
 const HomePage = () => {
@@ -11,6 +12,7 @@ const HomePage = () => {
       <Navbar />
       <Hero />
       <Features />
+      <Testimonials />
     </div>
   );
 };

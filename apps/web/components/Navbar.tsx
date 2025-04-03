@@ -1,6 +1,6 @@
 "use client";
 import { ArrowDown, Menu, X } from "lucide-react";
-import { Button } from "./Button";
+import { Button } from "./ui/Button";
 import { useScroll, motion, useTransform, AnimatePresence } from "motion/react";
 import { useMediaQuery } from "usehooks-ts";
 import { useState } from "react";
@@ -101,9 +101,9 @@ export const Navbar = () => {
                     ease: "easeOut",
                   },
                 }}
-                className="fixed inset-x-0 top-16 z-40 mx-auto w-3/4 max-w-md rounded-2xl border border-neutral-200 bg-white/90 shadow-lg"
+                className="fixed inset-x-0 top-16 z-40 mx-auto w-full max-w-md rounded-2xl border border-neutral-200 bg-white/90 shadow-lg"
               >
-                <div className="flex flex-col items-center py-6">
+                <div className="flex w-full flex-col items-center py-6">
                   {navItem.map((item, index) => (
                     <motion.a
                       key={index}
