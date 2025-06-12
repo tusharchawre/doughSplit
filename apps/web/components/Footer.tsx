@@ -80,7 +80,7 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="mt-4 pt-8 text-xs text-center text-gray-600">
+        <div className="mt-4 pt-8 text-center text-xs text-gray-600">
           <p>© {new Date().getFullYear()} DoughSplit. All rights reserved.</p>
         </div>
       </div>

@@ -18,7 +18,7 @@ export const TrackExpenses = () => {
             key={hover ? "open" : "closed"}
             src={hover ? "/eye-open.gif" : "/eye-close.gif"}
             alt={hover ? "Eye Open" : "Eye Closed"}
-            className={`absolute z-10 `}
+            className={`absolute z-10`}
             loading="eager"
             decoding="async"
             initial={{ opacity: hover ? 1 : 0.5 }}
@@ -33,7 +33,7 @@ export const TrackExpenses = () => {
           initial={{ opacity: 0 }}
           animate={{
             opacity: hover ? 1 : 0,
-            scale: hover ? 1.1 : 1
+            scale: hover ? 1.1 : 1,
           }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         />
@@ -41,9 +41,7 @@ export const TrackExpenses = () => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <p className="font-mono text-xs text-neutral-500 md:text-sm">
-          Expense
-        </p>
+        <p className="font-mono text-xs text-neutral-500 md:text-sm">Expense</p>
         <p className="text-medium text-base md:text-lg">Money Clarity</p>
         <p className="text-xs md:text-sm">
           Track who's paid, who's owed, and where all that dough went. Crystal
