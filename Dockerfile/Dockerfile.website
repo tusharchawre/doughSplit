@@ -16,7 +16,7 @@ COPY ./packages ./packages
 RUN mkdir -p ./apps/web
 
 # Copy only web files
-COPY ./apps/web/package.json ./apps/web/
+COPY ./apps/web/package*.json ./apps/web/
 COPY ./apps/web/tsconfig.json ./apps/web/
 
 # Install dependencies
