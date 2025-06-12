@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy workspace configuration
 COPY package*.json ./
-COPY bun.lockb ./
+COPY pnpm-workspace.yaml ./
 COPY turbo.json ./
 
 # Copy only the necessary packages
