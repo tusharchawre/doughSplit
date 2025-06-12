@@ -28,6 +28,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Install next globally in the builder stage
+RUN bun add -g next
+
 # Build the web
 WORKDIR /app/apps/web
 RUN bun run build
@@ -36,7 +39,7 @@ RUN bun run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Copy necessary files from builder
 COPY --from=builder /app/apps/web/public ./apps/web/public
@@ -54,8 +57,8 @@ USER bun
 EXPOSE 3000
 
 # Set environment variables
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # Start the application
 CMD ["bun", "apps/web/server.js"]
