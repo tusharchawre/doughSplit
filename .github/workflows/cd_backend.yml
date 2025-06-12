@@ -19,7 +19,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: Dockerfile
+          file: Dockerfile/Dockerfile.backend
           push: true
-          tags: tusharchawre0240/doughsplit:${{ github.sha }}
+          tags: tusharchawre0240/doughsplit-backend:${{ github.sha }}
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL }}
