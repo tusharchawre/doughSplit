@@ -3,10 +3,9 @@ import { FaGithub, FaTwitter, FaDiscord } from "react-icons/fa";
 
 export const Footer = () => {
   return (
-    <div className="mx-8 my-4 h-52 rounded-xl bg-linear-to-b from-white from-25% to-[#00DDFF]">
+    <div className="mx-8 my-4 mt-40 h-52 rounded-xl">
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* Brand Section */}
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-800">DoughSplit</h2>
             <p className="text-gray-600">
@@ -24,8 +23,6 @@ export const Footer = () => {
               </a>
             </div>
           </div>
-
-          {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Quick Links</h3>
             <ul className="space-y-2">
@@ -56,7 +53,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Support</h3>
             <ul className="space-y-2">
@@ -84,9 +80,7 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-
-        {/* Copyright */}
-        <div className="mt-4 pt-8 text-center text-gray-600">
+        <div className="mt-4 pt-8 text-xs text-center text-gray-600">
           <p>© {new Date().getFullYear()} DoughSplit. All rights reserved.</p>
         </div>
       </div>

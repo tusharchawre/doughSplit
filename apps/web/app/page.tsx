@@ -11,10 +11,18 @@ const HomePage = () => {
   return (
     <div className="h-fit w-full">
       <Navbar />
-      <Hero />
-      <Features />
-      <Testimonials />
-      <Footer />
+      <div id="home">
+        <Hero />
+      </div>
+      <div id="features">
+        <Features />
+      </div>
+      <div id="download">
+        <Testimonials />
+      </div>
+      <div id="faqs">
+        <Footer />
+      </div>
     </div>
   );
 };

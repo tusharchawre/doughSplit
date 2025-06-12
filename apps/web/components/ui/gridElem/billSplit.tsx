@@ -28,13 +28,13 @@ export const BillSplit = () => {
                   stiffness: 300,
                   damping: 30,
                 }}
-                className="flex h-12 w-56 items-center justify-center gap-4 rounded-xl border-[0.5px] border-emerald-300 bg-emerald-100 px-4"
+                className="flex h-12 w-56 items-center justify-center gap-4 rounded-xl border-[0.5px] border-cyan-300 bg-cyan-50 px-4"
               >
-                <DollarSign size={20} className="text-emerald-600" />
-                <span className="text-lg font-medium text-emerald-600">
+                <DollarSign size={20} className="text-cyan-500" />
+                <span className="text-lg font-medium text-cyan-500">
                   Total Bill
                 </span>
-                <ArrowRight size={16} className="ml-2 text-emerald-600" />
+                <ArrowRight size={16} className="ml-2 text-cyan-500" />
               </motion.div>
             ) : (
               <motion.div
@@ -48,7 +48,7 @@ export const BillSplit = () => {
                 {[...Array(4)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="flex h-12 w-12 items-center justify-center rounded-xl border-[0.5px] border-emerald-300 bg-emerald-100"
+                    className="flex h-12 w-12 items-center justify-center rounded-xl border-[0.5px] border-cyan-300 bg-cyan-50"
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     whileHover={{ scale: 1.05 }}
@@ -59,8 +59,8 @@ export const BillSplit = () => {
                       stiffness: 300,
                     }}
                   >
-                    <User size={24} className="text-green-600" />
-                    <span className="absolute -bottom-6 text-xs font-medium text-green-600">
+                    <User size={24} className="text-cyan-500" />
+                    <span className="absolute -bottom-6 text-xs font-medium text-cyan-500">
                       25%
                     </span>
                   </motion.div>
