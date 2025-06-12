@@ -1,56 +1,24 @@
-# Use the official Bun image as the base image
-FROM oven/bun:1 as base
+FROM oven/bun:1.1.30-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies only when needed
-FROM base AS deps
-WORKDIR /app
+COPY package*.json ./
+COPY pnpm-workspace.yaml ./
+COPY turbo.json ./
 
-# Copy package files
-COPY apps/web/package.json ./
-COPY apps/web/package-lock.json* ./
+COPY ./packages ./packages
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+RUN mkdir -p ./apps/web
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY apps/web/ ./
+COPY ./apps/web/package.json ./apps/web/
+COPY ./apps/web/tsconfig.json ./apps/web/
 
-# Build the application
+RUN bun install
+
+COPY ./apps/web ./apps/web
+
 RUN bun run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy necessary files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
-# Set the correct permissions
-RUN chown -R nextjs:nodejs /app
-
-# Switch to non-root user
-USER nextjs
-
-# Expose the port the app runs on
 EXPOSE 3000
 
-# Set environment variables
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-
-# Start the application
-CMD ["bun", "server.js"]
+CMD ["bun", "run", "start"]
