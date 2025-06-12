@@ -14,7 +14,7 @@ export const Testimonials = () => {
   const right = useTransform(scrollYProgress, [0, 0.8], ["-0.5rem", "-20rem"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], ["0.5", "1"])
   return (
-    <motion.div ref={ref} className="h-screen w-full my-12 overflow-x-clip">
+    <motion.div ref={ref} className="h-screen w-full mt-[50rem] md:mt-2 md:my-12 overflow-x-clip">
       <motion.div className="relative flex h-full w-full flex-col items-center justify-center gap-2">
         <motion.div className="absolute inset-0 blur-[100px]">
           <motion.div
