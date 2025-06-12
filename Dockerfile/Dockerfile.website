@@ -1,24 +1,61 @@
-FROM oven/bun:1.1.30-slim
+FROM oven/bun:1 AS base
 
+# Install dependencies only when needed
+FROM base AS deps
 WORKDIR /app
 
+# Copy workspace configuration
 COPY package*.json ./
-COPY pnpm-workspace.yaml ./
+COPY bun.lockb ./
 COPY turbo.json ./
 
+# Copy only the necessary packages
 COPY ./packages ./packages
 
-RUN mkdir -p ./apps/web
+# Create a temporary structure for the website app
+RUN mkdir -p ./apps/website
 
-COPY ./apps/web/package.json ./apps/web/
-COPY ./apps/web/tsconfig.json ./apps/web/
+# Copy only website files
+COPY ./apps/website/package.json ./apps/website/
+COPY ./apps/website/tsconfig.json ./apps/website/
 
+# Install dependencies
 RUN bun install
 
-COPY ./apps/web ./apps/web
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
+# Build the website
+WORKDIR /app/apps/website
 RUN bun run build
 
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+# Copy necessary files from builder
+COPY --from=builder /app/apps/website/public ./apps/website/public
+COPY --from=builder /app/apps/website/.next/standalone ./
+COPY --from=builder /app/apps/website/.next/static ./apps/website/.next/static
+
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown bun:bun .next
+
+# Switch to non-root user
+USER bun
+
+# Expose the port the app will run on
 EXPOSE 3000
 
-CMD ["bun", "run", "start"]
+# Set environment variables
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+# Start the application
+CMD ["bun", "apps/website/server.js"]
