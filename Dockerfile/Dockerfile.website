@@ -1,64 +1,33 @@
-FROM oven/bun:1 AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-WORKDIR /app
-
-# Copy workspace configuration
-COPY package*.json ./
-COPY pnpm-workspace.yaml ./
-COPY turbo.json ./
-
-# Copy only the necessary packages
-COPY ./packages ./packages
-
-# Create a temporary structure for the web app
-RUN mkdir -p ./apps/web
-
-# Copy only web files
-COPY ./apps/web/package*.json ./apps/web/
-COPY ./apps/web/tsconfig.json ./apps/web/
-
 # Install dependencies
+FROM oven/bun:latest AS installer
+WORKDIR /app
+COPY package*.json ./
+COPY turbo.json ./
 RUN bun install
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy the rest of the application
 COPY . .
 
-# Install next globally in the builder stage
-RUN bun add -g next
+# Build the application
+RUN bun turbo run build --filter=web
 
-# Build the web
-WORKDIR /app/apps/web
-RUN bun run build
-
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image
+FROM oven/bun:latest AS runner
 WORKDIR /app
+COPY --from=installer /app/package*.json ./
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/apps/web/package.json ./apps/web/package.json
+COPY --from=installer /app/apps/web/.next/standalone ./apps/web/.next/standalone
+COPY --from=installer /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer /app/apps/web/public ./apps/web/public
 
-ENV NODE_ENV=production
+# Set the user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
-# Copy necessary files from builder
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown bun:bun .next
-
-# Switch to non-root user
-USER bun
-
-# Expose the port the app will run on
+# Expose the port
 EXPOSE 3000
 
-# Set environment variables
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Start the application
-CMD ["bun", "apps/web/server.js"]
+# Command to run the application
+CMD bun --bun run start -p 3000
