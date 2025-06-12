@@ -7,10 +7,24 @@ const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  recommendedConfig: {
+    extends: ["next/core-web-vitals"]
+  }
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    ignores: ["**/node_modules/**", ".next/**"]
+  },
+  ...compat.extends("next/core-web-vitals"),
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@next/next/no-duplicate-head": "error",
+      'react/no-unescaped-entities': 'off',
+      '@next/next/no-page-custom-font': 'off',
+    }
+  }
 ];
 
 export default eslintConfig;
