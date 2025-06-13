@@ -12,20 +12,6 @@ WORKDIR /app/apps/web
 
 RUN npm install --legacy-peer-deps
 
-# Update Next.js config to output standalone
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV production
-
 RUN pnpm run build
 
-# Create a new directory for the standalone build
-WORKDIR /app/standalone
-
-# Copy the standalone build
-COPY --from=0 /app/apps/web/.next/standalone ./
-# Copy the static files
-COPY --from=0 /app/apps/web/.next/static ./.next/static
-# Copy the public directory
-COPY --from=0 /app/apps/web/public ./public
-
-CMD ["node", "server.js"]
+CMD ["pnpm", "start"]
