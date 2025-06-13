@@ -1,44 +1,17 @@
-# Base Node image
-FROM node:18-alpine AS base
+FROM node:20-alpine
+
 WORKDIR /app
-ENV NODE_ENV=production
 
-# Dependencies stage
-FROM base AS deps
-# Copy root package.json AND package-lock.json
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# Copy workspace package.json files
-COPY apps/web/package.json ./apps/web/
 
+RUN npm install -g pnpm
 
-RUN npm install
-
-# Builder stage - build the application
-FROM deps AS builder
-COPY . .
+COPY ./apps/web ./apps/web  
 
 WORKDIR /app/apps/web
-RUN npm install --legacy-peer-deps
-RUN npm run build
 
-# Runner stage - only use what's necessary for production
-FROM base AS runner
-# Add non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+RUN pnpm install --legacy-peer-deps
 
-# Copy only the necessary files from the builder stage
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+RUN pnpm run build
 
-# Set environment variables
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Expose the port
-EXPOSE 3000
-
-# Start the application
-CMD ["node", "apps/web/.next/standalone/server.js"]
+CMD ["node", ".next/standalone/server.js"]
