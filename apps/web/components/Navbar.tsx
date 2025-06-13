@@ -4,6 +4,7 @@ import { Button } from "./ui/Button";
 import { useScroll, motion, useTransform, AnimatePresence } from "motion/react";
 import { useMediaQuery } from "usehooks-ts";
 import { useState } from "react";
+import Link from "next/link";
 
 export const Navbar = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -41,7 +42,7 @@ export const Navbar = () => {
 
   const navPosition = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, 0, 200]);
 
-  const navItem = ["Home", "Features", "Download", "FAQs"];
+  const navItem = ["Home", "Features", "Testimonials", "About Us"];
 
   if (isMobile) {
     return (
@@ -176,7 +177,9 @@ export const Navbar = () => {
           }}
           className="fixed z-50 mx-auto mt-2 flex h-14 w-full max-w-6xl items-center justify-between px-8 backdrop-blur-md transition-all duration-300 ease-in-out"
         >
+          <Link href="/" prefetch className="cursor-pointer">
           <p className="text-xl font-bold">doughSplit</p>
+          </Link>
 
           <motion.div
             className="absolute left-1/2 flex -translate-x-1/2 transform gap-12 text-sm font-medium"
@@ -208,11 +211,13 @@ export const Navbar = () => {
               </motion.a>
             ))}
           </motion.div>
+            <Link href="/downloads" prefetch className="cursor-pointer">
           <motion.div style={{ opacity, visibility }}>
             <Button icon={<ArrowDown color="white" size={20} />}>
               Download
             </Button>
           </motion.div>
+            </Link>
         </motion.div>
       </div>
     );

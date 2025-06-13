@@ -16,10 +16,10 @@ const HomePage = () => {
       <div id="features">
         <Features />
       </div>
-      <div id="download">
+      <div id="testimonials">
         <Testimonials />
       </div>
-      <div id="faqs">
+      <div id="About Us">
         <Footer />
       </div>
     </div>

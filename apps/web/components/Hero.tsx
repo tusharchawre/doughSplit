@@ -3,6 +3,7 @@ import React, { RefObject, useRef } from "react";
 import { Button } from "./ui/Button";
 import { ArrowRight } from "lucide-react";
 import { useScroll, useTransform, motion } from "motion/react";
+import Link from "next/link";
 
 export const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -40,13 +41,15 @@ export const Hero = () => {
           owes what" conversations
         </p>
 
+        <Link href="/downloads" prefetch className="cursor-pointer">
+
         <Button
           variant="secondary"
           icon={<ArrowRight color="white" size={20} />}
         >
           Get Started
         </Button>
-
+        </Link>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

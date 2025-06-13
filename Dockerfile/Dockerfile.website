@@ -1,33 +1,31 @@
-# Install dependencies
-FROM oven/bun:latest AS installer
+FROM node:20-alpine
+
 WORKDIR /app
+RUN npm install -g pnpm@latest typescript
+
+# First copy workspace configuration
 COPY package*.json ./
+COPY pnpm-workspace.yaml ./
 COPY turbo.json ./
-RUN bun install
 
-# Copy the rest of the application
-COPY . .
+# Copy only the necessary packages
+COPY ./packages ./packages
 
-# Build the application
-RUN bun turbo run build --filter=web
 
-# Production image
-FROM oven/bun:latest AS runner
+# Create a temporary structure for the backend app
+RUN mkdir -p ./apps/web
+
+# Copy only backend files
+COPY ./apps/web/package.json ./apps/web/
+COPY ./apps/web/tsconfig.json ./apps/web/
+COPY ./apps/web/* ./apps/web/
+
+# Install dependencies at workspace root (will link workspace packages)
+RUN pnpm install
+
+# Build the backend
+WORKDIR /app/apps/web
+
+# Run the backend
 WORKDIR /app
-COPY --from=installer /app/package*.json ./
-COPY --from=installer /app/node_modules ./node_modules
-COPY --from=installer /app/apps/web/package.json ./apps/web/package.json
-COPY --from=installer /app/apps/web/.next/standalone ./apps/web/.next/standalone
-COPY --from=installer /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer /app/apps/web/public ./apps/web/public
-
-# Set the user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
-
-# Expose the port
-EXPOSE 3000
-
-# Command to run the application
-CMD bun --bun run start -p 3000
+CMD ["pnpm", "run", "start"]

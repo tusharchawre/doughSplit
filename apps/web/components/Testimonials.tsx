@@ -6,7 +6,7 @@ export const Testimonials = () => {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 50%", "end 80%"],
+    offset: ["start 50%", "end 70%"],
   });
 
   const left = useTransform(scrollYProgress, [0, 0.8], ["-0.5rem", "-20rem"]);
