@@ -1,41 +1,40 @@
-FROM node:20-alpine AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN apk add --no-cache libc6-compat && \
-    corepack enable && \
-    pnpm install turbo --global
-
-FROM base AS builder
-RUN apk add --no-cache openssl
+# Base Node image
+FROM node:18-alpine AS base
 WORKDIR /app
+ENV NODE_ENV=production
+
+# Dependencies stage - install all dependencies including dev
+FROM base AS deps
+COPY package.json package-lock.json* ./
+COPY apps/web/package.json ./apps/web/package.json
+# If you have workspace packages that the web app depends on
+# COPY packages/*/package.json ./packages/*/package.json/
+RUN npm ci
+
+# Builder stage - build the application
+FROM deps AS builder
 COPY . .
-RUN turbo prune --scope=@doughsplit/web --docker
+# Build the app using Turborepo
+RUN npx turbo run build --filter=web...
 
-FROM base AS installer
-WORKDIR /app
-
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
-RUN pnpm install --frozen-lockfile
-
-COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
-
-RUN turbo run build --filter=@doughsplit/web...
-
+# Runner stage - only use what's necessary for production
 FROM base AS runner
-WORKDIR /app
-
+# Add non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer /app/apps/web/next.config.js .
-COPY --from=installer /app/apps/web/package.json .
+# Copy only the necessary files from the builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# Set environment variables
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-CMD node apps/web/server.js
+# Expose the port
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "apps/web/server.js"]
