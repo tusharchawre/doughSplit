@@ -6,11 +6,11 @@ ENV NODE_ENV=production
 # Dependencies stage
 FROM base AS deps
 # Copy root package.json AND package-lock.json
-COPY package.json package-lock.json ./
+COPY package.json ./
 # Copy workspace package.json files
 COPY apps/web/package.json ./apps/web/
 # If you have workspace packages that the web app depends on
-# COPY packages/*/package.json ./packages/*/
+COPY packages/*/package.json ./packages/*/
 
 # Install dependencies (using npm install instead of npm ci if no lock file)
 RUN npm install
