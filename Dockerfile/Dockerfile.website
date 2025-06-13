@@ -28,4 +28,4 @@ WORKDIR /app/apps/web
 
 # Run the backend
 WORKDIR /app
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "run", "dev"]
