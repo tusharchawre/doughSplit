@@ -3,13 +3,17 @@ FROM node:18-alpine AS base
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Dependencies stage - install all dependencies including dev
+# Dependencies stage
 FROM base AS deps
-COPY package.json package-lock.json* ./
-COPY apps/web/package.json ./apps/web/package.json
+# Copy root package.json AND package-lock.json
+COPY package.json package-lock.json ./
+# Copy workspace package.json files
+COPY apps/web/package.json ./apps/web/
 # If you have workspace packages that the web app depends on
-# COPY packages/*/package.json ./packages/*/package.json/
-RUN npm ci
+# COPY packages/*/package.json ./packages/*/
+
+# Install dependencies (using npm install instead of npm ci if no lock file)
+RUN npm install
 
 # Builder stage - build the application
 FROM deps AS builder
