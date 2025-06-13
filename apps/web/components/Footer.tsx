@@ -12,14 +12,11 @@ export const Footer = () => {
               Split expenses with friends, the easy way.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-600 hover:text-gray-800">
+              <a href="https://github.com/tusharchawre/doughSplit" className="text-gray-600 hover:text-gray-800">
                 <FaGithub size={24} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">
+              <a href="https://x.com/TusharCtwt" className="text-gray-600 hover:text-gray-800">
                 <FaTwitter size={24} />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">
-                <FaDiscord size={24} />
               </a>
             </div>
           </div>

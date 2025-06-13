@@ -40,17 +40,11 @@ export default function DownloadsPage() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <a
-                  href="https://apps.apple.com/app/doughsplit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
                   <Button
                     icon={<Apple size={20} />}
                   >
                     App Store
                   </Button>
-                </a>
               </TooltipTrigger>
               <TooltipContent side="top" align="center">
                 <p>Not enough money to host it</p>
@@ -59,17 +53,11 @@ export default function DownloadsPage() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <a
-                  href="https://play.google.com/store/apps/details?id=com.doughsplit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
                   <Button
                     icon={<BsGooglePlay size={20} />}
                   >
                     Google Play
                   </Button>
-                </a>
               </TooltipTrigger>
               <TooltipContent side="top" align="center">
                 <p>Not enough money to host it</p>
@@ -77,7 +65,7 @@ export default function DownloadsPage() {
             </Tooltip>
 
             <a
-              href="/downloads/doughsplit.apk"
+              href="https://files.edgestore.dev/t6mri11cp61nu8ke/doughsplit/_public/doughSplit.apk"
               download
               className="inline-block"
             >
