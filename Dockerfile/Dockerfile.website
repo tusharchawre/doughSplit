@@ -6,20 +6,20 @@ ENV NODE_ENV=production
 # Dependencies stage
 FROM base AS deps
 # Copy root package.json AND package-lock.json
-COPY package.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Copy workspace package.json files
 COPY apps/web/package.json ./apps/web/
-# If you have workspace packages that the web app depends on
-COPY packages/*/package.json ./packages/*/
 
-# Install dependencies (using npm install instead of npm ci if no lock file)
+
 RUN npm install
 
 # Builder stage - build the application
 FROM deps AS builder
 COPY . .
-# Build the app using Turborepo
-RUN npx turbo run build --filter=web...
+
+WORKDIR /app/apps/web
+RUN npm install --legacy-peer-deps
+RUN npm run build
 
 # Runner stage - only use what's necessary for production
 FROM base AS runner
@@ -41,4 +41,4 @@ ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "apps/web/server.js"]
+CMD ["node", "apps/web/.next/standalone/server.js"]
